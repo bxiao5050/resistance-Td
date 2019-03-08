@@ -31,9 +31,7 @@ export default {
       $_order: 'descending'
     }
   },
-  mounted(){
-    console.log('tag111111',this.$store.getters['o_r_delivery/getComprehensive'])
-  },
+
   computed: {
     $$data() {
       var _ = this.$store.getters['o_r_delivery/getComprehensive']

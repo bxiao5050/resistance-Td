@@ -879,9 +879,11 @@ export default {
     getChannelList(state,getters){
       var channelName = []
       var channelNameData = []
+      var mmas = {}
       if (state['channelInfo'][getters.getIdStr] && state['channel'][getters.getIdStr]) {
         var arr1 = state['channel'][getters.getIdStr][0];
         var arr2 = state['channelInfo'][getters.getIdStr][0];
+        //获取筛选框联动数据
         for (let index = 0; index < arr1.length; index++) {
           channelName.push({'value':index+1,'label':arr1[index].view_type})
           channelNameData.push(arr2.filter(todo => todo.media_source == arr1[index].view_type))
@@ -892,10 +894,42 @@ export default {
           }
           channelNameData[index].unshift({"label": '全部', "value": '0', "key": Math.random() })
         }
+        channelName.unshift({'value':0,'label':'全部'})
+        channelNameData.unshift(arr2)
+        // 获取mmas
+        var titleArr = {};
+        Object.keys(arr1[0]).forEach((key, index) => {
+            //预期数据结构
+            if (index>=5 && index<=9) {
+              titleArr[key] = {avg:0,count:0,isReversal:false,max:0,min:0,total:0}
+            }
+        })
+        Object.assign(mmas,titleArr)
+        Object.keys(mmas).forEach((key,index)=>{
+          arr1.filter(todo => todo[key])
+          var total = 0;
+          var count = 0;
+          var dataArr = [];
+          for (let msg = 0; msg < arr1.filter(todo => todo[key]).length; msg++) {
+            total += +arr1.filter(todo => todo[key])[msg][key];
+            dataArr.push(+arr1.filter(todo => todo[key])[msg][key]) 
+            if (+arr1.filter(todo => todo[key])[msg][key]) {
+              count++
+            }
+            
+          }
+          if (key == '创角成本' || key == '注册成本' || key == '激活成本') {
+            mmas[key].isReversal = true;
+          }
+          mmas[key].total = total;
+          mmas[key].count = count;
+          mmas[key].avg = count ? (total/count).format(2) : 0;
+          mmas[key].max = eval("Math.max(" + dataArr + ")");
+          mmas[key].min = eval("Math.min(" + dataArr + ")");
+        })
+        console.log('mmasmmasmmasmmasmmasmmasmmasmmasmmas————————————————————————',mmas)
       }
-      channelName.unshift({'value':0,'label':'全部'})
-      channelNameData.unshift(arr2)
-      return {'data':arr1,'channelName':channelName,'channelNameData':channelNameData}
+      return {'data':arr1,'channelName':channelName,'channelNameData':channelNameData,'mmas':mmas}
     },
     getLengendData(state,getters){
       var arr

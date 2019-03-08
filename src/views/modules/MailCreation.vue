@@ -60,7 +60,6 @@ export default {
           media_source: '',
           country: ''
         }
-        console.log('1111111111111', 22222222222222222222)
         var url = '/query/fn_report_data_advertise'
         http.post(url, params).then(data => {
           console.log(data)

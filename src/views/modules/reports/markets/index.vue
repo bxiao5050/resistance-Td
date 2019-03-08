@@ -284,10 +284,8 @@ export default {
         // this.$data.taging_ = arr[0].tag;
         console.log()
         if (Boolean(game)) {
-          console.log(111)
           this.$data.taging_ = arr[1].tag;
         }else{
-          console.log(122)
           this.$data.taging_ = arr[0].tag;
         }
       }
@@ -297,8 +295,6 @@ export default {
       var arr = [];
       var lastQueryParam = this._state.lastQueryParam[this.taging];
       if (lastQueryParam) {
-        console.log(1111,lastQueryParam);
-        
         var { in_os, gameIds, in_begin_date, in_end_date, in_rpt_type } = lastQueryParam;
         var str = "";
         if (this.$store.getters["overseas_common/getList1"].hasOwnProperty(gameIds)) {
@@ -518,14 +514,8 @@ export default {
         isQuery = true;
       }
       if (flag) {
-        console.log("lastQueryParam", lastQueryParam, same);
-        this.main = 'system'
-        this.data.in_rpt_type = 5;
-        this.data.in_view_tye = 0;
-        this.data.in_chart_type = 0;
         isQuery && this.getData('system',this.taging);
       }else{
-        console.log("lastQueryParam", lastQueryParam, same);
         this.main = this.taging
         isQuery && this.getData(false,this.taging);
       }
@@ -565,29 +555,47 @@ export default {
       if (this._state.gameArr) this.data.gameArr = this._state.gameArr;
     },
     getData(taging_,isType) {
-      if (isType) {
-        console.log('tag', '按下的bubububu是查询按钮')
-        if (this.taging == "comprehensive") {
-          this.data.in_rpt_type = 2
-        }else if(this.taging == "daily"){
-          this.data.in_rpt_type = 3;
-        }
-      }else{
-        console.log('tag', '按下的是查询按钮')
-        if (this.data.region == "全部" || (this.data.region == "全部" && !this.data.game)) {
-          this.data.in_rpt_type = 2;
-          
-        }else if(this.data.game){
-          this.data.in_rpt_type = 4
-          this.in_view_type = 1
-        }
-      }
+      // 修改动态组件
       if (taging_) this.taging = taging_;
       this.main = this.taging;
-      if (this.data.game) {
-        this.isSingle = false;     
+      // 第一步:判断按下的是否是查询按钮
+      if (isType) {
+        console.log('tag', '按下的不是查询按钮')
+        this.in_chart_type = 0;
+        this.in_view_tye = 0;
+        if (this.taging == "comprehensive") {
+          this.in_rpt_type = 2;
+        }else if(this.taging == "daily"){
+          this.in_rpt_type = 3;
+        }else if(this.taging == "system"){
+          this.in_rpt_type = 5;
+          this.in_chart_type = 0;
+          this.in_view_tye = 0;
+        }
       }else{
-        this.isSingle = true;     
+        //如果是查询按钮,判断是当前查询组件
+        console.log('tag', '按下的是查询按钮')
+        if (!this.data.game) {
+          this.isSingle = true;     
+          console.log('tag', '查询全部')
+          this.in_rpt_type = 2;
+          this.in_view_type = 0;
+        }else{
+          console.log('tag', '查询单个全部')
+          if(this.data.game){
+            this.isSingle = false;     
+            this.in_rpt_type = 4
+            this.in_view_type = 1
+            if (this.$store.state.o_r_delivery.tableIsVisible) {
+                console.log('tag', '查询channel table数据')
+                this.in_chart_type = 1
+              }else{
+                console.log('tag', '查询channel legend数据')
+                this.in_chart_type = 2
+                
+              }
+          }
+        } 
       }
       this.$store.commit("o_r_delivery/setTaging", this.taging);
       this.$store.commit("o_r_delivery/setRegion", this.data.region);
@@ -600,15 +608,19 @@ export default {
         in_os: this._state.os,                        //系统                  
         in_area_app_ids:this._key,                    //游戏层级 
         in_media_source:"",                           //渠道
-        in_rpt_type:this.data.in_rpt_type,            //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
+        in_rpt_type:this.in_rpt_type,            //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
         in_country: '',                               //国家
-        in_chart_type:this.$store.state.o_r_delivery.tableIsVisible ? this.in_chart_type : 2,  //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
-        in_view_type:this.$store.state.o_r_delivery.tableIsVisible ? this.in_view_type :1      
+        in_chart_type:this.in_chart_type,  //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
+        in_view_type:this.in_view_type,      
         //视图类型：1 渠道 2 时间 3 地区
       };
       this._state.lastQueryParam[this.taging] = params;
       this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? this.taging :'legend' }).then(
-        ()=>{this.getFilterList()}
+        ()=>{
+          if (this.taging == 'channel' &&　this.$store.state.o_r_delivery.tableIsVisible) {
+            this.getFilterList()
+          }
+        }
       );
     },
     createMail() {

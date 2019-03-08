@@ -161,7 +161,6 @@
           :default-sort="{prop: $data.$_mainKey, order: $data.$_order}"
           :data="$store.getters['o_r_delivery/getAllChannel']"
           :cell-style="addStyle"
-          :cell-class-name="cellClassName"
           :summary-method="getSummaries"
           show-summary
         >
@@ -171,8 +170,6 @@
             :prop="item"
             :label="item"
             :formatter="formatter"
-            :width="i==0?150:100"
-            :fixed="i==0?true:false"
           ></el-table-column>
           <!-- :sortable="item.sortable"
           :width="item.width"-->
@@ -240,9 +237,6 @@ export default {
       areaArr: [{ media_source: 'qb', country_name: '全部' }]
     };
   },
-  // created() {
-  //   this.getFilterList()
-  // },
   computed: {
     // 筛选条件
     $$channellist() {
@@ -398,41 +392,7 @@ export default {
       this.$data.$_curChannel = null
       this.$store.commit("o_r_delivery/set_is2", false);
     },
-    cellClassName({ row, column, rowIndex, columnIndex }) {
-      // if (!this.$data.$_curChannel) {
-      //   var { label } = column
-      //   var { keys, index } = this.$$config
-      //   if (label === keys[index.channelIndex]) {
-      //     return 'channel'
-      //   }
-      // }
-    },
-    cellClick(row, column, cell, event) {
-      console.log('tag', cell)
-      // if (!this.$data.$_curChannel) {
-      //   var { label } = column
-      //   var { keys, index } = this.$$config
-      //   if (label === keys[index.channelIndex]) {
-      //     var channel = row[keys[index.channelIndex]]
-      //     var params = {
-      //       querytype: this._types['zone'],
-      //       begin_date: this.$store.state.o_r_delivery.date[0],
-      //       end_date: this.$store.state.o_r_delivery.date[1],
-      //       os: this.$store.state.o_r_delivery.os,
-      //       gameIds: this.$store.getters["o_r_delivery/getIdStr"],
-      //       media_source: channel,
-      //       country: ''
-      //     }
-      //     this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: 'zone2', is2: true }).then(data => {
-      //       this.$data.$_curChannel = channel;
-      //     })
-      //   }
-      // }
-    },
     formatter(row, column, value) {
-      var {
-        index, keys
-      } = this.$$config
       var {
         label
       } = column
@@ -484,8 +444,8 @@ export default {
         else return "#f9686a";
       }
       function retColor(mmaObj, data) {
-        var avg = mmaObj.avg;
-        var isReversal = mmaObj.isReversal;
+        var avg = mmaObj ? mmaObj.avg : 0;
+        var isReversal = mmaObj ? mmaObj.isReversal : true;
         var style = {
           fontWeight: 700,
           color: "#000"
@@ -498,26 +458,24 @@ export default {
         return style;
       }
 
-
-      // var { keys, index } = this.$$config;
-      // var { label } = column;
-      // switch (label) {
-      //   case keys[index.registerRateIndex]:
-      //     return retColor(this.$$data.mmas[label], row[label]);
-      //     break;
-      //   case keys[index.createRateIndex]:
-      //     return retColor(this.$$data.mmas[label], row[label]);
-      //     break;
-      //   case keys[index.activeCostIndex]:
-      //     return retColor(this.$$data.mmas[label], row[label]);
-      //     break;
-      //   case keys[index.registerCostIndex]:
-      //     return retColor(this.$$data.mmas[label], row[label]);
-      //     break;
-      //   case keys[index.createCostIndex]:
-      //     return retColor(this.$$data.mmas[label], row[label]);
-      //     break;
-      // }
+      var { label } = column;
+      switch (label) {
+        case '注册率':
+          return retColor(this.$$channellist.mmas[label], row[label]);
+          break;
+        case '创角率':
+          return retColor(this.$$channellist.mmas[label], row[label]);
+          break;
+        case '激活成本':
+          return retColor(this.$$channellist.mmas[label], row[label]);
+          break;
+        case '注册成本':
+          return retColor(this.$$channellist.mmas[label], row[label]);
+          break;
+        case '创角成本':
+          return retColor(this.$$channellist.mmas[label], row[label]);
+          break;
+      }
 
     },
     createChart() {
@@ -743,6 +701,9 @@ export default {
   .channels {
     width: 94%;
   }
+}
+.has-gutter{
+  font-weight: bold
 }
 .reports-market {
   .el-table__row {
