@@ -80,30 +80,6 @@
           <div class="chart-area" ref="chart"></div>
         </section>
       </div>
-
-      <!--  -->
-      <!-- <div class="row">
-        <el-select
-          class="channels"
-          v-model="channels"
-          multiple
-          placeholder="请选择"
-          clearable
-          size="mini"
-        >
-          <el-option
-            v-for="item in $$data.channel"
-            :key="item"
-            :label="item"
-            :value="item"
-          >
-          </el-option>
-        </el-select>
-        <el-button
-          @click="channels=[]"
-          size="mini"
-        >清空</el-button>
-      </div>-->
       <!-- 筛选框 -->
       <section class="filterBox" :style="{right:`${width}px`}">
         <div class="filter_">
@@ -132,9 +108,9 @@
           <span>{{filterTitle[2].name}}</span>
           <el-select class="os" v-model="channelValue" size="medium">
             <el-option
-              v-for="item in $$channellist.channelName"
+              v-for="item in $$getChannelInfo.channelName"
               :key="item.value"
-              :label="item.label"
+              :label="item.lable"
               :value="item.value"
             ></el-option>
           </el-select>
@@ -143,7 +119,7 @@
           <span>{{filterTitle[3].name}}</span>
           <el-select class="os" v-model="areaValue" size="medium">
             <el-option
-              v-for="item in $$channellist.channelNameData[channelValue]"
+              v-for="item in $$getChannelInfo.channelNameData[channelValue==''? 0 : channelValue]"
               :key="item.key"
               :label="item.label"
               :value="item.value"
@@ -152,40 +128,25 @@
         </div>
         <el-button size="medium" @click="filterData()">应用</el-button>
       </section>
+
       <!-- 表格 -->
       <div v-show="$store.state.o_r_delivery.tableIsVisible" class="table-item">
         <!-- :summary-method="getSummaries"  show-summary
         
         -->
         <el-table
-          :default-sort="{prop: $data.$_mainKey, order: $data.$_order}"
           :data="$store.getters['o_r_delivery/getAllChannel']"
           :cell-style="addStyle"
           :summary-method="getSummaries"
           show-summary
         >
           <el-table-column
-            v-for="(item, i) in (Object.keys($store.getters['o_r_delivery/getAllChannel']?$store.getters['o_r_delivery/getAllChannel'][0]:{}))"
+            v-for="(item, i) in (Object.keys($store.getters['o_r_delivery/getAllChannel']?$store.getters['o_r_delivery/getAllChannel'][0]:[]))"
             :key="i"
             :prop="item"
             :label="item"
             :formatter="formatter"
           ></el-table-column>
-          <!-- :sortable="item.sortable"
-          :width="item.width"-->
-          <div slot="append">
-            <!-- <total-float
-                :lineData="lineTotal"
-                :thead="$$thbodyArr[0]"
-              :_config="{
-            _config: $$config,
-            $$data: $$data,
-            key: $data.$_mainKey,
-            sortKey: $data.$_sortKey,
-          }"
-              :_chart="$data.$_chartIsReady"
-            />-->
-          </div>
         </el-table>
       </div>
     </div>
@@ -221,8 +182,8 @@ export default {
       viewValue: '1',
       systemValue: '2',
       lineValue: 0,
-      channelValue: 0,
-      areaValue: '全部',
+      channelValue: '',
+      areaValue: '',
       chart: null,
       restaurants: [ ],
       rightListArr: [],
@@ -238,6 +199,12 @@ export default {
     };
   },
   computed: {
+    $$getChannelInfo(){
+      var getChannelInfo = this.$store.getters["o_r_delivery/getChannelInfo"];
+      console.log('getChannelInfo____________',getChannelInfo)
+      return getChannelInfo
+
+    },
     // 筛选条件
     $$channellist() {
       var allData = this.$store.getters["o_r_delivery/getChannelList"];
@@ -259,46 +226,8 @@ export default {
       }
       return allData
     },
-    $$data() {
-      var data
-      if (this.$data.$_curChannel) {
-        data = this.$store.getters["o_r_delivery/getZone"];
-      } else {
-        data = this.$store.getters["o_r_delivery/getChannel"];
-
-      }
-      if (data) {
-        // for (let i = 0; i < data.list.length; i++) {
-        //   this.selectList.push(data.list[i])
-        // }
-        // this.$nextTick(() => {
-        //   this.createChart();
-        // });
-      }
-      console.log(data)
-      return data;
-    },
-    $$config() {
-      var config
-      if (this.$data.$_curChannel) {
-        this.$data.$_mainTag = 'zone'
-        config = this.$store.state.o_r_delivery.configs[this.$data.$_mainTag]
-        console.log('channel.vue', config)
-        this.$data.$_mainKey = config.keys[config.index.countryIndex]
-        this.$data.$_sortKey = config.keys[config.index.activeIndex]
-      } else {
-        this.$data.$_mainTag = 'channel'
-        config = this._config
-        // this.$data.$_sortKey = this.$data.$_mainKey = config.keys[config.index.channelIndex]
-        this.$data.channels = config.channels
-      }
-      return config
-    },
     _state() {
       return this.$store.state.o_r_delivery;
-    },
-    _line() {
-      return this.$store.getters["o_r_delivery/getLineData"]
     },
     _key() {
       return this.$store.getters["o_r_delivery/getIdStr"];
@@ -322,26 +251,31 @@ export default {
     },
     // 切换图利表格视图
     value(newValue, oldValue) {
+      // 恢复默认筛选条件
+      this.viewValue = '1';
+      this.systemValue = '2';
+      this.channelValue = '';
+      this.areaValue = '';
+      this.lineValue = 0;
       this.$store.state.o_r_delivery.tableIsVisible = !this.$store.state.o_r_delivery.tableIsVisible;
-        console.log( '获取'+this.$store.state.o_r_delivery.tableIsVisible+'数据')
-        var params = {
-          in_begin_date: this._state.date[0], //开始日期
-          in_end_date: this._state.date[1],   //结束日期
-          in_os: this._state.os,                         //系统                  
-          in_area_app_ids: this._key,                    //游戏层级 
-          in_media_source: "",                           //渠道
-          in_rpt_type: 4,                                //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
-          in_country: '',                                //国家
-          in_chart_type: this.$store.state.o_r_delivery.tableIsVisible ? 1:2,           //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
-          in_view_type: 1                                 //视图类型：1 渠道 2 时间 3 地区
-        };
-        // this._state.lastQueryParam[this.taging] = params;
-        this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible?'channel':'legend' });
+      var params = {
+        in_begin_date: this._state.date[0], //开始日期
+        in_end_date: this._state.date[1],   //结束日期
+        in_os: this._state.os,                         //系统                  
+        in_area_app_ids: this._key,                    //游戏层级 
+        in_media_source: "",                           //渠道
+        in_rpt_type: 4,                                //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
+        in_country: '',                                //国家
+        in_chart_type: this.$store.state.o_r_delivery.tableIsVisible ? 1:2,           //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
+        in_view_type: 1                                 //视图类型：1 渠道 2 时间 3 地区
+      };
+      // this._state.lastQueryParam[this.taging] = params;
+      this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible?'channel':'legend' });
     },
     // 渠道改变，国家恢复默认
     channelValue(newValue, oldValue) {
       console.log('\\\\', newValue)
-      this.areaValue = "全部"
+      this.areaValue = ""
     }
   },
   methods: {
@@ -624,63 +558,27 @@ export default {
       }
       console.log(item);
     },
-    getFilterList(){
-      var params = {
-        in_begin_date: this._state.date[0],          //开始日期
-        in_end_date: this._state.date[1],             //结束日期
-        in_os: this._state.os,                        //系统                  
-        in_area_app_ids: this._key,                    //游戏层级 
-        in_media_source: "",                           //渠道
-        in_rpt_type: 4,                                //报表类型: 1 查询游戏层级  2 综合报表  3 每日报表   4 渠道(媒体)报表   5 系统对比
-        in_country: '',                               //国家
-        in_chart_type: 0,                              //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
-        in_view_type: 1                                //视图类型：1 渠道 2 时间 3 地区
-      };
-      // // this._state.lastQueryParam['channnelInfo'] = params;
-      this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: 'channelInfo' });
-    },
     filterData() {
-      if (this.value == 'legend') {
-        console.log('wwww', this._state)
-        console.log('修改图例数据', )
-        console.log('tag', this.$store.state.o_r_delivery.channel)
-        console.log('获取渠道', this.$store.getters["o_r_delivery/getChannel"])
-        var params = {
-          in_begin_date: this._state.date[0], //开始日期
-          in_end_date: this._state.date[1],   //结束日期
-          in_os: this.$data.systemValue == 2 ? '0,1' : this.$data.systemValue, //系统                  
-          in_area_app_ids: this._key,                          //游戏层级 
-          in_media_source: this.$$channellist.channelName[this.$data.channelValue].label == '全部' ? '':this.$$channellist.channelName[this.$data.channelValue].label,            //渠道
-          in_rpt_type: 4,                                      //报表类型
-          // 1 查询游戏层级  2 综合报表  3 每日报表  
-          // 4 渠道(媒体)报表   5 系统对比
-          in_country: this.$data.areaValue == "全部" ? '' : this.$data.areaValue,                     //国家
-          in_chart_type: this.$store.state.o_r_delivery.tableIsVisible ? 1 : 2,     //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
-          in_view_type: this.$data.viewValue                     //视图类型：1 渠道 2 时间 3 地区
-        };
-        // this._state.lastQueryParam[this.taging] = params;
-        this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: 'legend' });
+      if (this.$store.state.o_r_delivery.tableIsVisible) {
+        this.in_chart_type = 1
+        console.log('修改表格数据', )
       } else {
         console.log('获取图例数据')
-
-        var params = {
-          in_begin_date: this._state.date[0], //开始日期
-          in_end_date: this._state.date[1],   //结束日期
-          in_os: this.$data.systemValue == 2 ? '0,1' : this.$data.systemValue, //系统                  
-          in_area_app_ids: this._key,                          //游戏层级 
-          in_media_source: this.$$channellist.channelName[this.$data.channelValue].label == '全部' ? '':this.$$channellist.channelName[this.$data.channelValue].label,            //渠道
-          in_rpt_type: 4,                                      //报表类型
-          // 1 查询游戏层级  2 综合报表  3 每日报表  
-          // 4 渠道(媒体)报表   5 系统对比
-          in_country: this.$data.areaValue == "全部" ? '' : this.$data.areaValue,                     //国家
-          in_chart_type: this.$data.value != 'legend' ? 1 : 2,     //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
-          in_view_type: this.$data.viewValue                     //视图类型：1 渠道 2 时间 3 地区
-        };
-        // this._state.lastQueryParam[this.taging] = params;
-        this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: 'channel' });
+        this.in_chart_type = 2
       }
+      var params = {
+        in_begin_date: this._state.date[0], //开始日期
+        in_end_date: this._state.date[1],   //结束日期
+        in_os: this.$data.systemValue == 2 ? '0,1' : this.$data.systemValue, //系统                  
+        in_area_app_ids: this._key,                          //游戏层级 
+        in_media_source: this.$$getChannelInfo.channelName[+this.channelValue]['lable'] == '全部' ? '' :this.$$getChannelInfo.channelName[+this.channelValue]['lable'],   //渠道
+        in_rpt_type: 4,                                      //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
+        in_country: this.$data.areaValue == "全部" ? '' : this.$data.areaValue,                     //国家
+        in_chart_type: this.in_chart_type,                  //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
+        in_view_type: this.$data.viewValue                     //视图类型：1 渠道 2 时间 3 地区
+      };
+      this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? 'channel' :'legend'  });
     },
-
   }
 }; 
 </script>

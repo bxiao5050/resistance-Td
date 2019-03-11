@@ -29,7 +29,6 @@ export default {
   state: {
     // channel
     tableIsVisible:true,
-
     lastQueryParam: {
       comprehensive: null,
       daily: null,
@@ -70,75 +69,6 @@ export default {
         channels: []
       },
     },
-    //new_test
-    // 折线图筛选下标
-    lineAllDataIndex : 0,
-    // 折线图所有数据
-    lineAllData:[
-      [{
-      name: 'total',
-      data: [1.0, 2.9, 3.5, 1.5, 8.4, 11.5, 15.2, 16.5, 13.3, 7.3, 3.9, 19.6],
-      visible: true,
-
-    }, {
-      name: 'Organic',
-      data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
-      visible: false,    
-    }, {
-      name: 'Facebook Ads',
-      data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8],
-      visible: false,    
-      
-    }, {
-      name: 'test1',
-      data: [13.9, 14.2, 15.7, 18.5, 111.9, 115.2, 117.0, 116.6, 114.2, 110.3, 16.6, 14.8],
-      visible: false,    
-    }, {
-      name: 'test2',
-      data: [32.9, 42.2, 52.7, 82.5, 112.9, 152.2, 172.0, 162.6, 142.2, 102.3, 62.6, 42.8],
-      visible: false,    
-    }],[{
-      name: 'total',
-      data: [3.0, 12.9, 13.5, 11.5, 18.4, 111.5, 115.2, 116.5, 113.3, 17.3, 13.9, 119.6],
-      visible: true,
-    }, {
-      name: 'Organic',
-      data: [72.0, 62.9, 29.5, 214.5, 182.4, 221.5, 252.2, 262.5, 223.3, 182.3, 123.9, 92.6],
-      visible: false,    
-    }, {
-      name: 'Facebook Ads',
-      data: [3.39, 34.2, 35.7, 38.5, 31.9, 35.2, 17.0, 19.6, 34.2, 30.3, 3.6, 1.8],
-      visible: false,    
-    }, {
-      name: 'test1',
-      data: [13.9, 14.2, 15.7, 1.5, 11.9, 11.2, 11.0, 11.6, 14.2,10.3, 16.6, 14.8],
-      visible: false,    
-    }, {
-      name: 'test2',
-      data: [12.9, 33.2, 32.7, 12.5, 22.9, 62.2, 82.0, 7.6, 22.2, 42.3, 22.6, 12.8],
-      visible: false,    
-    }],[{
-      name: 'total',
-      data: [13.0, 112.9, 103.5, 101.5, 108.4, 11.5, 15.2, 16.5, 13.3, 107.3, 103.9, 19.6],
-      visible: true,    
-    }, {
-      name: 'Organic',
-      data: [42.0, 40.9, 21.5, 21.5, 12.4, 21.5, 25.2, 22.5, 22.3, 12.3, 23.9, 82.6],
-      visible: false,    
-    }, {
-      name: 'Facebook Ads',
-      data: [3.39, 34.2, 35.7, 38.5, 31.9, 35.2, 17.0, 19.6, 34.2, 30.3, 3.6, 1.8],
-      visible: false,    
-    }, {
-      name: 'test1',
-      data: [13.9, 14.2, 15.7, 1.5, 11.9, 11.2, 11.0, 11.6, 14.2,10.3, 16.6, 14.8],
-      visible: false,    
-    }, {
-      name: 'test2',
-      data: [12.9, 33.2, 32.7, 12.5, 22.9, 62.2, 82.0, 7.6, 22.2, 42.3, 22.6, 12.8],
-      visible: false,    
-    }],] ,
-
   },
   mutations: {
     setTaging(state, data) {
@@ -219,42 +149,6 @@ export default {
     }
   },
   getters: {
-    getLineData(state){
-       // 折线图当前展示数据
-        var  lineData = [];
-        // 折线图顶部筛选列表
-        var restaurants = [];
-        // 折线图left列表
-        var leftlistArr=[];
-        // 折线图rightt列表
-        var rightListArr=[]
-      for (let index = 0; index < state.lineAllData.length; index++) {
-        lineData.push([]) 
-        for (let msg = 0; msg < state.lineAllData[index].length; msg++) {
-          if (index == 0) {
-            restaurants.push({'value':state.lineAllData[index][msg].name})
-            if (msg == 0) {
-               rightListArr.push({'name':state.lineAllData[index][msg].name,'visible':true})
-               leftlistArr.push({'name':state.lineAllData[index][msg].name,'visible':false})
-            }else{
-              rightListArr.push({'name':state.lineAllData[index][msg].name,'visible':false})
-              leftlistArr.push({'name':state.lineAllData[index][msg].name,'visible':true})
-            }
-          }
-          if (msg == 0) {
-            lineData[index].push({'name':state.lineAllData[index][msg].name,'data':state.lineAllData[index][msg].data}) 
-          }else{
-            
-            lineData[index].push({'name':state.lineAllData[index][msg].name,'data':[]}) 
-          }
-        }
-      }
-      return {'lineData':lineData,
-              'restaurants':restaurants,
-              'rightListArr':rightListArr,
-              'leftlistArr':leftlistArr};
-    },
-    
     tellTagStatus(state, getters, state_, getters_) {
       var _ = {
         comprehensive: false,
@@ -867,38 +761,52 @@ export default {
       return dailyData
     },
     //
-
     getAllChannel(state, getters){
       var arr
-      if (state['channel'][getters.getIdStr]) {
+      if (state['channel'][getters.getIdStr] && state['channel'][getters.getIdStr][0].length) {
         arr = state['channel'][getters.getIdStr][0];
        
       }
       return arr
     },
-    getChannelList(state,getters){
+    getChannelInfo(state,getters){
       var channelName = []
       var channelNameData = []
-      var mmas = {}
-      if (state['channelInfo'][getters.getIdStr] && state['channel'][getters.getIdStr]) {
-        var arr1 = state['channel'][getters.getIdStr][0];
-        var arr2 = state['channelInfo'][getters.getIdStr][0];
+      var allData = []
+      if (state['channelInfo'][getters.getIdStr] && state['channelInfo'][getters.getIdStr][0].length) {
+        allData = state['channelInfo'][getters.getIdStr][0];
         //获取筛选框联动数据
-        for (let index = 0; index < arr1.length; index++) {
-          channelName.push({'value':index+1,'label':arr1[index].view_type})
-          channelNameData.push(arr2.filter(todo => todo.media_source == arr1[index].view_type))
-          for (let msg = 0; msg < channelNameData[index].length; msg++) {
-            channelNameData[index][msg].label = channelNameData[index][msg].country_name;
-            channelNameData[index][msg].value = channelNameData[index][msg]["国家"];
-            channelNameData[index][msg].key = Math.random();
+        for (let index = 0; index < allData.length; index++) {
+          if (allData[index].media_source && channelName.indexOf(allData[index].media_source)<0) {
+            channelName.push(allData[index].media_source)
           }
-          channelNameData[index].unshift({"label": '全部', "value": '0', "key": Math.random() })
         }
-        channelName.unshift({'value':0,'label':'全部'})
-        channelNameData.unshift(arr2)
+        for (let index = 0; index < channelName.length; index++) {          
+          channelName[index] = {lable:channelName[index],value:index+1}
+          channelNameData.push(allData.filter(todo => todo.media_source == channelName[index]['lable']))
+          for (let msg = 0; msg < channelNameData[index].length; msg++) {
+              channelNameData[index][msg].label = channelNameData[index][msg].country_name;
+              channelNameData[index][msg].value = channelNameData[index][msg]["国家"];
+              channelNameData[index][msg].key = Math.random();
+            }
+          channelNameData[index].unshift({"label": '全部', "value": '', "key": Math.random() })
+        }
+        channelName.unshift({lable: "全部", value: ''})
+        channelNameData.unshift(allData)
+        channelNameData[0].unshift({"label": '全部', "value": '', "key": Math.random()})
+
+      }
+      console.log('getChannelInfogetChannelInfo',{'channelName':channelName,'channelNameData':channelNameData,})
+      return {'channelName':channelName,'channelNameData':channelNameData,}
+    },
+    getChannelList(state,getters){
+      var mmas = {}
+      var allData = []
+      if (state['channel'][getters.getIdStr] && state['channel'][getters.getIdStr][0].length) {
+        allData = state['channel'][getters.getIdStr][0];
         // 获取mmas
         var titleArr = {};
-        Object.keys(arr1[0]).forEach((key, index) => {
+        Object.keys(allData[0]).forEach((key, index) => {
             //预期数据结构
             if (index>=5 && index<=9) {
               titleArr[key] = {avg:0,count:0,isReversal:false,max:0,min:0,total:0}
@@ -906,14 +814,14 @@ export default {
         })
         Object.assign(mmas,titleArr)
         Object.keys(mmas).forEach((key,index)=>{
-          arr1.filter(todo => todo[key])
+          allData.filter(todo => todo[key])
           var total = 0;
           var count = 0;
           var dataArr = [];
-          for (let msg = 0; msg < arr1.filter(todo => todo[key]).length; msg++) {
-            total += +arr1.filter(todo => todo[key])[msg][key];
-            dataArr.push(+arr1.filter(todo => todo[key])[msg][key]) 
-            if (+arr1.filter(todo => todo[key])[msg][key]) {
+          for (let msg = 0; msg < allData.filter(todo => todo[key]).length; msg++) {
+            total += +allData.filter(todo => todo[key])[msg][key];
+            dataArr.push(+allData.filter(todo => todo[key])[msg][key]) 
+            if (+allData.filter(todo => todo[key])[msg][key]) {
               count++
             }
             
@@ -929,7 +837,7 @@ export default {
         })
         console.log('mmasmmasmmasmmasmmasmmasmmasmmasmmas————————————————————————',mmas)
       }
-      return {'data':arr1,'channelName':channelName,'channelNameData':channelNameData,'mmas':mmas}
+      return {'data':allData,'mmas':mmas}
     },
     getLengendData(state,getters){
       var arr
@@ -977,11 +885,11 @@ export default {
         }
         // console.log('everyDate',everyDate)____________________________________________________
         for (let evr = 0; evr < everyDataTotal.length; evr++) {
-          everyDataTotal[evr][3] = (everyDataTotal[evr][1]/everyDataTotal[evr][0]).format(2)
-          everyDataTotal[evr][4] = (everyDataTotal[evr][2]/everyDataTotal[evr][0]).format(2)
-          everyDataTotal[evr][5] = (everyDataTotal[evr][8]/everyDataTotal[evr][0]).format(2)
-          everyDataTotal[evr][6] = (everyDataTotal[evr][8]/everyDataTotal[evr][1]).format(2)
-          everyDataTotal[evr][7] = (everyDataTotal[evr][8]/everyDataTotal[evr][2]).format(2)         
+          everyDataTotal[evr][3] = ((everyDataTotal[evr][1]/everyDataTotal[evr][0])*100).format(2)
+          everyDataTotal[evr][4] = ((everyDataTotal[evr][2]/everyDataTotal[evr][0])*100).format(2)
+          everyDataTotal[evr][5] = ((everyDataTotal[evr][8]/everyDataTotal[evr][0])*100).format(2)
+          everyDataTotal[evr][6] = ((everyDataTotal[evr][8]/everyDataTotal[evr][1])*100).format(2)
+          everyDataTotal[evr][7] = ((everyDataTotal[evr][8]/everyDataTotal[evr][2])*100).format(2)         
         }
         console.log('everyDataTotal',everyDataTotal)
         // 获取渠道列表
@@ -1958,7 +1866,7 @@ export default {
 
       var promise1 = new Promise((resolve) => {
         http.post(url, params).then(data => {
-          if (data.code == 401) {
+          if (data.code == 401 ) {
             commit("set_" + tag, [params.in_area_app_ids, data.state]);
             console.log('tag',data)
             resolve(data.state)
