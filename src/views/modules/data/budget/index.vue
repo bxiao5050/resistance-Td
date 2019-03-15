@@ -7,8 +7,8 @@
             <el-button size="medium">
               <span>日期</span>
             </el-button>
-            <el-date-picker size="medium" @change="dateChange" v-model="pickerOptions.date" type="date" placeholder="选择日期">
-            </el-date-picker>
+            <el-date-picker size="medium" @change="dateChange" v-model="pickerOptions.date" type="month"  placeholder="选择月"> </el-date-picker>
+            <!-- <el-date-picker size="medium" @change="dateChange" v-model="pickerOptions.date" type="date" placeholder="选择日期"> </el-date-picker> -->
           </el-button-group>
         </div>
 
@@ -17,7 +17,7 @@
         </el-button>
 
         <el-button size="medium" @click="upload()">
-          <span>上传模板</span>
+          <span>上传预算</span>
           <form v-show="false" id="my-form" :action="baseUrl + '/import/fn_oas_budget_costs'" method="post" enctype="multipart/form-data">
             <input type="file" name="file" ref="upload">
           </form>
@@ -75,11 +75,11 @@ export default {
     dateChange(date) {
       this.$store.commit(this.SMN + '/set', {
         key: 'date',
-        val: moment(date).format("YYYY-MM-DD")
+        val: moment(date).format("YYYY-MM")
       })
     },
     query() {
-      this.$store.dispatch(this.SMN + '/getData', { count_date: this._state.date }).then(data => {
+      this.$store.dispatch(this.SMN + '/getData', { count_date: this._state.date+'-01' }).then(data => {
 
       })
     },

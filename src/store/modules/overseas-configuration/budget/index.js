@@ -3,7 +3,7 @@ var _1day = 1000 * 3600 * 24
 export default {
   namespaced: true,
   state: {
-    date: moment(new Date().getTime() - _1day).format("YYYY-MM-DD"),
+    date: moment(new Date().getTime() - _1day).format("YYYY-MM"),
     data: null,
     config: {}
   },

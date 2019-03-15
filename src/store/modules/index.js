@@ -26,10 +26,14 @@ import {
 } from './MarketingAnalysis'
 
 import o_r_delivery from './overseas-reports/delivery'
+import o_r_real from './overseas-reports/real'
+
 import o_c_complement from './overseas-configuration/complement'
 import o_c_budget from './overseas-configuration/budget'
 import o_c_pkg_manager from './overseas-configuration/pkg_manager'
 import overseas_common from './overseas-common'
+import overseas_common_realTime from './overseas-common/realTime/'
+
 import o_s_c_reports from './overseas-sub-channel/reports'
 
 export default {
@@ -58,7 +62,9 @@ export default {
 
   // CommonRelease,
   overseas_common,
+  overseas_common_realTime,
   o_r_delivery,
+  o_r_real, //实时报表模块
   o_c_complement,
   o_c_budget,
   o_c_pkg_manager,

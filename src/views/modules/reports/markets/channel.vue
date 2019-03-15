@@ -126,14 +126,13 @@
             ></el-option>
           </el-select>
         </div>
-        <el-button size="medium" @click="filterData()">应用</el-button>
+        <el-button type="warning" plain @click="filterReset()">重置</el-button>
+        <el-button type="success" plain @click="filterData()">应用</el-button>
+
       </section>
 
       <!-- 表格 -->
       <div v-show="$store.state.o_r_delivery.tableIsVisible" class="table-item">
-        <!-- :summary-method="getSummaries"  show-summary
-        
-        -->
         <el-table
           :data="$store.getters['o_r_delivery/getAllChannel']"
           :cell-style="addStyle"
@@ -146,6 +145,7 @@
             :prop="item"
             :label="item"
             :formatter="formatter"
+            :width="i==0 ? 115:''"
           ></el-table-column>
         </el-table>
       </div>
@@ -160,6 +160,10 @@ export default {
   props: ['data', '_config', '_types'],
   components: {
     // totalFloat
+  },
+  mounted(){
+    this.$store.state.o_r_delivery.tableIsVisible = true;
+    this.value = 'table'
   },
   watch: {
     channels(channels) {
@@ -251,13 +255,18 @@ export default {
     },
     // 切换图利表格视图
     value(newValue, oldValue) {
+      this.$store.state.o_r_delivery.tableIsVisible = !this.$store.state.o_r_delivery.tableIsVisible;
+      if (this.$store.state.o_r_delivery.tableIsVisible ) {
+        this.filterTitle[0] = { name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' },] }
+      }else{
+        this.filterTitle[0] = { name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '3', label: '地区' },] }
+      }
       // 恢复默认筛选条件
       this.viewValue = '1';
       this.systemValue = '2';
       this.channelValue = '';
       this.areaValue = '';
       this.lineValue = 0;
-      this.$store.state.o_r_delivery.tableIsVisible = !this.$store.state.o_r_delivery.tableIsVisible;
       var params = {
         in_begin_date: this._state.date[0], //开始日期
         in_end_date: this._state.date[1],   //结束日期
@@ -579,6 +588,14 @@ export default {
       };
       this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? 'channel' :'legend'  });
     },
+    filterReset(){
+      // 恢复默认筛选条件
+      this.viewValue = '1';
+      this.systemValue = '2';
+      this.channelValue = '';
+      this.areaValue = '';
+      this.lineValue = 0;
+    }
   }
 }; 
 </script>
@@ -716,9 +733,9 @@ export default {
     border: 1px solid #c0c4cc;
     background: rgba(253, 253, 253, 0.8);
     button {
-      width: 120px;
-      margin-left: 40px;
-      margin-top: 50px;
+      width: 75px;
+      margin-left: 15px;
+      margin-top: 35px;
     }
     .filter_ {
       width: 100%;

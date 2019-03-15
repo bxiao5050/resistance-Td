@@ -1,6 +1,7 @@
 export const OverseasReleaseSysId = 4;
 
 export const deliveryMenuId = 1001;
+export const realTimeMenuId = 1002;
 export const PackageManagerId = 1102;
 export const ComplementMenuId = 1101;
 

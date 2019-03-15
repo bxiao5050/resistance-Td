@@ -796,7 +796,7 @@ export default {
         channelNameData[0].unshift({"label": '全部', "value": '', "key": Math.random()})
 
       }
-      console.log('getChannelInfogetChannelInfo',{'channelName':channelName,'channelNameData':channelNameData,})
+      // console.log('getChannelInfogetChannelInfo',{'channelName':channelName,'channelNameData':channelNameData,})
       return {'channelName':channelName,'channelNameData':channelNameData,}
     },
     getChannelList(state,getters){
@@ -835,7 +835,7 @@ export default {
           mmas[key].max = eval("Math.max(" + dataArr + ")");
           mmas[key].min = eval("Math.min(" + dataArr + ")");
         })
-        console.log('mmasmmasmmasmmasmmasmmasmmasmmasmmas————————————————————————',mmas)
+        // console.log('mmasmmasmmasmmasmmasmmasmmasmmasmmas————————————————————————',mmas)
       }
       return {'data':allData,'mmas':mmas}
     },
@@ -891,7 +891,7 @@ export default {
           everyDataTotal[evr][6] = ((everyDataTotal[evr][8]/everyDataTotal[evr][1])*100).format(2)
           everyDataTotal[evr][7] = ((everyDataTotal[evr][8]/everyDataTotal[evr][2])*100).format(2)         
         }
-        console.log('everyDataTotal',everyDataTotal)
+        // console.log('everyDataTotal',everyDataTotal)
         // 获取渠道列表
         for (let index = 0; index < everyDate[0].length; index++) {
             channelList.push(everyDate[0][index].view_type)
@@ -927,6 +927,13 @@ export default {
             lineData[index].unshift({name:'total',data:totalArr[index],visible:true})
         }
       }
+      console.log('22222222', {'leftlistArr':leftlistArr,
+      'rightListArr':rightListArr,
+      'lineData':lineData,
+      'lineSelect':lineSelect,
+      'xList':xList,
+      'channelList':channelList,
+      'restaurants':restaurants})
       return {'leftlistArr':leftlistArr,
               'rightListArr':rightListArr,
               'lineData':lineData,

@@ -445,6 +445,8 @@ export default {
         var thead = document.querySelector('.el-table__header thead').innerHTML
         var tbody = document.querySelector('.el-table__body tbody').innerHTML
         var table = document.createElement('table')
+        console.log('111111111111111111111111', thead)
+        console.log('111111111111111111111111', tbody)
         table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
         Utils.tableToExcel(
           table,
@@ -638,16 +640,20 @@ export default {
   },
   created() {
     this.dataInit();
-
     this.$store.dispatch("overseas_common/getList1").then(data => {
       if (!this._state.region || !this._state.regionArr.length) {
         this.data.region = this.data.allTxt;
         this.data.regionArr = this.$store.state.overseas_common.list1All;
       }
+      console.log('key',this._key)
       if (!this._state[this.taging][this._key]) this.getData();
     });
   },
   mounted() {
+    // 如果加载渠道报表则隐藏报表tab选项
+    if (this.data.game) {
+      this.isSingle = false;     
+    }
     this.$refs.picker.mountPicker();
     this.$refs.picker1.mountPicker();
     this.$refs.picker1.picker.dateShortcuts = this.dateShortcuts
