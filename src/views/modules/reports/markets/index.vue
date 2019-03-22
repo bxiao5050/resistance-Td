@@ -4,7 +4,14 @@
     <my-row class="selection-box">
 
       <div class="date-box-item">
-        <el-date-picker size="medium" :picker-options="pickerOptions1" ref="picker1" v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" top="100">
+        <el-date-picker size="medium" 
+            :picker-options="pickerOptions1" 
+            ref="picker1" 
+            v-model="date" 
+            type="daterange" 
+            range-separator="至" 
+            start-placeholder="开始日期" 
+            end-placeholder="结束日期" top="100">
         </el-date-picker>
       </div>
 
@@ -445,8 +452,6 @@ export default {
         var thead = document.querySelector('.el-table__header thead').innerHTML
         var tbody = document.querySelector('.el-table__body tbody').innerHTML
         var table = document.createElement('table')
-        console.log('111111111111111111111111', thead)
-        console.log('111111111111111111111111', tbody)
         table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
         Utils.tableToExcel(
           table,
@@ -645,7 +650,6 @@ export default {
         this.data.region = this.data.allTxt;
         this.data.regionArr = this.$store.state.overseas_common.list1All;
       }
-      console.log('key',this._key)
       if (!this._state[this.taging][this._key]) this.getData();
     });
   },

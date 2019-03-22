@@ -10,24 +10,39 @@
         <!-- 系统 -->
         <section style="margin-left:20px">
           <span style="min-width:40px">系统</span>
-          <el-select v-model="os" size="medium" style="width: 100px; height:40px">
+          <el-select v-model="os"  style="width: 100px; height:40px">
             <el-option
               v-for="(item) in options"
-              :key="item.value"
+              :key="item.os"
               :label="item.label"
               :value="item.os"
             ></el-option>
           </el-select>
         </section>
+        <!-- 时区 -->
+        <section style="margin-left:20px">
+          <el-select v-model="timeZoneValue"  style="width: 100px; height:40px">
+            <el-option
+              v-for="(item) in timeZone"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </section>
         <!-- 游戏 -->
-        <section style="margin-left:60px">
-          <span style="min-width:40px">选择游戏</span>
+        <section style="margin-left:20px">
           <el-button size="medium" style="height:40px" @click="data.isShow=true">
             <span>已选择：</span>
             <span>{{_rcg}}</span>
           </el-button>
         </section>
         <el-button size="medium" class="search" @click="getData()" style="margin-left:20px">查询</el-button>
+        <div class="mail">
+          <el-button class="exportBtn" @click="exportChart(index)" style="margin-left:300px">
+              <i class="el-icon-download"></i>导出xls文件
+          </el-button>
+        </div>
       </div>
     </my-row>
     <!-- 游戏下拉框 -->
@@ -44,9 +59,6 @@
       <section class="thead">
         <strong>{{chartName[index].title}}</strong>
         <section>
-          <el-button class="exportBtn" @click="exportChart(index)">
-            <i class="el-icon-download"></i>导出xls文件
-          </el-button>
           <el-button class="visibleBtn" @click="visibleChart(index)">
             <i :class="chartName[index].hide?'el-icon-minus':'el-icon-plus'"></i>
           </el-button>
@@ -56,7 +68,7 @@
         </section>
       </section>
       <!-- 表体 -->
-      <div class="chart-area" ref="chart" :id="chartName[index].name" style="height: 400px"></div>
+      <div class="chart-area" ref="chart" :id="chartName[index].name" style="height: 300px"></div>
     </section>
     <!-- <tr></tr> -->
   </div>
@@ -78,6 +90,7 @@ export default {
       os: null,
       chart: null,
       $_chartIsReady: 0,
+      timeZoneValue:0,
       chartName: [{ name: 'activation', title: '实时激活数据(延迟1小时)',hide:true,isZoom:false},
       { name: 'registered', title: '实时注册数据(延迟1小时)' ,hide:true,isZoom:false},
       { name: 'wreck', title: '实时创角数据(延迟1小时)',hide:true ,isZoom:false},
@@ -93,6 +106,16 @@ export default {
         os: '1',
         label: '安卓'
       }],
+      timeZone:[{
+          value: 0,
+          label: '东七区'
+        }, {
+          value: 1,
+          label: '东八区'
+        }, {
+          value: 2,
+          label: '东九区'
+        }],
       data: {
         allTxt: "全部",
         isShow: false,
@@ -150,10 +173,11 @@ export default {
     // 导出表格
     exportChart(index){
       var timestamp = Date.now()
-
         var thead = this.$$getRealData.theadArr
         var tbody = this.$$getRealData.tbodyArr
         var table = document.createElement('table')
+        console.log('tag',thead)
+        console.log('tag',tbody)
         table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
         Utils.tableToExcel(
           table,
@@ -178,7 +202,7 @@ export default {
         $(`#${this.chartName[index].name}`).animate({height:"0px"})
         
       }else{
-        $(`#${this.chartName[index].name}`).animate({height:"400px"})
+        $(`#${this.chartName[index].name}`).animate({height:"300px"})
       }
     },
     // 获取数据
@@ -244,7 +268,11 @@ export default {
             text: ''
           },
           xAxis: {
-            categories: this.$$getRealData.xList
+            categories: this.$$getRealData.xList,
+            crosshair: {
+                          width: 1,
+                          color: '#747474'
+                        }
           },
           yAxis: {
             title: {
@@ -252,16 +280,13 @@ export default {
             },
             labels: {
               format: '{value:.0f}'//设置y轴显示格式
-            }
+            },
+            crosshair: {
+                          width: 1,
+                          color: '#747474'
+                        }
           },
           tooltip: {
-            crosshairs: [{
-                          width: 1,
-                          color: '#747474'
-                        }, {
-                          width: 1,
-                          color: '#747474'
-                        }],
             shared: true,
           },
           plotOptions: {
@@ -322,6 +347,12 @@ export default {
   display: flex;
   justify-content: start;
   // border: 1px solid;
+  .mail{
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 1;
+    margin: 0px 10px 0 0;
+  }
 }
 
 // 激活表
@@ -350,7 +381,6 @@ export default {
       padding-left: 15px;
     }
     section {
-      .exportBtn,
       .zoomBtn,
       .visibleBtn {
         height: 30px;

@@ -225,6 +225,11 @@ if (IS_DEV) {
       component: resolve =>
         require(['src/views/modules/subChannel/reports'], resolve)
     },
+    1004:{
+      name: "reconciliation",
+      component: resolve =>
+        require(['src/views/modules/reports/reconciliation'], resolve)
+    },
     1101: {
       name: "complement",
       component: resolve =>
@@ -235,9 +240,22 @@ if (IS_DEV) {
       component: resolve =>
         require(['src/views/modules/data/pkg_manager'], resolve)
     },
+    1105:{
+      name:'divided_into',
+      component:resolve => 
+        require(['src/views/modules/data/divided_into'],resolve)
+    },
     1201: {
-      name: "pkg_manager",
-      component: resolve => require(['src/views/modules/subChannel/reports'], resolve)
+      name: "overall_status",
+      component: resolve => require(['src/views/modules/roi/overall_status'], resolve)
+    },
+    1202:{
+      name: "service_status",
+      component: resolve => require(['src/views/modules/roi/service_status'], resolve)
+    },
+    1203:{
+      name:"channel_status",
+      component: resolve => require(['src/views/modules/roi/channel_status'], resolve)
     },
     1204: {
       name: "budget-complement",

@@ -21,7 +21,7 @@ import {
   Checkbox,
   Row,
   Main,
-  autocomplete
+  autocomplete,
 } from 'element-ui'
 Vue.use(Row)
 Vue.use(Checkbox)

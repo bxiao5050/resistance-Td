@@ -2,8 +2,15 @@ export const OverseasReleaseSysId = 4;
 
 export const deliveryMenuId = 1001;
 export const realTimeMenuId = 1002;
+export const reconciliationId = 1004;
 export const PackageManagerId = 1102;
 export const ComplementMenuId = 1101;
+export const dividedIntoId = 1105;
+export const overallId = 1201;
+export const serviceId = 1202;
+export const channelStatus = 1203;
+
+
 
 
 var config = {}

@@ -134,8 +134,6 @@ export default {
                 theadArr  = '<tr>'.concat(theadArr,'</tr>')
                 lineData.push(activation,registered,wreck,registrationRate,angerRate)
             }
-
-            // console.log('11111111111',{'dateArr':dateArr,'xList':xList,'everyArr':everyArr,'lineData':lineData,'theadArr':theadArr,'tbodyArr':tbodyArr})
             return {'dateArr':dateArr,'xList':xList,'everyArr':everyArr,'lineData':lineData,'theadArr':theadArr,'tbodyArr':tbodyArr}
 
         }

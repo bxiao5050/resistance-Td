@@ -927,7 +927,7 @@ export default {
             lineData[index].unshift({name:'total',data:totalArr[index],visible:true})
         }
       }
-      console.log('22222222', {'leftlistArr':leftlistArr,
+      console.log('getLengendData---->', {'leftlistArr':leftlistArr,
       'rightListArr':rightListArr,
       'lineData':lineData,
       'lineSelect':lineSelect,
@@ -1875,7 +1875,6 @@ export default {
         http.post(url, params).then(data => {
           if (data.code == 401 ) {
             commit("set_" + tag, [params.in_area_app_ids, data.state]);
-            console.log('tag',data)
             resolve(data.state)
           } else {
             this.$notify.warning({

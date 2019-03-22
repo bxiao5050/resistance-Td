@@ -164,6 +164,7 @@ export default {
   mounted(){
     this.$store.state.o_r_delivery.tableIsVisible = true;
     this.value = 'table'
+    console.log('1111111111111111', this.$store.getters['o_r_delivery/getAllChannel'])
   },
   watch: {
     channels(channels) {
@@ -205,7 +206,6 @@ export default {
   computed: {
     $$getChannelInfo(){
       var getChannelInfo = this.$store.getters["o_r_delivery/getChannelInfo"];
-      console.log('getChannelInfo____________',getChannelInfo)
       return getChannelInfo
 
     },
@@ -217,7 +217,6 @@ export default {
     // 图例
     $$legend() {
       var allData = this.$store.getters["o_r_delivery/getLengendData"];
-      console.log('lengend', allData)
       if (allData && allData.leftlistArr) {
         this.leftlistArr = allData.leftlistArr
         this.rightListArr = allData.rightListArr
@@ -283,7 +282,6 @@ export default {
     },
     // 渠道改变，国家恢复默认
     channelValue(newValue, oldValue) {
-      console.log('\\\\', newValue)
       this.areaValue = ""
     }
   },
@@ -465,7 +463,6 @@ export default {
       });
       this.$data.$_chartIsReady = Math.random()
       this.chart = chart;
-      console.log('test', this.$data.$_chartIsReady)
     },
     slide(width) {
       if (this.width == 0) {
@@ -534,7 +531,6 @@ export default {
         var series = this.chart.series[index];
         if (this.leftlistArr[index].name == item.value) {
           if (this.leftlistArr[index].visible) {
-            console.log('添加1111')
             if ((!this.leftlistArr[0].visible && index != 0)) {
               Utils.Notification.warning({
                 message: '选择了总计，无法选中其他'
@@ -559,13 +555,11 @@ export default {
             } else {
               series.show();
             }
-            console.log('删除1111', index)
             this.leftlistArr[index].visible = !this.leftlistArr[index].visible
             this.rightListArr[index].visible = !this.rightListArr[index].visible
           }
         }
       }
-      console.log(item);
     },
     filterData() {
       if (this.$store.state.o_r_delivery.tableIsVisible) {

@@ -4,7 +4,6 @@ import store from 'src/store'
 import router from 'src/router'
 const getSystemGames = () => {
   api.user.getSystemGames({}).done(data => {
-    console.log('data',data)
     if (data.code == 401) {
       if (data.state.length == 0) {
         Utils.Notification.error({

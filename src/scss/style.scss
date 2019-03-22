@@ -42,7 +42,11 @@
 .cell {
   text-align: center;
 }
-
+.testcss{
+  .cell{
+    text-align: left
+  }
+}
 .hide {
   display: none;
 }
