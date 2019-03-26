@@ -37,6 +37,7 @@
     <div class="table-item money">
       <el-table
         border
+        id="money"
         align="left"
         :header-cell-style="{background:'#f2f2f2'}"
         :data="$store.getters['o_r_service_status/getService'].data"
@@ -139,55 +140,8 @@ export default {
     },
     // 导出
     exportData() {
-      var thead = document.querySelector('.money thead').innerHTML
-      var tbody = document.querySelector('.money tbody').innerHTML + `
-        <tr class="el-table__row">
-            <td rowspan="1" colspan="1" class="el-table_22_column_222 style = color: red;">
-                <div class="cell">743.32</div>
-            </td>
-            <td rowspan="1" colspan="1" class="el-table_22_column_223  ">
-                <div class="cell">617.33</div>
-            </td>
-            <td rowspan="1" colspan="1" class="el-table_22_column_224  ">
-                <div class="cell">10060155.07</div>
-            </td>
-            <td rowspan="1" colspan="1" class="el-table_22_column_225  ">
-                <div class="cell">311613.54</div>
-            </td>
-            <td rowspan="1" colspan="1" class="el-table_22_column_226  ">
-                <div class="cell">1485.07%</div>
-            </td>
-            <td rowspan="1" colspan="1" class="el-table_22_column_227  ">
-                <div class="cell">4316057.79</div>
-            </td>
-        </tr>
-        <tr class="el-table__row">
-            <td rowspan="1" colspan="1" class="el-table_22_column_222  ">
-                <div class="cell">743.32</div>
-            </td>
-            <td rowspan="1" colspan="1" class="el-table_22_column_223  ">
-                <div class="cell">617.33</div>
-            </td>
-            <td rowspan="1" colspan="1" class="el-table_22_column_224  ">
-                <div class="cell">10060155.07</div>
-            </td>
-            <td rowspan="1" colspan="1" class="el-table_22_column_225  ">
-                <div class="cell">311613.54</div>
-            </td>
-            <td rowspan="1" colspan="1" class="el-table_22_column_226  ">
-                <div class="cell">1485.07%</div>
-            </td>
-            <td rowspan="1" colspan="1" class="el-table_22_column_227  ">
-                <div class="cell">4316057.79</div>
-            </td>
-        </tr>`
-      var table = document.createElement('table')
-      table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
-      Utils.tableToExcel(
-        table,
-        false,
-        Date.now() + '.xls'
-      )
+      console.log(Utils)
+      Utils.tableExport('#money')
       var thead = document.querySelector('.testcss thead').innerHTML
       var tbody = document.querySelector('.testcss tbody').innerHTML
       var table = document.createElement('table')

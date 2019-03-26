@@ -69,6 +69,12 @@ export default {
         channels: []
       },
     },
+    // 
+    viewIndex:null,
+    systemIndex:null,
+    channelIndex:null,
+    areaIndex:null,
+
   },
   mutations: {
     setTaging(state, data) {
@@ -91,6 +97,18 @@ export default {
     },
     setGameArr(state, data) {
       state.gameArr = data
+    },
+    setViewIndex(state,data){
+      state.viewIndex = data
+    },
+    setSystemIndex(state,data){
+      state.systemIndex = data
+    },
+    setChannelIndex(state,data){
+      state.channelIndex = data
+    },
+    setAreaIndex(state,data){
+      state.areaIndex = data
     },
     set_comprehensive(state, [key, data]) {
       var _ = getObjectByTimestamp()
@@ -146,7 +164,7 @@ export default {
     },
     set_zones(state, data) {
       state.configs.zone.zones = data
-    }
+    },
   },
   getters: {
     tellTagStatus(state, getters, state_, getters_) {
@@ -303,7 +321,6 @@ export default {
         if (!config.keys) {
           config.keys = Object.keys(arr[0]).map(item => item);
           config.keys.push('LTV');
-          console.log(config.keys)
         }
         if (!config.index) {
           config.index = {
@@ -850,7 +867,7 @@ export default {
       var channelArr = [];//渠道数据
       var totalArr = [];//每日总计数据
       var restaurants = [];//搜索框数据
-      if (state['legend'][getters.getIdStr]) {
+      if (state['legend'][getters.getIdStr] && state['legend'][getters.getIdStr][0].length) {
         arr = state['legend'][getters.getIdStr][0];
         // 获取横坐标
         arr.filter(function(item, index){

@@ -77,10 +77,10 @@
         <el-button @click="dataQuery()" size="medium" style="margin-left:15px;">
           再次查询
         </el-button>
-        <i>-</i>
-        <el-button @click="recalculate()" size="medium" disabled>
+        <!-- <i>-</i> -->
+        <!-- <el-button @click="recalculate()" size="medium" disabled>
           数据重算
-        </el-button>
+        </el-button> -->
       </span>
       <span v-else>
         <span class="txtsp">
@@ -117,7 +117,7 @@
     </my-row>
     <my-row style="margin-top:20px;">
       <div v-if="curChannel && $$data && $$data.list.regions.length && !loading" @click="tableClick">
-        <el-table :data="$$data.list.regions" :row-class-name="rowClassName" @cell-dblclick="cell_dbClick" @cell-click="cell_click" ref="table">
+        <el-table height="400" :data="$$data.list.regions" :row-class-name="rowClassName" @cell-dblclick="cell_dbClick" @cell-click="cell_click" ref="table">
           <el-table-column class-name="complement-data-type" prop="region" :label="$$data.keys[$$data.index.regionIndex]" width="110" :formatter="regionFormatter"></el-table-column>
           <el-table-column class-name="complement-data-type" label="数据类型" width="78" :formatter="myFormatter"></el-table-column>
           <el-table-column class-name="complement-data-type editable" v-for="(v, i) in [...Array(_date[2])]" :key="i" :label="i+1+''" width="40" :formatter="myFormatter_"></el-table-column>
@@ -589,21 +589,21 @@ export default {
     windowClick() {
       this.pending.length && this.pendingClear();
     },
-    windowScroll(e) {
-      if (this.$refs.table) {
+    // windowScroll(e) {
+    //   if (this.$refs.table) {
 
-        var table = this.$refs.table
-        var scroll = this.$root.$children[0].$refs.scroll
-        var header = table.$refs.headerWrapper.classList;
+    //     var table = this.$refs.table
+    //     var scroll = this.$root.$children[0].$refs.scroll
+    //     var header = table.$refs.headerWrapper.classList;
 
-        if (scroll.scrollTop >= table.$el.offsetTop) {
-          !header.contains("complement-fixed") && header.add("complement-fixed");
-        } else {
-          header.contains("complement-fixed") && header.remove("complement-fixed");
-        }
-      }
+    //     if (scroll.scrollTop >= table.$el.offsetTop) {
+    //       !header.contains("complement-fixed") && header.add("complement-fixed");
+    //     } else {
+    //       header.contains("complement-fixed") && header.remove("complement-fixed");
+    //     }
+    //   }
 
-    }
+    // }
   },
   created() {
     var store = this.$store;

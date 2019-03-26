@@ -28,6 +28,19 @@
       </section>
     </my-row>
     <zone-box v-show="$store.state.o_r_channel_status.visibleZone"></zone-box>
+     <!-- 日期 -->
+    <my-row>
+      <section class="timeBox">
+        <div class="title">选择时间:</div>
+        <section >
+          <el-date-picker v-model="date" type="date" placeholder="选择日期"></el-date-picker>
+        </section>
+        <el-button class="el-icon-refresh" @click="getData()" style="margin-left:15px">查询</el-button>
+        <el-button class="el-icon-download" @click="exportData()">导出</el-button>
+      </section>
+    </my-row>
+    <p style="color:red;text-indent: 120px;">1、假期期间的ROI数据可在假期后的第二个工作日正常查看 2、选择时间为北京时间（东八区）</p>
+    <!-- 表格 -->
   </div>
 </template>
 <script>
@@ -36,12 +49,19 @@ import zoneBox from './zoneBox.vue'
 export default {
   data() {
     return {
+      date: null,
       isSlide: true,
+      in_query_type:3,
       gameActiveIndex: 0,
     }
   },
   components: {
     zoneBox
+  },
+  watch: {
+    date(data) {
+      this.$store.commit("o_r_channel_status/setDate", moment(data).add(0, "day").format("YYYY-MM-DD"));
+    },
   },
   created() {
     this.dataInit()
@@ -50,8 +70,8 @@ export default {
       this.$store.dispatch("o_r_channel_status/getGame").then(data => {
         // 游戏列表获取成功,设置store里面的游戏id
         this.$store.dispatch("o_r_channel_status/getZone").then(data => {
-          // 区服列表获取成功
-        //   if (!this._state.overall) this.getData();
+          // 获取table数据
+          if (!this._state.channel) this.getData();
         })
 
       })
@@ -67,14 +87,9 @@ export default {
     $$zoneList() {
       return this.$store.getters["o_r_channel_status/getZoneList"];
     },
-    $$overall() {
-      //   var data = this.$store.getters["o_r_channel_status/getOverall"];
-      //   if (data.xList.length) {
-      //     this.$nextTick(() => {
-      //       this.createChart();
-      //     });
-      //   }
-      //   return data
+    $$channell() {
+        var data = this.$store.getters["o_r_channel_status/getChannel"];
+        return data
     }
   },
   methods: {
@@ -103,7 +118,6 @@ export default {
     // 切换游戏
     changeGame(index) {
       this.gameActiveIndex = index;
-      console.log(this.$$gameList[this.gameActiveIndex].app_id);
       this.$store.commit('o_r_channel_status/setGameActiveIndex', this.gameActiveIndex)
       this.$store.commit('o_r_channel_status/setAreaActiveIndex', 0)
       this.$store.commit('o_r_channel_status/setChannelActiveIndex', -1)
@@ -116,7 +130,17 @@ export default {
         this.getData();
       })
     },
-    // 导出
+    //查询数据
+    getData() {
+      var params = {
+        in_count_date:this._state.date,          //查询时间
+        in_app_id:this._state.gameID,            //游戏ID
+        in_gamezone_id:this._state.zoneID,       //区服ID
+        in_query_type:this.in_query_type,
+      }
+      this.$store.dispatch("o_r_channel_status/getReportInfo", { params, tag: 'channel' })
+    },
+    // 导出表格
     exportData() {
       var timestamp = Date.now()
       var thead = document.querySelector('.el-table__header thead').innerHTML
@@ -169,6 +193,21 @@ export default {
     min-width: 170px;
     color: white;
     background: #5b5691;
+  }
+}
+.timeBox {
+  height: 40px;
+  margin: 12px 0px;
+  margin-left: 20px;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-start;
+  .title {
+    height: 40px;
+    line-height: 40px;
+    min-width: 100px;
+    display: inline-block;
   }
 }
 </style>

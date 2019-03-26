@@ -2,6 +2,9 @@ import {
   Notification,
   MessageBox
 } from 'element-ui'
+import FileSaver from 'file-saver'
+
+import XLSX from 'xlsx'
 // import Services from 'src/services'
 // console.log(Services)
 module.exports = {
@@ -15,6 +18,18 @@ module.exports = {
       current = current.offsetParent;
     }
     return actualTop;
+  },
+
+  tableExport:function(id){//导出excel
+      let wb = XLSX.utils.table_to_book(document.querySelector(id));
+      let wbout = XLSX.write(wb, { bookType: 'xls', bookSST: true, type: 'array' });
+      try {
+          FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), Date.now()+'.xls')
+      } catch (e) { 
+          if (typeof console !== 'undefined') 
+          console.log(e, wbout) 
+      }
+      return wbout
   },
 
   tableToExcel: (function () {
@@ -41,5 +56,8 @@ module.exports = {
       dlink.download = filename;
       dlink.click();
     }
-  })()
+  })(),
+
+
+
 }

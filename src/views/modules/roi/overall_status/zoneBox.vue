@@ -34,7 +34,7 @@
                         v-for="(item,index) in  $$zoneList.zoneNameArr[this.areaActiveIndex]?$$zoneList.zoneNameArr[this.areaActiveIndex][this.channelActiveIndex]:[]"
                         :key="index"
                         @click="changeZone(index)"
-                    >{{item.name}}</el-button>
+                    >{{item.gamezone_name}}</el-button>
                 </div>
             </div>
         </section>
@@ -80,13 +80,14 @@ export default {
             this.$store.commit('o_r_overall/setChannelActiveIndex',this.channelActiveIndex)
             this.$store.commit('o_r_overall/setZoneActivityIndex',this.zoneActivityIndex)
             if (this.zoneActivityIndex>=0) {                
-                this.$store.commit('o_r_overall/setZoneID',this.$$zoneList.zoneNameArr[this.areaActiveIndex][this.channelActiveIndex][this.zoneActivityIndex].zoneId)
-                this.$store.commit('o_r_overall/setZoneName',this.$$zoneList.zoneNameArr[this.areaActiveIndex][this.channelActiveIndex][this.zoneActivityIndex].name)
+                this.$store.commit('o_r_overall/setZoneID',this.$$zoneList.zoneNameArr[this.areaActiveIndex][this.channelActiveIndex][this.zoneActivityIndex].gamezone_id)
+                this.$store.commit('o_r_overall/setZoneName',this.$$zoneList.zoneNameArr[this.areaActiveIndex][this.channelActiveIndex][this.zoneActivityIndex].gamezone_name)
             }else{
-                this.$store.commit('o_r_overall/setZoneID', ' ')
                 if (this.channelActiveIndex>=0) {
+                    this.$store.commit('o_r_overall/setZoneID', this.$$zoneList.zoneNameArr[this.areaActiveIndex][this.channelActiveIndex][0].agent_id)
                     this.$store.commit('o_r_overall/setZoneName',this.$$zoneList.channelArr[this.areaActiveIndex][this.channelActiveIndex])
                 }else{
+                    this.$store.commit('o_r_overall/setZoneID', this.$$zoneList.zoneNameArr[this.areaActiveIndex][0][0].region_id)
                     this.$store.commit('o_r_overall/setZoneName',this.$$zoneList.areaNameArr[this.areaActiveIndex])
                 }
             }

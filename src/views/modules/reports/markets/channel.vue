@@ -126,7 +126,7 @@
             ></el-option>
           </el-select>
         </div>
-        <el-button type="warning" plain @click="filterReset()">重置</el-button>
+        <el-button type="danger" plain @click="filterReset()">重置</el-button>
         <el-button type="success" plain @click="filterData()">应用</el-button>
 
       </section>
@@ -158,19 +158,6 @@
 import http from 'src/services/http';
 export default {
   props: ['data', '_config', '_types'],
-  components: {
-    // totalFloat
-  },
-  mounted(){
-    this.$store.state.o_r_delivery.tableIsVisible = true;
-    this.value = 'table'
-    console.log('1111111111111111', this.$store.getters['o_r_delivery/getAllChannel'])
-  },
-  watch: {
-    channels(channels) {
-      this.$store.commit("o_r_delivery/set_channels", channels);
-    }
-  },
   data: () => {
     return {
       $_order: "ascending",
@@ -184,11 +171,11 @@ export default {
       inputTxt: "",
       value: "table",
       width: -200,
-      viewValue: '1',
-      systemValue: '2',
-      lineValue: 0,
-      channelValue: '',
-      areaValue: '',
+      viewValue: '1',     //视图下标
+      systemValue: '2',   //系统下标
+      lineValue: 0,       //
+      channelValue: '',   //渠道下标
+      areaValue: '',      //地区下标
       chart: null,
       restaurants: [ ],
       rightListArr: [],
@@ -236,8 +223,15 @@ export default {
       return this.$store.getters["o_r_delivery/getIdStr"];
     }
   },
-
+  created(){
+    this.dataInit()
+    this.$store.state.o_r_delivery.tableIsVisible = true;
+    this.value = 'table'
+  },
   watch:{
+    channels(channels) {
+      this.$store.commit("o_r_delivery/set_channels", channels);
+    },
     //切换linevalue 恢复默认显示
     lineValue(newValue, oldValue) {
       for (let index = 0; index < this.$$legend.leftlistArr.length; index++) {
@@ -254,6 +248,7 @@ export default {
     },
     // 切换图利表格视图
     value(newValue, oldValue) {
+      this.slide(0)
       this.$store.state.o_r_delivery.tableIsVisible = !this.$store.state.o_r_delivery.tableIsVisible;
       if (this.$store.state.o_r_delivery.tableIsVisible ) {
         this.filterTitle[0] = { name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' },] }
@@ -283,10 +278,9 @@ export default {
     // 渠道改变，国家恢复默认
     channelValue(newValue, oldValue) {
       this.areaValue = ""
-    }
+    },
   },
   methods: {
-    
     getSummaries(param) {
       const { columns, data } = param;
       const sums = [];
@@ -431,12 +425,26 @@ export default {
           text: ''
         },
         xAxis: {
-          categories: this.$$legend.xList
+          categories:  this.$$legend.xList,
+          crosshair: {
+            width: 1,
+            color: '#747474'
+          }
         },
         yAxis: {
           title: {
             text: ''
+          },
+          labels: {
+            format: '{value:.0f}'//设置y轴显示格式
+          },
+          crosshair: {
+            width: 1,
+            color: '#747474'
           }
+        },
+        tooltip: {
+          shared: true,
         },
         plotOptions: {
           line: {
@@ -459,12 +467,18 @@ export default {
         credits: {
           enabled: false　　　　　　//去除highcharts的链接
         },
+        
         series:this.lineData[this.lineValue]
       });
       this.$data.$_chartIsReady = Math.random()
       this.chart = chart;
     },
     slide(width) {
+      if (width == 0) {
+        this.width = -200
+        this.isShow = !this.isShow
+        return 
+      }
       if (this.width == 0) {
         let timer = setInterval(() => {
           this.width -= 10;
@@ -565,6 +579,11 @@ export default {
       if (this.$store.state.o_r_delivery.tableIsVisible) {
         this.in_chart_type = 1
         console.log('修改表格数据', )
+         // 视图
+        this.$store.commit("o_r_delivery/setViewIndex", this.viewValue);
+        this.$store.commit("o_r_delivery/setSystemIndex", this.systemValue);
+        this.$store.commit("o_r_delivery/setChannelIndex", this.channelValue);
+        this.$store.commit("o_r_delivery/setAreaIndex", this.areaValue);
       } else {
         console.log('获取图例数据')
         this.in_chart_type = 2
@@ -589,6 +608,12 @@ export default {
       this.channelValue = '';
       this.areaValue = '';
       this.lineValue = 0;
+    },
+    dataInit(){
+      if (this._state.viewIndex) {this.viewValue = this._state.viewIndex}else{this.viewValue = '1'}
+      if (this._state.systemIndex) {this.systemValue = this._state.systemIndex}else{this.systemValue = '2'}
+      if (this._state.channelIndex) {this.channelValue = this._state.channelIndex}else{this.channelValue = ''}
+      if (this._state.areaIndex) {this.areaValue = this._state.areaIndex}else{this.areaValue = ''}
     }
   }
 }; 
@@ -693,7 +718,7 @@ export default {
         // justify-content: flex-start;
         // padding: 15px;
         .list_ {
-          width: 150px;
+          width: 180px;
           min-height: 45px;
           margin: 10px;
           background: #e7e1ea;

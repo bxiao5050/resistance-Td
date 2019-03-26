@@ -108,7 +108,7 @@ export default {
                             Object.keys(cha[num]).forEach((key, flag) => {
                                 if (flag == 5) {
                                     if (!zoneNameArr[index][msg].indexOf(cha[num][key])>=0) {
-                                        zoneNameArr[index][msg].push({name:cha[num][key],zoneId:cha[num].gamezone_id,region_name:cha[num].region_name,agent_name:cha[num].agent_name})
+                                        zoneNameArr[index][msg].push(cha[num])
                                     }
                                 }
                             })
@@ -216,6 +216,7 @@ export default {
                     }) => {
                         if (code === 401) {
                             commit('setZoneList', state)
+                            commit('setZoneID', state[0][0].region_id)
                             commit('setZoneName', state[0][0].region_name)
                             resolve()
                         }

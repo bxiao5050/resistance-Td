@@ -8,7 +8,7 @@ export const ComplementMenuId = 1101;
 export const dividedIntoId = 1105;
 export const overallId = 1201;
 export const serviceId = 1202;
-export const channelStatus = 1203;
+export const channelId = 1203;
 
 
 

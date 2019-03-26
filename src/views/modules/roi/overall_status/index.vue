@@ -129,7 +129,6 @@ export default {
   },
   watch: {
     date(data) {
-      console.log(data)
       var date = data.map(item => moment(item).format("YYYY-MM-DD"));
       this.$store.commit("o_r_overall/setDate", date);
     },

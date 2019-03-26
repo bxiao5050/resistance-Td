@@ -24,12 +24,7 @@
           <input v-model="proportion" type='number' class="number"  placeholder="请输入小数" />
         </section>
         <!-- 添加 -->
-        <el-button
-          size="medium"
-          class="search"
-          @click="addData()"
-          style="margin-left:20px"
-        >添加</el-button>
+        <el-button size="medium" class="search" @click="addData()" style="margin-left:20px">添加</el-button>
       </div>
     </my-row>
     <!-- 表格 -->

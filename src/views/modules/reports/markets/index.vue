@@ -2,17 +2,18 @@
   <div class="reports-market">
     <!-- 投放报表查询条件 -->
     <my-row class="selection-box">
-
       <div class="date-box-item">
-        <el-date-picker size="medium" 
-            :picker-options="pickerOptions1" 
-            ref="picker1" 
-            v-model="date" 
-            type="daterange" 
-            range-separator="至" 
-            start-placeholder="开始日期" 
-            end-placeholder="结束日期" top="100">
-        </el-date-picker>
+        <el-date-picker
+          size="medium"
+          :picker-options="pickerOptions1"
+          ref="picker1"
+          v-model="date"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          top="100"
+        ></el-date-picker>
       </div>
 
       <el-button size="medium" class="selection" @click="data.isShow=true">
@@ -32,9 +33,14 @@
         <el-select class="os" v-model="taging_" size="medium" style="width: 150px; margin-right: 20px;">
           <el-option v-for="item in tags_" :key="item.tag" :label="item.label" :value="item.tag"></el-option>
         </el-select>
-      </div> -->
+      </div>-->
 
-      <el-button size="medium" class="search" @click="getData(taging_,false)" style="margin-left:20px" >查询</el-button>
+      <el-button
+        size="medium"
+        class="search"
+        @click="getData(taging_,false)"
+        style="margin-left:20px"
+      >查询</el-button>
 
       <div class="mail">
         <el-button v-show="!isSingle" size="medium" @click="tagClick(true)">系统对比</el-button>
@@ -42,11 +48,15 @@
         <el-button size="medium" @click="excel()">导出表格</el-button>
 
         <div style="position:relative;">
-          <el-date-picker ref="picker" v-model="value2" align="right" type="date" style="position:absolute;z-index:-1;width:200px;left:24px;visibility:hidden;" @change="pickerChange"></el-date-picker>
-          <el-button size="medium" style="margin: 0 15px" @click="createMail()">
-            邮件生成
-          </el-button>
-
+          <el-date-picker
+            ref="picker"
+            v-model="value2"
+            align="right"
+            type="date"
+            style="position:absolute;z-index:-1;width:200px;left:24px;visibility:hidden;"
+            @change="pickerChange"
+          ></el-date-picker>
+          <el-button size="medium" style="margin: 0 15px" @click="createMail()">邮件生成</el-button>
         </div>
         <el-button size="medium" @click="checkMail()">邮件查看</el-button>
       </div>
@@ -62,7 +72,13 @@
 
     <my-row>
       <el-tabs v-model="taging" @tab-click="tagClick(false)">
-        <el-tab-pane v-if="(isSingle && _tagState[tag])"  v-for="({ label }, tag) in tags" :key="tag" :label="label" :name="tag"></el-tab-pane>
+        <el-tab-pane
+          v-if="(isSingle && _tagState[tag])"
+          v-for="({ label }, tag) in tags"
+          :key="tag"
+          :label="label"
+          :name="tag"
+        ></el-tab-pane>
         <!-- 动态组件 -->
         <component :is="main" :data="data" :_config="_config" :_types="$data.types"></component>
       </el-tabs>
@@ -103,11 +119,11 @@ export default {
   },
   data() {
     return {
-      isSingle:true,
+      isSingle: true,
       mailDate: null,
-      in_rpt_type:1,
-      in_view_type:0,
-      in_chart_type:1,
+      in_rpt_type: 1,
+      in_view_type: 0,
+      in_chart_type: 1,
       pickerOptions1: {
         onPick({ minDate, maxDate }) {
           if (!maxDate) {
@@ -292,7 +308,7 @@ export default {
         console.log()
         if (Boolean(game)) {
           this.$data.taging_ = arr[1].tag;
-        }else{
+        } else {
           this.$data.taging_ = arr[0].tag;
         }
       }
@@ -321,7 +337,6 @@ export default {
           this.tags[this.types[in_rpt_type]].label
         ];
       }
-      console.log("_rcg_", arr, this.main);
       return arr;
     },
     _state() {
@@ -344,7 +359,7 @@ export default {
     }
   },
   methods: {
-    getFilterList(){
+    getFilterList() {
       var params = {
         in_begin_date: this._state.date[0],          //开始日期
         in_end_date: this._state.date[1],             //结束日期
@@ -503,7 +518,6 @@ export default {
     },
     tagClick(flag) {
       console.log(this.taging)
-
       this.$store.commit("o_r_delivery/set_is2", false);
       var isQuery;
       // 对比查询参数是否一致
@@ -521,10 +535,10 @@ export default {
         isQuery = true;
       }
       if (flag) {
-        isQuery && this.getData('system',this.taging);
-      }else{
+        isQuery && this.getData('system', this.taging);
+      } else {
         this.main = this.taging
-        isQuery && this.getData(false,this.taging);
+        isQuery && this.getData(false, this.taging);
       }
     },
     setRcg([region, regionArr, game, gameArr]) {
@@ -561,49 +575,61 @@ export default {
       if (this._state.game) this.data.game = this._state.game;
       if (this._state.gameArr) this.data.gameArr = this._state.gameArr;
     },
-    getData(taging_,isType) {
+    getData(taging_, isType) {
       // 修改动态组件
       if (taging_) this.taging = taging_;
       this.main = this.taging;
+      console.log(this.main)
       // 第一步:判断按下的是否是查询按钮
       if (isType) {
         console.log('tag', '按下的不是查询按钮')
-        this.in_chart_type = 0;
-        this.in_view_tye = 0;
-        if (this.taging == "comprehensive") {
-          this.in_rpt_type = 2;
-        }else if(this.taging == "daily"){
-          this.in_rpt_type = 3;
-        }else if(this.taging == "system"){
-          this.in_rpt_type = 5;
+        if ((this.taging == "daily" || "comprehensive") && this.data.game) {
+        // 第二步:判断是否选择游戏
+          this.main = 'channel'
+          console.log('tag', '查询单个全部')
+          this.isSingle = false;
+          this.in_rpt_type = 4
+          this.in_view_type = 1
+          console
+          // this.in_chart_type = 1
+        } else {
           this.in_chart_type = 0;
           this.in_view_tye = 0;
+          if (this.taging == "comprehensive") {
+            this.in_rpt_type = 2;
+          } else if (this.taging == "daily") {
+            this.in_rpt_type = 3;
+          } else if (this.taging == "system") {
+            this.in_rpt_type = 5;
+            this.in_chart_type = 0;
+            this.in_view_tye = 0;
+          }
         }
-      }else{
+      } else {
         //如果是查询按钮,判断是当前查询组件
         console.log('tag', '按下的是查询按钮')
         if (!this.data.game) {
-          this.isSingle = true;     
+          this.isSingle = true;
           console.log('tag', '查询全部')
           this.in_rpt_type = 2;
           this.in_view_type = 0;
-        }else{
+        } else {
           console.log('tag', '查询单个全部')
-          if(this.data.game){
-            this.isSingle = false;     
+          if (this.data.game) {
+            this.isSingle = false;
             this.in_rpt_type = 4
             this.in_view_type = 1
             // this.in_chart_type = 1
             if (this.$store.state.o_r_delivery.tableIsVisible) {
-                console.log('tag', '查询channel table数据')
-                this.in_chart_type = 1
-              }else{
-                console.log('tag', '查询channel legend数据')
-                this.in_chart_type = 2
-                
-              }
+              console.log('tag', '查询channel table数据')
+              this.in_chart_type = 1
+            } else {
+              console.log('tag', '查询channel legend数据')
+              this.in_chart_type = 2
+
+            }
           }
-        } 
+        }
       }
       this.$store.commit("o_r_delivery/setTaging", this.taging);
       this.$store.commit("o_r_delivery/setRegion", this.data.region);
@@ -611,20 +637,20 @@ export default {
       this.$store.commit("o_r_delivery/setGame", this.data.game);
       this.$store.commit("o_r_delivery/setGameArr", this.data.gameArr);
       var params = {
-        in_begin_date:  this._state.date[0],          //开始日期
+        in_begin_date: this._state.date[0],          //开始日期
         in_end_date: this._state.date[1],             //结束日期
         in_os: this._state.os,                        //系统                  
-        in_area_app_ids:this._key,                    //游戏层级 
-        in_media_source:"",                           //渠道
-        in_rpt_type:this.in_rpt_type,                 //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
+        in_area_app_ids: this._key,                    //游戏层级 
+        in_media_source: "",                           //渠道
+        in_rpt_type: this.in_rpt_type,                 //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
         in_country: '',                               //国家
-        in_chart_type:this.in_chart_type,             //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
-        in_view_type:this.in_view_type,               //视图类型：1 渠道 2 时间 3 地区
+        in_chart_type: this.in_chart_type,             //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
+        in_view_type: this.in_view_type,               //视图类型：1 渠道 2 时间 3 地区
       };
       this._state.lastQueryParam[this.taging] = params;
-      this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? this.taging :'legend' }).then(
-        ()=>{
-          if (this.taging == 'channel' &&　this.$store.state.o_r_delivery.tableIsVisible) {
+      this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? this.taging : 'legend' }).then(
+        () => {
+          if (this.taging == 'channel' && 　this.$store.state.o_r_delivery.tableIsVisible) {
             this.getFilterList()
           }
         }
@@ -637,7 +663,7 @@ export default {
       switch (keyCode) {
         case 13:
           if (!this.data.isShow) {
-            this.getData(this.taging_,false);
+            this.getData(this.taging_, false);
           }
           break;
       }
@@ -656,7 +682,7 @@ export default {
   mounted() {
     // 如果加载渠道报表则隐藏报表tab选项
     if (this.data.game) {
-      this.isSingle = false;     
+      this.isSingle = false;
     }
     this.$refs.picker.mountPicker();
     this.$refs.picker1.mountPicker();
@@ -697,7 +723,7 @@ export default {
     justify-content: flex-end;
     flex-grow: 1;
     margin: 0px 10px 0 0;
-    button:nth-child(1){
+    button:nth-child(1) {
       margin-left: 50px;
     }
   }

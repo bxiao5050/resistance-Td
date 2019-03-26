@@ -24,7 +24,7 @@ export default {
         channelActiveIndex:-2,
         zoneActivityIndex:-2,
         visibleZone:false,
-        overall:null,           //数据体
+        channel:null,           //数据体
     },
     mutations: {
         setDate(state, data) {
@@ -60,7 +60,7 @@ export default {
         setZoneList(state,data){
             state.zoneList = data
         },
-        set_overall(state,data){
+        set_channel(state,data){
             state.overall = data
         }
        
@@ -108,7 +108,7 @@ export default {
                             Object.keys(cha[num]).forEach((key, flag) => {
                                 if (flag == 5) {
                                     if (!zoneNameArr[index][msg].indexOf(cha[num][key])>=0) {
-                                        zoneNameArr[index][msg].push({name:cha[num][key],zoneId:cha[num].gamezone_id,region_name:cha[num].region_name,agent_name:cha[num].agent_name})
+                                        zoneNameArr[index][msg].push(cha[num])
                                     }
                                 }
                             })
@@ -120,39 +120,14 @@ export default {
             console.log('overallData---->>>', {zoneNameArr:zoneNameArr,channelArr:channelArr,areaNameArr:areaNameArr})
             return {arr:arr,zoneNameArr:zoneNameArr,channelArr:channelArr,areaNameArr:areaNameArr}
         },
-        getOverall(state,getters){
+        getChannel(state,getters){
             var allData = [];
-            var xList = [];         //横坐标
-            var lineData = [];      //折线图数据
             if (state.overall && state.overall[0]) { 
                 allData =state.overall[0]
-                Object.keys(allData[0]).forEach((key, msg) => {
-                    if (msg>0) {
-                        lineData.push({name:key,data:[]})
-                    }
-                })
-                for (let index = 0; index < allData.length; index++) {
-                    Object.keys(allData[index]).forEach((key, msg) => {
-                        if (msg==0) {
-                            xList.push(allData[index][key])
-                        }else{
-                            if (msg == 5) {
-                                allData[index][key]=(+allData[index][key]*100).format(2)+'%'
-                                lineData[msg-1].data.push(allData[index][key])
-                            }else if(msg == 6){
-                                allData[index][key]=+allData[index][key].format(2)
-                                lineData[msg-1].data.push(allData[index][key])
-                            }else{
-                                lineData[msg-1].data.push(+allData[index][key])
-                            }
-                        }
-                    })
-                }
 
             }
-            lineData.splice(4,1)
-            console.log('overall--->>>>', {allData:allData,xList:xList,lineData:lineData})
-            return {title:'图表数据',allData:allData,xList:xList,lineData:lineData}
+            console.log('overall--->>>>',allData)
+            return allData
         }
     },
     actions: {
@@ -216,6 +191,7 @@ export default {
                     }) => {
                         if (code === 401) {
                             commit('setZoneList', state)
+                            commit('setZoneID', state[0][0].region_id)
                             commit('setZoneName', state[0][0].region_name)
                             resolve()
                         }
@@ -237,7 +213,7 @@ export default {
                 rootGetters,
                 rootState,
             } = context
-            var url = '/query/' + rootGetters.getMenu[Config.overallId].dataView[0]
+            var url = '/query/' + rootGetters.getMenu[Config.channelId].dataView[0]
             console.log("Params:->", params)
 
             var promise1 = new Promise((resolve) => {

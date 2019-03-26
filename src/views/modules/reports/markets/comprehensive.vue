@@ -1,9 +1,15 @@
 <template>
   <div v-if="$$data">
-    <!-- <div class="chart-area" ref="chart"></div> -->
+    <!-- <div class="chart-area" ref="chart"></div>
+        :render-header="renderHeader.bind(this, region)" 
+     -->
     <div class="table-item" v-for="(region, i) in $$data.category" :key="i">
       <el-table :default-sort="{prop: _config.keys[_config.index.activeIndex], order: $data.$_order}" :data="$$data[region]" :cell-style="addStyle">
-        <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key" :label="item.key" :sortable="item.sortable" :width="item.width" :formatter="formatter" :render-header="renderHeader.bind(this, region)" v-if="!item.hide"></el-table-column>
+        <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key" :label="item.key" :sortable="item.sortable" :width="item.width" 
+        :formatter="formatter" 
+        v-if="!item.hide">
+        <template slot="header" ><span :class="[i==0?'region':'']">{{i==0?region:item.key}}</span></template>
+        </el-table-column>
         <div slot="append">
           <table cellspacing="0" cellpadding="0" border="0" class="el-table__body" :style="{width:getTotalWidth()}">
             <colgroup>
@@ -54,6 +60,8 @@ export default {
     },
     renderHeader(region, h, { column, $index }) {
       if (!$index) {
+        
+        console.log('----------->>>>>>111111111',$index, region)
         return h(
           'div',
           {

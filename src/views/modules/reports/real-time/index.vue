@@ -10,7 +10,7 @@
         <!-- 系统 -->
         <section style="margin-left:20px">
           <span style="min-width:40px">系统</span>
-          <el-select v-model="os"  style="width: 100px; height:40px">
+          <el-select v-model="os" style="width: 100px; height:40px">
             <el-option
               v-for="(item) in options"
               :key="item.os"
@@ -21,7 +21,7 @@
         </section>
         <!-- 时区 -->
         <section style="margin-left:20px">
-          <el-select v-model="timeZoneValue"  style="width: 100px; height:40px">
+          <el-select v-model="timeZoneValue" style="width: 100px; height:40px">
             <el-option
               v-for="(item) in timeZone"
               :key="item.value"
@@ -40,7 +40,7 @@
         <el-button size="medium" class="search" @click="getData()" style="margin-left:20px">查询</el-button>
         <div class="mail">
           <el-button class="exportBtn" @click="exportChart(index)" style="margin-left:300px">
-              <i class="el-icon-download"></i>导出xls文件
+            <i class="el-icon-download"></i>导出xls文件
           </el-button>
         </div>
       </div>
@@ -79,6 +79,7 @@ import tsdp from "src/component/widget/real-time-select-box/index.vue";
 import http from "src/services/http";
 import { debug } from 'util';
 import $ from 'jquery';
+import { setTimeout, setInterval } from 'timers';
 
 export default {
   components: {
@@ -90,12 +91,12 @@ export default {
       os: null,
       chart: null,
       $_chartIsReady: 0,
-      timeZoneValue:0,
-      chartName: [{ name: 'activation', title: '实时激活数据(延迟1小时)',hide:true,isZoom:false},
-      { name: 'registered', title: '实时注册数据(延迟1小时)' ,hide:true,isZoom:false},
-      { name: 'wreck', title: '实时创角数据(延迟1小时)',hide:true ,isZoom:false},
-      { name: 'registrationRate', title: '实时注册率数据(延迟1小时)',hide:true ,isZoom:false},
-      { name: 'angerRate', title: '实时创角率数据(延迟1小时)',hide:true ,isZoom:false},],
+      timeZoneValue: 0,
+      chartName: [{ name: 'activation', title: '实时激活数据(延迟1小时)', hide: true, isZoom: false },
+      { name: 'registered', title: '实时注册数据(延迟1小时)', hide: true, isZoom: false },
+      { name: 'wreck', title: '实时创角数据(延迟1小时)', hide: true, isZoom: false },
+      { name: 'registrationRate', title: '实时注册率数据(延迟1小时)', hide: true, isZoom: false },
+      { name: 'angerRate', title: '实时创角率数据(延迟1小时)', hide: true, isZoom: false },],
       options: [{
         os: '0,1',
         label: '全部'
@@ -106,16 +107,16 @@ export default {
         os: '1',
         label: '安卓'
       }],
-      timeZone:[{
-          value: 0,
-          label: '东七区'
-        }, {
-          value: 1,
-          label: '东八区'
-        }, {
-          value: 2,
-          label: '东九区'
-        }],
+      timeZone: [{
+        value: 0,
+        label: '东七区'
+      }, {
+        value: 1,
+        label: '东八区'
+      }, {
+        value: 2,
+        label: '东九区'
+      }],
       data: {
         allTxt: "全部",
         isShow: false,
@@ -171,38 +172,38 @@ export default {
   },
   methods: {
     // 导出表格
-    exportChart(index){
+    exportChart(index) {
       var timestamp = Date.now()
-        var thead = this.$$getRealData.theadArr
-        var tbody = this.$$getRealData.tbodyArr
-        var table = document.createElement('table')
-        console.log('tag',thead)
-        console.log('tag',tbody)
-        table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
-        Utils.tableToExcel(
-          table,
-          false,
-          timestamp + '.xls'
-        )
+      var thead = this.$$getRealData.theadArr
+      var tbody = this.$$getRealData.tbodyArr
+      var table = document.createElement('table')
+      console.log('tag', thead)
+      console.log('tag', tbody)
+      table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
+      Utils.tableToExcel(
+        table,
+        false,
+        timestamp + '.xls'
+      )
     },
     //缩放图表
-    zoomChart(index){
+    zoomChart(index) {
       this.chartName[index].isZoom = !this.chartName[index].isZoom
     },
     //收缩图表
-    visibleChart(index){
+    visibleChart(index) {
       if (this.chartName[index].isZoom) {
         Utils.Notification.warning({
-            message: '当前图表为放大状态,无法收缩'
-          })
+          message: '当前图表为放大状态,无法收缩'
+        })
         return
       }
-      this.chartName[index].hide = !this.chartName[index].hide; 
+      this.chartName[index].hide = !this.chartName[index].hide;
       if (parseInt($(`#${this.chartName[index].name}`).css('height'))) {
-        $(`#${this.chartName[index].name}`).animate({height:"0px"})
-        
-      }else{
-        $(`#${this.chartName[index].name}`).animate({height:"300px"})
+        $(`#${this.chartName[index].name}`).animate({ height: "0px" })
+
+      } else {
+        $(`#${this.chartName[index].name}`).animate({ height: "300px" })
       }
     },
     // 获取数据
@@ -270,9 +271,9 @@ export default {
           xAxis: {
             categories: this.$$getRealData.xList,
             crosshair: {
-                          width: 1,
-                          color: '#747474'
-                        }
+              width: 1,
+              color: '#747474'
+            }
           },
           yAxis: {
             title: {
@@ -282,9 +283,9 @@ export default {
               format: '{value:.0f}'//设置y轴显示格式
             },
             crosshair: {
-                          width: 1,
-                          color: '#747474'
-                        }
+              width: 1,
+              color: '#747474'
+            }
           },
           tooltip: {
             shared: true,
@@ -321,7 +322,7 @@ export default {
             }
           }
 
-        }); 
+        });
         this.$data.$_chartIsReady = Math.random()
       }
     },
@@ -334,7 +335,14 @@ export default {
         this.data.regionArr = this.$store.state.overseas_common_realTime.list1All;
       }
       // 菜单获取成功,更新数据
-      if (!this._state['real'][this._key]) this.getData();
+      if (!this._state['real'][this._key]) {
+        console.log(new Date())
+        this.getData();
+        setInterval(() => {
+          this.getData();
+          console.log(new Date())
+        }, 1000*60*60);
+      }
     });
   },
 
@@ -347,7 +355,7 @@ export default {
   display: flex;
   justify-content: start;
   // border: 1px solid;
-  .mail{
+  .mail {
     display: flex;
     justify-content: flex-end;
     flex-grow: 1;
@@ -356,7 +364,7 @@ export default {
 }
 
 // 激活表
-.chart{
+.chart {
   margin: 20px 10px;
   border: 15px solid #e7e1ea;
   .thead {
@@ -395,7 +403,7 @@ export default {
   }
 }
 // 缩放样式
-.zoomClass{
+.zoomClass {
   width: 100%;
   height: 100%;
   margin: 0px 0px;
