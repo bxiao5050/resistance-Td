@@ -107,16 +107,32 @@ export default {
         os: '1',
         label: '安卓'
       }],
-      timeZone: [{
-        value: 0,
-        label: '东七区'
-      }, {
-        value: 1,
-        label: '东八区'
-      }, {
-        value: 2,
-        label: '东九区'
-      }],
+      timeZone: [
+        {value: 0,label: 'UTC'},
+        {value: 1,label: 'UTC+1'},
+        {value: 2,label: 'UTC+2'},
+        {value: 3,label: 'UTC+3'},
+        {value: 4,label: 'UTC+4'},
+        {value: 5,label: 'UTC+5'},
+        {value: 6,label: 'UTC+6'},
+        {value: 7,label: 'UTC+7'},
+        {value: 8,label: 'UTC+8'},
+        {value: 9,label: 'UTC+9'},
+        {value: 10,label: 'UTC+10'},
+        {value: 11,label: 'UTC+11'},
+        {value: 12,label: 'UTC+12'},
+        {value: -11,label: 'UTC-11'},
+        {value: -10,label: 'UTC-10'},
+        {value: -9,label: 'UTC-9'},
+        {value: -8,label: 'UTC-8'},
+        {value: -7,label: 'UTC-7'},
+        {value: -6,label: 'UTC-6'},
+        {value: -5,label: 'UTC-5'},
+        {value: -4,label: 'UTC-4'},
+        {value: -3,label: 'UTC-3'},
+        {value: -2,label: 'UTC-2'},
+        {value: -1,label: 'UTC-1'},
+        ],
       data: {
         allTxt: "全部",
         isShow: false,
@@ -177,8 +193,6 @@ export default {
       var thead = this.$$getRealData.theadArr
       var tbody = this.$$getRealData.tbodyArr
       var table = document.createElement('table')
-      console.log('tag', thead)
-      console.log('tag', tbody)
       table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
       Utils.tableToExcel(
         table,
@@ -213,10 +227,11 @@ export default {
       this.$store.commit("o_r_real/setGame", this.data.game);
       this.$store.commit("o_r_real/setGameArr", this.data.gameArr);
       var params = {
-        in_begin_date: this._state.date[0],          //开始日期
+        in_begin_date: this._state.date[0],           //开始日期
         in_end_date: this._state.date[1],             //结束日期
         in_os: this._state.os,                        //系统                  
-        in_area_app_ids: this._key,                    //游戏层级 
+        in_area_app_ids: this._key,                   //游戏层级 
+        in_time_zone:this.timeZoneValue,              //时区
       };
       this.$store.dispatch("o_r_real/getReportInfo", { params, tag: 'real' }).then(
 
@@ -251,6 +266,7 @@ export default {
     },
     createChart() {
       for (let index = 0; index < this.$$getRealData.lineData.length; index++) {
+        localStorage.setItem("percent",index)
         var chart = Highcharts.chart(this.chartName[index].name, {
           chart: {
             type: 'spline',
@@ -280,7 +296,15 @@ export default {
               text: ''
             },
             labels: {
-              format: '{value:.0f}'//设置y轴显示格式
+              // 
+              formatter: function (index) {
+                if (+localStorage.getItem("percent")>=3) {
+                  return this.value + '%';//y轴加上%
+                }else{
+                  return this.value
+                }
+              }
+
             },
             crosshair: {
               width: 1,

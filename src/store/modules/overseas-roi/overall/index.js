@@ -137,7 +137,7 @@ export default {
                             xList.push(allData[index][key])
                         }else{
                             if (msg == 5) {
-                                allData[index][key]=(+allData[index][key]*100).format(2)+'%'
+                                allData[index][key]=+allData[index][key].format(2)+'%'
                                 lineData[msg-1].data.push(allData[index][key])
                             }else if(msg == 6){
                                 allData[index][key]=+allData[index][key].format(2)

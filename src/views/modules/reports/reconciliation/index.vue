@@ -4,17 +4,23 @@
     <my-row class="selection-box">
       <div class="banner">
         <!-- 日期 -->
-        <!-- <section style="margin-left:20px">
-          <el-date-picker v-model="date" type="date" placeholder="选择日期"></el-date-picker>
-        </section> -->
         <div class="date-box-item">
-          <el-date-picker size="medium" :picker-options="pickerOptions1" ref="picker1" v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" top="100">
-          </el-date-picker>
+          <el-date-picker
+            size="medium"
+            :picker-options="pickerOptions1"
+            ref="picker1"
+            v-model="date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            top="100"
+          ></el-date-picker>
         </div>
-        
+
         <!-- 渠道 -->
         <section style="margin-left:20px">
-          <el-select v-model="channelListValue" style="width: 200px; height:40px">
+          <el-select v-model="channelListValue" filterable  style="width: 200px; height:40px">
             <el-option
               v-for="(item) in $$ChannelList"
               :key="item.value"
@@ -24,26 +30,31 @@
           </el-select>
         </section>
         <!-- 查詢 -->
-        <el-button size="medium" class="search" @click="getData('reconciliation')" style="margin-left:20px">查询</el-button>
+        <el-button
+          size="medium"
+          class="search"
+          @click="getData('reconciliation')"
+          style="margin-left:20px"
+        >查询</el-button>
       </div>
     </my-row>
     <!-- 表格 -->
-      <div class="table-item">
-        <el-table
-          border
-          :header-cell-style="{background:'#f2f2f2'}"
-          :data="$store.getters['o_r_reconciliation/getTableData']"
-        >
-          <el-table-column
-            v-for="(item, i) in (Object.keys($store.getters['o_r_reconciliation/getTableData'].length?$store.getters['o_r_reconciliation/getTableData'][0]:[]))"
-            :key="i"
-            :prop="item"
-            :label="item"
-            :width="i==0 ? 115:''"
-            v-if="i!=0"
-          ></el-table-column>
-        </el-table>
-      </div>
+    <div class="table-item">
+      <el-table
+        border
+        :header-cell-style="{background:'#f2f2f2'}"
+        :data="$store.getters['o_r_reconciliation/getTableData']"
+      >
+        <el-table-column
+          v-for="(item, i) in (Object.keys($store.getters['o_r_reconciliation/getTableData'].length?$store.getters['o_r_reconciliation/getTableData'][0]:[]))"
+          :key="i"
+          :prop="item"
+          :label="item"
+          :width="i==0 ? 115:''"
+          v-if="i!=0"
+        ></el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 <script>
@@ -52,10 +63,11 @@ export default {
   data() {
     return {
       date: null,
+      input:'',
       source: '',
-      channelList:[],
       $_chartIsReady: 0,
-      channelListValue: ' ',
+      channelListValue:'',
+      visibleChannelSelect:false,
       pickerOptions1: {
         onPick({ minDate, maxDate }) {
           if (!maxDate) {
@@ -124,7 +136,7 @@ export default {
       var date = data.map(item => moment(item).format("YYYY-MM-DD"));
       this.$store.commit("o_r_reconciliation/setDate", date);
     },
-    channelListValue(newValue,oldValue){
+    channelListValue(newValue, oldValue) {
       this.$store.commit("o_r_reconciliation/setChannelListValue", newValue);
     }
   },
@@ -142,7 +154,7 @@ export default {
     // 获取渠道列表,
     if (!this._state.channelList.length) this.getData('channelList');
   },
-  mounted(){
+  mounted() {
     this.$refs.picker1.mountPicker();
     this.$refs.picker1.picker.dateShortcuts = this.dateShortcuts
     this.$refs.picker1.picker._parentEl = this.$refs.picker1.$el;
@@ -153,23 +165,23 @@ export default {
       if (tag == 'channelList') {
         // 获取渠道
         var params = {
-          in_begin_date:'2019-01-01',   //开始日期
+          in_begin_date: '2019-01-01',   //开始日期
           in_end_date: '2019-01-02',    //结束日期
           in_media_source: '',          //渠道                  
           in_operator_type: 1,          //查询类型(1:渠道列表,2:数据) 
         };
       } else {
         // 获取数据
-        if (!this.date.length || this.channelListValue==0) {
+        if (!this.date.length || this.channelListValue == '') {
           Utils.Notification.warning({
-              message: '请将查询信息填写完整'
+            message: '请将查询信息填写完整'
           })
           return
         }
         var params = {
           in_begin_date: this._state.date[0],       //开始日期
           in_end_date: this._state.date[1],         //结束日期
-          in_media_source: this.$$ChannelList[this.channelListValue-1].label,             //渠道                  
+          in_media_source: this.$$ChannelList[this.channelListValue - 1].label,             //渠道                  
           in_operator_type: 2,                      //查询类型(1:渠道列表,2:数据)  
         };
       }
@@ -248,26 +260,25 @@ export default {
       }
       picker.$emit('pick', date);
     },
-    // 
     dataInit() {
       // 日期初始化
-     if (this._state.date) {
+      if (this._state.date) {
         this.date = this._state.date;
       } else {
         this.date = [
-          // moment()
-          //   .add(-1, "day")
-          //   .format("YYYY-MM-DD"),
-          // moment()
-          //   .add(-1, "day")
-          //   .format("YYYY-MM-DD")
+          moment()
+            .add(-1, "day")
+            .format("YYYY-MM-DD"),
+          moment()
+            .add(-1, "day")
+            .format("YYYY-MM-DD")
         ];
       }
       // 渠道下拉框初始化
       if (this._state.channelListValue) {
         this.channelListValue = this._state.channelListValue;
       } else {
-        this.channelListValue = ' ';
+        this.channelListValue = '';
       }
     },
 
@@ -282,10 +293,11 @@ export default {
   width: 100%;
   display: flex;
   justify-content: start;
+  position: relative;
   // border: 1px solid;
 }
 
-.table-item{
+.table-item {
   border: 15px solid #e7e1ea;
   width: 600px;
   height: auto;

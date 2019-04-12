@@ -6,10 +6,12 @@
         <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key" :label="item.key" :sortable="item.sortable" :width="item.width" :formatter="formatter" v-if="!item.hide"></el-table-column>
         <div slot="append">
           <total-float :_config="{
-            _config: _config,
-            $$data: $$data,
-            key: _config.keys[_config.index.dateIndex],
-          }" :_chart="$data.$_chartIsReady" />
+                                  _config: _config,
+                                  $$data: $$data,
+                                  key: _config.keys[_config.index.dateIndex],
+                                }" 
+          :lineData="$$data.total"
+          :_chart="$data.$_chartIsReady" />
         </div>
       </el-table>
     </div>
@@ -52,6 +54,7 @@ export default {
         label === keys[index.registerRateIndex]
         || label === keys[index.createRateIndex]
         || label === keys[index.roiIndex]
+        || label === keys[index.minuteIndex]        
       ) {
         value += '%'
       } else if (

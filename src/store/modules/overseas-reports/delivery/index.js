@@ -8,7 +8,7 @@ function getObjectByTimestamp() {
 }
 
 function getWidth(str) {
-  var len = str.length
+  var len = str ? str.length:0;
   if (len <= 2) {
     return 80
   }
@@ -19,7 +19,10 @@ function getWidth(str) {
     return 100
   }
   if (len <= 6) {
-    return 150
+    return 110
+  }
+  if (len <= 9) {
+    return 120
   }
 }
 
@@ -38,6 +41,7 @@ export default {
     },
 
     date: null,
+    payDate:null,
     os: null,
 
     region: null,
@@ -82,6 +86,9 @@ export default {
     },
     setDate(state, data) {
       state.date = data
+    },
+    setPayDate(state,data){
+      state.payDate = data
     },
     setOs(state, data) {
       state.os = data
@@ -235,7 +242,7 @@ export default {
           }
         })
       }
-
+      // 求和
       function getTotal(data, regionName, isLast) {
         var total = comprehensiveData.total[regionName]
         tableKey.forEach(({ key }) => {
@@ -292,11 +299,16 @@ export default {
                 var recharge = comprehensiveData.total[regionName][keys[index.rechargeIndex]]
                 comprehensiveData.total[regionName][key] = ((recharge / cost) * 100).format(2) + '%'
                 break;
-              case keys[index.ltvIndex]:
-                var mounthActiveKey = keys[index.mounthActiveIndex]
-                var mounthChargeKey = keys[index.mounthChargeIndex]
-                total.LTV = (!total[mounthChargeKey] || !total[mounthActiveKey]) ? 0 : (total[mounthChargeKey] / total[mounthActiveKey]).format(2);
-                break
+              case keys[index.minuteIndex]:
+                var cost = comprehensiveData.total[regionName][keys[index.minuteIndex]]
+                // var recharge = comprehensiveData.total[regionName][keys[index.rechargeIndex]]
+                comprehensiveData.total[regionName][key] = cost.format(2) + '%'
+                break;
+              // case keys[index.ltvIndex]:
+              //   var mounthActiveKey = keys[index.mounthActiveIndex]
+              //   var mounthChargeKey = keys[index.mounthChargeIndex]
+              //   total.LTV = (!total[mounthChargeKey] || !total[mounthActiveKey]) ? 0 : (total[mounthChargeKey] / total[mounthActiveKey]).format(2);
+              //   break
               default:
                 var keyValue = comprehensiveData.total[regionName][key]
                 var active = comprehensiveData.total[regionName][keys[index.activeIndex]]
@@ -324,28 +336,32 @@ export default {
         }
         if (!config.index) {
           config.index = {
-            regionIndex: 3,
-            gameIndex: 5,
-            dimensionIndex: 6,
-            activeIndex: 7,
-            registerIndex: 8,
-            createIndex: 9,
-            costIndex: 10,
-            registerRateIndex: 11,
-            createRateIndex: 12,
-            activeCostIndex: 13,
-            registerCostIndex: 14,
-            createCostIndex: 15,
-            rechargeIndex: 21,
-            roiIndex: 22,
-            ltvIndex: 25,
-            keep1Index: 18,
-            keep2Index: 19,
-            keep3Index: 20,
-            countryIndex: 3,
-            newCreateIndex: 16,
-            mounthChargeIndex: 23,
-            mounthActiveIndex: 24
+            regionIndex: 1,       //地区
+            gameIndex: 3,         //游戏
+            dimensionIndex: 4,    //系统
+            activeIndex: 5,       //激活
+            registerIndex: 6,     //注册
+            createIndex: 7,       //创角
+            // costIndex: 8,         //  
+            registerRateIndex: 8, //注册率
+            createRateIndex: 9,  //创角率
+            activeCostIndex: 10,  //激活成本
+            registerCostIndex: 11,//注册成本
+            createCostIndex: 12,  //创角成本
+            costIndex:13,        //花费
+            rechargeIndex: 14,    //充值
+            roiIndex: 15,         //roi
+            minuteIndex:16,       //分成roi
+            ltv1Index: 17,         //7日ltv
+            ltv2Index: 18,         //14日ltv
+            ltv3Index: 19,         //30日ltv
+            keep1Index: 20,       //次留
+            keep2Index: 21,       //3日留存
+            keep3Index: 22,       //7日留存
+            countryIndex: 1,      //国家  
+            newCreateIndex: 14,   //
+            mounthChargeIndex: 21,
+            mounthActiveIndex: 22
           }
         }
         if (!config.colorKey) {
@@ -398,6 +414,9 @@ export default {
           }, {
             key: config.keys[config.index.roiIndex],
             sortable: true,
+          },{
+            key: config.keys[config.index.minuteIndex],
+            sortable: true,
           }, {
             key: config.keys[config.index.mounthChargeIndex],
             sortable: true,
@@ -407,7 +426,13 @@ export default {
             sortable: true,
             hide: true
           }, {
-            key: config.keys[config.index.ltvIndex],
+            key: config.keys[config.index.ltv1Index],
+            sortable: true,
+          }, {
+            key: config.keys[config.index.ltv2Index],
+            sortable: true,
+          }, {
+            key: config.keys[config.index.ltv3Index],
             sortable: true,
           }, {
             key: config.keys[config.index.keep1Index],
@@ -533,28 +558,30 @@ export default {
         if (!config.keys) {
           config.keys = Object.keys(arr[0]).map(item => item);
           config.keys.push('LTV');
-          console.log(config.keys)
         }
         if (!config.index) {
           config.index = {
-            dateIndex: 0,
-            systemIndex: 1,
-            activeIndex: 2,
-            registerIndex: 3,
-            createIndex: 4,
-            costIndex: 5,
-            registerRateIndex: 13,
-            createRateIndex: 14,
-            activeCostIndex: 10,
-            registerCostIndex: 11,
-            createCostIndex: 12,
-            rechargeIndex: 6,
-            roiIndex: 9,
-            ltvIndex: 20,
-            keep1Index: 15,
-            keep2Index: 16,
-            keep3Index: 17,
-            newCreateIndex: 7,
+            dateIndex: 0,         //统计时间
+            systemIndex: 1,       //系统
+            activeIndex: 2,       //激活
+            registerIndex: 3,     //注册
+            createIndex: 4,       //创角
+            registerRateIndex: 5,//注册率
+            createRateIndex: 6,  //创角率
+            activeCostIndex: 7,  //激活成本
+            registerCostIndex: 8,//注册成本
+            createCostIndex: 9,  //创角成本
+            costIndex: 10,         //花费
+            rechargeIndex: 11,     //充值
+            roiIndex: 12,          //roi
+            minuteIndex:13,        //分成roi
+            ltv1Index: 14,         //ltv
+            ltv2Index: 15,         //ltv
+            ltv3Index: 16,         //ltv
+            keep1Index: 17,       //次留
+            keep2Index: 18,       //3日次留
+            keep3Index: 19,       //7日次留
+            newCreateIndex: 7,    
             newCreateCostIndex: 8,
             mounthChargeIndex: 18,
             mounthActiveIndex: 19,
@@ -610,6 +637,9 @@ export default {
           }, {
             key: config.keys[config.index.roiIndex],
             sortable: true
+          },{
+            key: config.keys[config.index.minuteIndex],
+            sortable: true
           }, {
             key: config.keys[config.index.mounthActiveIndex],
             sortable: true,
@@ -619,9 +649,15 @@ export default {
             sortable: true,
             hide: true
           }, {
-            key: config.keys[config.index.ltvIndex],
+            key: config.keys[config.index.ltv1Index],
             sortable: true
           }, {
+            key: config.keys[config.index.ltv2Index],
+            sortable: true
+          }, {
+            key: config.keys[config.index.ltv3Index],
+            sortable: true
+          },{
             key: config.keys[config.index.keep1Index],
             sortable: true
           }, {
@@ -660,6 +696,7 @@ export default {
         }
       }
       var dailyData
+
       if (state.daily[getters.getIdStr]) {
         var arr = state.daily[getters.getIdStr][0];
         var config = state.configs.daily;
@@ -757,6 +794,10 @@ export default {
               var recharge = dailyData.total[keys[index.rechargeIndex]]
               dailyData.total[key] = ((recharge / cost) * 100).format(2) + '%'
               break;
+            case keys[index.minuteIndex]:
+              var cost = dailyData.total[keys[index.minuteIndex]]
+              dailyData.total[key] = cost.format(2) + '%'
+              break;
             case keys[index.ltvIndex]:
               var mounthChargeKey = keys[index.mounthChargeIndex]
               var mounthActiveKey = keys[index.mounthActiveIndex]
@@ -774,6 +815,7 @@ export default {
       } else {
         dailyData = null
       }
+      
       console.log('dailyData:->', dailyData)
       return dailyData
     },

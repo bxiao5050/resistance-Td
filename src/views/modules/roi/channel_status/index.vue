@@ -41,6 +41,24 @@
     </my-row>
     <p style="color:red;text-indent: 120px;">1、假期期间的ROI数据可在假期后的第二个工作日正常查看 2、选择时间为北京时间（东八区）</p>
     <!-- 表格 -->
+    <div class="table-item ">
+      <el-table
+        border
+        max-height="850"
+        :header-cell-style="{background:'#f2f2f2',textAlign:'left'}"
+        :data="$store.getters['o_r_channel_status/getChannel']"
+      >
+        <el-table-column
+          v-for="(item, i) in (Object.keys($store.getters['o_r_channel_status/getChannel'][0]?$store.getters['o_r_channel_status/getChannel'][0]:{}))"
+          :key="i"
+          sortable
+          :prop="item"
+          :label="item"
+          :formatter="formatter"
+          :width="i==0 ? 400:(i==9?130:'')"
+        ></el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 <script>
@@ -87,10 +105,6 @@ export default {
     $$zoneList() {
       return this.$store.getters["o_r_channel_status/getZoneList"];
     },
-    $$channell() {
-        var data = this.$store.getters["o_r_channel_status/getChannel"];
-        return data
-    }
   },
   methods: {
     slide() {
@@ -101,7 +115,13 @@ export default {
         $(".gameList").animate({ height: "200px" });
       }
     },
-    
+    formatter(row, column, value) {
+      var { label } = column
+      if (label == "日收入" || label == "总收入") {
+        value = +value ? value.format(2) : value.format(0);
+      }
+      return value
+    },
     // 初始化
     dataInit() {
       if (this._state.date) {
@@ -209,6 +229,11 @@ export default {
     min-width: 100px;
     display: inline-block;
   }
+}
+
+.table-item {
+  margin: 20px 10px;
+  border: 15px solid #e7e1ea;
 }
 </style>
 

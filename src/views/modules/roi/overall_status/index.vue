@@ -43,12 +43,16 @@
             top="100"
           ></el-date-picker>
         </div>
-
-        <section style="margin-left:20px">
+        <el-button-group style="margin-left:20px">
+          <el-button icon="el-icon-search" @click="watchData(1)">日看盘</el-button>
+          <el-button icon="el-icon-search" @click="watchData(2)">周看盘</el-button>
+          <el-button icon="el-icon-search" @click="watchData(3)">月看盘</el-button>
+        </el-button-group>
+        <!-- <section >
           <el-button @click="watchData(1)" >日看盘</el-button>
           <el-button @click="watchData(2)" >周看盘</el-button>
           <el-button @click="watchData(3)" >月看盘</el-button>
-        </section>
+        </section> -->
         <el-button class="el-icon-refresh" @click="getData()" style="margin-left:15px">查询</el-button>
         <el-button class="el-icon-download" @click="exportData()">导出</el-button>
       </section>

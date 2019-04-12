@@ -130,7 +130,6 @@
         <el-button type="success" plain @click="filterData()">应用</el-button>
 
       </section>
-
       <!-- 表格 -->
       <div v-show="$store.state.o_r_delivery.tableIsVisible" class="table-item">
         <el-table
@@ -145,7 +144,7 @@
             :prop="item"
             :label="item"
             :formatter="formatter"
-            :width="i==0 ? 115:''"
+            :width="getWidth(item)"
           ></el-table-column>
         </el-table>
       </div>
@@ -194,7 +193,6 @@ export default {
     $$getChannelInfo(){
       var getChannelInfo = this.$store.getters["o_r_delivery/getChannelInfo"];
       return getChannelInfo
-
     },
     // 筛选条件
     $$channellist() {
@@ -234,6 +232,7 @@ export default {
     },
     //切换linevalue 恢复默认显示
     lineValue(newValue, oldValue) {
+      localStorage.setItem("lineValue",newValue)
       for (let index = 0; index < this.$$legend.leftlistArr.length; index++) {
         if (index == 0) {
           this.$$legend.leftlistArr[index].visible = false
@@ -262,8 +261,10 @@ export default {
       this.areaValue = '';
       this.lineValue = 0;
       var params = {
-        in_begin_date: this._state.date[0], //开始日期
-        in_end_date: this._state.date[1],   //结束日期
+        in_install_date1: this._state.date[0],          //激活开始日期
+        in_install_date2: this._state.date[1],          //激活结束日期
+        in_pay_date1:this._state.payDate[0],            //充值开始时间
+        in_pay_date2:this._state.payDate[1],            //充值结束时间
         in_os: this._state.os,                         //系统                  
         in_area_app_ids: this._key,                    //游戏层级 
         in_media_source: "",                           //渠道
@@ -350,7 +351,9 @@ export default {
       }else if(label === '激活成本'
         || label === '注册成本'
         || label === '创角成本'
-        || label == 'LTV'
+        || label == '7日LTV'
+        || label == '14日LTV'
+        || label == '30日LTV'
         || label == '充值'){
         value = +value ? value.format(2):value.format(0);
 
@@ -436,7 +439,15 @@ export default {
             text: ''
           },
           labels: {
-            format: '{value:.0f}'//设置y轴显示格式
+            // format: '{value:.0f}'//设置y轴显示格式
+             formatter: function (index) {
+                var indexArr = [3,4,10,11,15,16,17] 
+                if (indexArr.includes(+localStorage.getItem("lineValue"))) {
+                  return this.value + '%';//y轴加上%
+                }else{
+                  return this.value
+                }
+              }
           },
           crosshair: {
             width: 1,
@@ -589,8 +600,10 @@ export default {
         this.in_chart_type = 2
       }
       var params = {
-        in_begin_date: this._state.date[0], //开始日期
-        in_end_date: this._state.date[1],   //结束日期
+        in_install_date1: this._state.date[0],          //激活开始日期
+        in_install_date2: this._state.date[1],          //激活结束日期
+        in_pay_date1:this._state.payDate[0],            //充值开始时间
+        in_pay_date2:this._state.payDate[1],            //充值结束时间
         in_os: this.$data.systemValue == 2 ? '0,1' : this.$data.systemValue, //系统                  
         in_area_app_ids: this._key,                          //游戏层级 
         in_media_source: this.$$getChannelInfo.channelName[+this.channelValue]['lable'] == '全部' ? '' :this.$$getChannelInfo.channelName[+this.channelValue]['lable'],   //渠道
@@ -610,11 +623,31 @@ export default {
       this.lineValue = 0;
     },
     dataInit(){
+      localStorage.setItem("lineValue",0)
       if (this._state.viewIndex) {this.viewValue = this._state.viewIndex}else{this.viewValue = '1'}
       if (this._state.systemIndex) {this.systemValue = this._state.systemIndex}else{this.systemValue = '2'}
       if (this._state.channelIndex) {this.channelValue = this._state.channelIndex}else{this.channelValue = ''}
       if (this._state.areaIndex) {this.areaValue = this._state.areaIndex}else{this.areaValue = ''}
+    },
+    getWidth(str) {
+      var len = str ? str.length:0;
+      if (len <= 2) {
+        return 80
+      }
+      if (len <= 3) {
+        return 90
+      }
+      if (len <= 4) {
+        return 100
+      }
+      if (len <= 6) {
+        return 110
+      }
+      if (len <= 9) {
+        return 120
+      }
     }
+    
   }
 }; 
 </script>
@@ -718,7 +751,7 @@ export default {
         // justify-content: flex-start;
         // padding: 15px;
         .list_ {
-          width: 180px;
+          width: 210px;
           min-height: 45px;
           margin: 10px;
           background: #e7e1ea;

@@ -41,19 +41,19 @@ export default {
         getChannelList(state, getters){
             var channelList = [];    //返回的所有数据
             if (state.channelList && state.channelList[0]) { 
-                console.log('1111111111111', state.channelList[0])
+                // console.log('1111111111111', state.channelList[0])
                 for (let index = 0; index < state.channelList[0].length; index++) {
                     channelList.push({value:index+1,label:state.channelList[0][index].media_source})
                 }
             }
-            console.log('--------------->>>>>', channelList)
+            // console.log('--------------->>>>>', channelList)
             return channelList
         },
         getTableData(state,getters){
             var arr = []
             if (state.reconciliation && state.reconciliation[0]) { 
                 arr = state.reconciliation[0]
-                console.log(' state.reconciliation[0]',  state.reconciliation[0])
+                // console.log(' state.reconciliation[0]',  state.reconciliation[0])
             }
             return arr
 
@@ -80,7 +80,7 @@ export default {
                 http.post(url, params).then(data => {
                     if (data.code == 401) {
                         commit("set_" + tag, data.state);
-                        console.log('tag', data)
+                        // console.log('tag', data)
                         resolve(data.state)
                     } else {
                         this.$notify.warning({

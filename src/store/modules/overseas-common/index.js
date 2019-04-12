@@ -36,16 +36,17 @@ export default {
                 arr = new GetList1()
                 var list = state.list1[0]
                 list.sort(function (a, b) {
-                    return a.type - b.type
+                    return a.unite_type - b.unite_type
                 })
                 list.forEach(item => {
                     var id = item.unite_id
                     arr[id] = item
-                    if (item.type === 0) {
+                    if (item.unite_type === 0) {
                         item.children = []
                         arr.parent.push(item)
                     } else {
-                        var parent = arr[item.parent_id]
+
+                        var parent = arr[item.unite_parent_id ]
                         if (parent.hasOwnProperty('children')) {
                             parent.children.push(item)
                             arr.child.push(item)
@@ -95,8 +96,10 @@ export default {
                 if (!state.list1) {
                     var param = {
                         // querytype: 1,
-                        in_begin_date: moment().format('YYYY-MM-DD'), //开始日期
-                        in_end_date: moment().format('YYYY-MM-DD'),   //结束日期
+                        in_install_date1: moment().format('YYYY-MM-DD'), //激活开始日期
+                        in_install_date2: moment().format('YYYY-MM-DD'),   //激活结束日期
+                        in_pay_date1: moment().format('YYYY-MM-DD'),
+                        in_pay_date2: moment().format('YYYY-MM-DD'),
                         in_os: '0,1',                                 //系统                  
                         in_area_app_ids:'1',                          //游戏层级 
                         in_media_source:"",                           //渠道

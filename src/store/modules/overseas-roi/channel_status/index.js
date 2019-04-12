@@ -61,7 +61,7 @@ export default {
             state.zoneList = data
         },
         set_channel(state,data){
-            state.overall = data
+            state.channel = data
         }
        
         
@@ -70,7 +70,7 @@ export default {
         getGameList(state, getters){
             var gameList = [];    
             if (state.gameList && state.gameList[0]) { 
-                console.log('gameList--->', state.gameList[0])
+                // console.log('gameList--->', state.gameList[0])
                 gameList = state.gameList[0]
             }
             return gameList
@@ -81,7 +81,7 @@ export default {
             var channelArr = []     //渠道
             var zoneNameArr = []    //区服
             if (state.zoneList && state.zoneList[0]) { 
-                console.log('zoneList--->',  state.zoneList[0])
+                // console.log('zoneList--->',  state.zoneList[0])
                 arr = state.zoneList[0]
                 // 获取地区菜单
                 for (let index = 0; index < arr.length; index++) {
@@ -122,11 +122,11 @@ export default {
         },
         getChannel(state,getters){
             var allData = [];
-            if (state.overall && state.overall[0]) { 
-                allData =state.overall[0]
+            if (state.channel && state.channel[0]) { 
+                allData =state.channel[0]
 
             }
-            console.log('overall--->>>>',allData)
+            // console.log('channel--->>>>',state.channel)
             return allData
         }
     },

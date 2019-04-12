@@ -83,6 +83,7 @@ export default {
         label === keys[index.registerRateIndex]
         || label === keys[index.createRateIndex]
         || label === keys[index.roiIndex]
+        || label === keys[index.minuteIndex]        
       ) {
         value += '%'
       } else if (

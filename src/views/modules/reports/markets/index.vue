@@ -3,6 +3,7 @@
     <!-- 投放报表查询条件 -->
     <my-row class="selection-box">
       <div class="date-box-item">
+        <span>激活时间</span>
         <el-date-picker
           size="medium"
           :picker-options="pickerOptions1"
@@ -15,7 +16,21 @@
           top="100"
         ></el-date-picker>
       </div>
-
+      <!-- 充值时间 -->
+      <div class="date-box-item">
+        <span>充值时间</span>
+        <el-date-picker
+          size="medium"
+          :picker-options="pickerOptions2"
+          ref="picker2"
+          v-model="payDate"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          top="100"
+        ></el-date-picker>
+      </div>
       <el-button size="medium" class="selection" @click="data.isShow=true">
         <span>已选择：</span>
         <span>{{_rcg}}</span>
@@ -36,6 +51,7 @@
       </div>-->
 
       <el-button
+         type="info"
         size="medium"
         class="search"
         @click="getData(taging_,false)"
@@ -43,9 +59,9 @@
       >查询</el-button>
 
       <div class="mail">
-        <el-button v-show="!isSingle" size="medium" @click="tagClick(true)">系统对比</el-button>
+        <el-button type="info" v-show="!isSingle" size="medium" @click="tagClick(true)">系统对比</el-button>
 
-        <el-button size="medium" @click="excel()">导出表格</el-button>
+        <el-button type="info" size="medium" @click="excel()">导出表格</el-button>
 
         <div style="position:relative;">
           <el-date-picker
@@ -56,9 +72,9 @@
             style="position:absolute;z-index:-1;width:200px;left:24px;visibility:hidden;"
             @change="pickerChange"
           ></el-date-picker>
-          <el-button size="medium" style="margin: 0 15px" @click="createMail()">邮件生成</el-button>
+          <el-button type="info" size="medium" style="margin: 0 15px" @click="createMail()">邮件生成</el-button>
         </div>
-        <el-button size="medium" @click="checkMail()">邮件查看</el-button>
+        <el-button type="info" size="medium" @click="checkMail()">邮件查看</el-button>
       </div>
     </my-row>
 
@@ -185,6 +201,67 @@ export default {
         }]
 
       },
+      pickerOptions2: {
+        onPick({ minDate, maxDate }) {
+          if (!maxDate) {
+            this._parentEl.querySelector("input").value = moment(
+              minDate
+            ).format("YYYY-MM-DD");
+          }
+        },
+        shortcuts: [{
+          text: '今天',
+          onClick(picker) {
+            picker.dateShortcuts('今天', picker)
+          }
+        }, {
+          text: '昨天',
+          onClick(picker) {
+            picker.dateShortcuts('昨天', picker)
+          }
+        }, {
+          text: '近7天',
+          onClick(picker) {
+            picker.dateShortcuts('近7天', picker)
+          }
+        }, {
+          text: '近15天',
+          onClick(picker) {
+            picker.dateShortcuts('近15天', picker)
+          }
+        }, {
+          text: '近30天',
+          onClick(picker) {
+            picker.dateShortcuts('近30天', picker)
+          }
+        }, {
+          text: '近30-60天',
+          onClick(picker) {
+            picker.dateShortcuts('近30-60天', picker)
+          }
+        }, {
+          text: '本月',
+          onClick(picker) {
+            picker.dateShortcuts('本月', picker)
+          }
+        }, {
+          text: '上月',
+          onClick(picker) {
+            picker.dateShortcuts('上月', picker)
+          }
+        }, {
+          text: '今年',
+          onClick(picker) {
+            picker.dateShortcuts('今年', picker)
+          }
+        }, {
+          text: '去年',
+          onClick(picker) {
+            picker.dateShortcuts('去年', picker)
+          }
+        }]
+
+      },
       value2: null,
       main: null,
       data: {
@@ -197,6 +274,7 @@ export default {
         gameArr: []
       },
       date: null,
+      payDate:null,
       os: null,
       options: [
         {
@@ -318,7 +396,7 @@ export default {
       var arr = [];
       var lastQueryParam = this._state.lastQueryParam[this.taging];
       if (lastQueryParam) {
-        var { in_os, gameIds, in_begin_date, in_end_date, in_rpt_type } = lastQueryParam;
+        var { in_os, gameIds, in_install_date1, in_install_date2,in_pay_date1,in_pay_date2, in_rpt_type } = lastQueryParam;
         var str = "";
         if (this.$store.getters["overseas_common/getList1"].hasOwnProperty(gameIds)) {
           if (this._state.region) {
@@ -332,7 +410,8 @@ export default {
         }
         arr = [
           "（系统）" + this.types.os[in_os],
-          in_begin_date + " 至 " + in_end_date,
+          in_install_date1 + " 至 " + in_install_date2,
+          in_pay_date1 + " 至 " + in_pay_date2,
           "（国家/地区）" + (str || this.data.allTxt),
           this.tags[this.types[in_rpt_type]].label
         ];
@@ -354,6 +433,10 @@ export default {
       var date = data.map(item => moment(item).format("YYYY-MM-DD"));
       this.$store.commit("o_r_delivery/setDate", date);
     },
+    payDate(data){
+      var date = data.map(item => moment(item).format("YYYY-MM-DD"));
+      this.$store.commit("o_r_delivery/setPayDate", date);
+    },
     os(data) {
       this.$store.commit("o_r_delivery/setOs", data);
     }
@@ -361,8 +444,10 @@ export default {
   methods: {
     getFilterList() {
       var params = {
-        in_begin_date: this._state.date[0],          //开始日期
-        in_end_date: this._state.date[1],             //结束日期
+        in_install_date1: this._state.date[0],          //激活开始日期
+        in_install_date2: this._state.date[1],          //激活结束日期
+        in_pay_date1:this._state.payDate[0],            //充值开始时间
+        in_pay_date2:this._state.payDate[1],            //充值结束时间
         in_os: this._state.os,                        //系统                  
         in_area_app_ids: this._key,                    //游戏层级 
         in_media_source: "",                           //渠道
@@ -371,7 +456,6 @@ export default {
         in_chart_type: 0,                              //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
         in_view_type: 1                                //视图类型：1 渠道 2 时间 3 地区
       };
-      // // this._state.lastQueryParam['channnelInfo'] = params;
       this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: 'channelInfo' });
     },
     dateShortcuts(txt, picker) {
@@ -518,6 +602,7 @@ export default {
     },
     tagClick(flag) {
       console.log(this.taging)
+      console.log(flag)
       this.$store.commit("o_r_delivery/set_is2", false);
       var isQuery;
       // 对比查询参数是否一致
@@ -570,6 +655,19 @@ export default {
             .format("YYYY-MM-DD")
         ];
       }
+      console.log('11_______________>>>>>>>>>>>', this._state)
+      if (this._state.payDate) {
+        this.payDate = this._state.payDate;
+      } else {
+        this.payDate = [
+          moment()
+            .add(-1, "day")
+            .format("YYYY-MM-DD"),
+          moment()
+            .add(-1, "day")
+            .format("YYYY-MM-DD")
+        ];
+      }
       if (this._state.region) this.data.region = this._state.region;
       if (this._state.regionArr) this.data.regionArr = this._state.regionArr;
       if (this._state.game) this.data.game = this._state.game;
@@ -579,20 +677,23 @@ export default {
       // 修改动态组件
       if (taging_) this.taging = taging_;
       this.main = this.taging;
-      console.log(this.main)
       // 第一步:判断按下的是否是查询按钮
       if (isType) {
         console.log('tag', '按下的不是查询按钮')
-        if ((this.taging == "daily" || "comprehensive") && this.data.game) {
+        var arr = ["daily","comprehensive"]
+        if (arr.includes(this.taging) && this.data.game) {
         // 第二步:判断是否选择游戏
           this.main = 'channel'
+          this.taging = 'channel'
           console.log('tag', '查询单个全部')
           this.isSingle = false;
           this.in_rpt_type = 4
           this.in_view_type = 1
-          console
-          // this.in_chart_type = 1
-        } else {
+        }else if(this.taging == "system"){
+          this.in_rpt_type = 5;
+          this.in_chart_type = 0;
+          this.in_view_tye = 0;
+        }else {
           this.in_chart_type = 0;
           this.in_view_tye = 0;
           if (this.taging == "comprehensive") {
@@ -637,8 +738,10 @@ export default {
       this.$store.commit("o_r_delivery/setGame", this.data.game);
       this.$store.commit("o_r_delivery/setGameArr", this.data.gameArr);
       var params = {
-        in_begin_date: this._state.date[0],          //开始日期
-        in_end_date: this._state.date[1],             //结束日期
+        in_install_date1: this._state.date[0],          //激活开始日期
+        in_install_date2: this._state.date[1],          //激活结束日期
+        in_pay_date1:this._state.payDate[0],            //充值开始时间
+        in_pay_date2:this._state.payDate[1],            //充值结束时间
         in_os: this._state.os,                        //系统                  
         in_area_app_ids: this._key,                    //游戏层级 
         in_media_source: "",                           //渠道

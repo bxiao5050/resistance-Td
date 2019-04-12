@@ -6,8 +6,8 @@
       </colgroup>
       <tbody>
         <tr class="el-table__row total">
-          <td :class="'el-table_1_column_'+(i++)" v-for="(item, i) in lineData" :key="i" v-if="!item.hide">
-            <div class="cell">{{item}}</div>
+          <td :class="'el-table_1_column_'+(i++)" v-for="(item, i) in _config._config.tableKey" :key="i" v-if="!item.hide">
+            <div class="cell">{{_config.$$data.total[item.key]}}</div>
           </td>
         </tr>
       </tbody>
@@ -17,7 +17,7 @@
 
 <script>
 export default {
-  props: ['_config', '_chart','lineData','thead'],
+  props: ['_config', '_chart'],
   data() {
     return {
       height: 0

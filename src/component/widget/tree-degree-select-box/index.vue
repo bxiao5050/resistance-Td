@@ -99,7 +99,7 @@ export default {
         var list = this.$store.getters['overseas_common/getList1']
         var gameId = this.gameArr[0]
         var regionId = this.regionArr[0]
-        if (gameId && list[gameId].parent_id != regionId) {
+        if (gameId && list[gameId].unite_parent_id  != regionId) {
           this.game = null
           this.gameArr = []
         }

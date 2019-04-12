@@ -121,6 +121,7 @@ export default {
   },
   created() {
     this.pickerOptions.date = new Date(this._state.date)
+    this.query()
   },
   mounted() {
     this.$refs.upload.addEventListener("change", this.fileChange)
