@@ -145,6 +145,9 @@
             :label="item"
             :formatter="formatter"
             :width="getWidth(item)"
+            :sortable = "i>=2?true:false"
+            
+
           ></el-table-column>
         </el-table>
       </div>
@@ -783,7 +786,7 @@ export default {
     right: 0;
     z-index: 9;
     border: 1px solid #c0c4cc;
-    background: rgba(253, 253, 253, 0.8);
+    background: white;
     button {
       width: 75px;
       margin-left: 15px;

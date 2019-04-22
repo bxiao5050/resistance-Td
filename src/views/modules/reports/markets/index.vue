@@ -59,7 +59,7 @@
       >查询</el-button>
 
       <div class="mail">
-        <el-button type="info" v-show="!isSingle" size="medium" @click="tagClick(true)">系统对比</el-button>
+        <!-- <el-button type="info" v-show="!isSingle" size="medium" @click="tagClick(true)">系统对比</el-button> -->
 
         <el-button type="info" size="medium" @click="excel()">导出表格</el-button>
 
@@ -82,12 +82,12 @@
       <tsdp :data="data" v-if="data.isShow"></tsdp>
     </my-row>
 
-    <my-row class="selection-box" v-if="_rcg_.length">
+    <!-- <my-row class="selection-box" v-if="_rcg_.length">
       <el-tag class="tag" v-for="(item, i) in _rcg_" :key="i">{{item}}</el-tag>
-    </my-row>
+    </my-row> -->
 
     <my-row>
-      <el-tabs v-model="taging" @tab-click="tagClick(false)">
+      <el-tabs v-model="taging" @tab-click="tagClick(false)" style="marginTop:50px">
         <el-tab-pane
           v-if="(isSingle && _tagState[tag])"
           v-for="({ label }, tag) in tags"
@@ -791,6 +791,9 @@ export default {
     this.$refs.picker1.mountPicker();
     this.$refs.picker1.picker.dateShortcuts = this.dateShortcuts
     this.$refs.picker1.picker._parentEl = this.$refs.picker1.$el;
+    this.$refs.picker2.mountPicker();
+    this.$refs.picker2.picker.dateShortcuts = this.dateShortcuts
+    this.$refs.picker2.picker._parentEl = this.$refs.picker1.$el;
     window.addEventListener("keydown", this.onKeyDown);
   },
   destroyed() {

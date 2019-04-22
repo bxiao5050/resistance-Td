@@ -113,12 +113,10 @@ export default {
     formatter(row, column, value) {
       var { label } = column
       if (label == "总ROI") {
-        value = +value ? (value * 100).format(2) + '%' : value.format(0) + '%';
+        value = +value ? value.format(2) + '%' : value.format(0) + '%';
       } else if (label == "总收益") {
         value = +value ? value.format(2) : value.format(0);
-      } else if (label == "回本天数" || label == "剩余回本天数") {
-        value = +value ? value.format(0) : value.format(0);
-      }
+      } 
       return value
     },
     slide() {
