@@ -3,7 +3,7 @@
     <!-- 投放报表查询条件 -->
     <my-row class="selection-box">
       <div class="date-box-item">
-        <span>激活时间</span>
+        <span>激活</span>
         <el-date-picker
           size="medium"
           :picker-options="pickerOptions1"
@@ -18,7 +18,7 @@
       </div>
       <!-- 充值时间 -->
       <div class="date-box-item">
-        <span>充值时间</span>
+        <span>充值</span>
         <el-date-picker
           size="medium"
           :picker-options="pickerOptions2"
@@ -655,7 +655,6 @@ export default {
             .format("YYYY-MM-DD")
         ];
       }
-      console.log('11_______________>>>>>>>>>>>', this._state)
       if (this._state.payDate) {
         this.payDate = this._state.payDate;
       } else {

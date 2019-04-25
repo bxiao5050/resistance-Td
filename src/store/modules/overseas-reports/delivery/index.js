@@ -39,7 +39,7 @@ export default {
       channel: null,
       system: null,
     },
-
+    channelSelectData:null,
     date: null,
     payDate:null,
     os: null,
@@ -841,21 +841,21 @@ export default {
           }
         }
         for (let index = 0; index < channelName.length; index++) {          
-          channelName[index] = {lable:channelName[index],value:index+1}
+          channelName[index] = {lable:channelName[index],value:''+(index+1)}
           channelNameData.push(allData.filter(todo => todo.media_source == channelName[index]['lable']))
           for (let msg = 0; msg < channelNameData[index].length; msg++) {
               channelNameData[index][msg].label = channelNameData[index][msg].country_name;
               channelNameData[index][msg].value = channelNameData[index][msg]["国家"];
               channelNameData[index][msg].key = Math.random();
             }
-          channelNameData[index].unshift({"label": '全部', "value": '', "key": Math.random() })
+          channelNameData[index].unshift({"label": '全部', "value": 'all', "key": Math.random() })
         }
-        channelName.unshift({lable: "全部", value: ''})
+        channelName.unshift({lable: "全部", value: 'all'})
         channelNameData.unshift(allData)
-        channelNameData[0].unshift({"label": '全部', "value": '', "key": Math.random()})
-
+        channelNameData[0].unshift({"label": '全部', "value": 'all', "key": Math.random()})
       }
       // console.log('getChannelInfogetChannelInfo',{'channelName':channelName,'channelNameData':channelNameData,})
+      state.channelSelectData =  {'channelName':channelName,'channelNameData':channelNameData,};
       return {'channelName':channelName,'channelNameData':channelNameData,}
     },
     getChannelList(state,getters){

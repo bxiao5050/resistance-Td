@@ -19,7 +19,8 @@ export default {
         // 实时报表数据
         reconciliation:[],
         // 渠道下标
-        channelListValue:null
+        channelListValue:null,
+        channelSelectData:null,
     },
     mutations: {
         setDate(state, data) {
@@ -47,6 +48,8 @@ export default {
                 }
             }
             // console.log('--------------->>>>>', channelList)
+            channelList.unshift({label:"全部",value:"all"})
+            state.channelSelectData = channelList
             return channelList
         },
         getTableData(state,getters){

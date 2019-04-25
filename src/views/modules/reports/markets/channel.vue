@@ -9,7 +9,6 @@
         </span>
       </el-button>
     </div>
-
     <div class="centerBox">
       <!-- 筛选行 -->
       <section class="btns">
@@ -21,7 +20,7 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <el-button size="medium" @click="slide(200)">筛选</el-button>
+        <el-button size="medium" @click="slide(300)">筛选</el-button>
       </section>
       <!-- 图例 -->
       <div class="legendBox" v-show="!$store.state.o_r_delivery.tableIsVisible">
@@ -81,7 +80,8 @@
         </section>
       </div>
       <!-- 筛选框 -->
-      <section class="filterBox" :style="{right:`${width}px`}">
+      <section class="filterBox" :style="{width:'300px',right:`${width}px`}">
+        <!-- 视图 -->
         <div class="filter_">
           <span>{{filterTitle[0].name}}</span>
           <el-select class="os" v-model="viewValue" size="medium">
@@ -93,6 +93,7 @@
             ></el-option>
           </el-select>
         </div>
+        <!-- 系统 -->
         <div class="filter_">
           <span>{{filterTitle[1].name}}</span>
           <el-select class="os" v-model="systemValue" size="medium">
@@ -104,31 +105,47 @@
             ></el-option>
           </el-select>
         </div>
+        <!-- 渠道 -->
         <div class="filter_">
           <span>{{filterTitle[2].name}}</span>
-          <el-select class="os" v-model="channelValue" size="medium">
+          <el-select class="os" 
+          filterable 
+          multiple 
+          collapse-tags
+          v-model="channelValue" size="medium"
+           @change="channelSelectAll"
+           :filter-method="channelFilter">
             <el-option
-              v-for="item in $$getChannelInfo.channelName"
+              v-for="item in channelOptions"
               :key="item.value"
               :label="item.lable"
               :value="item.value"
             ></el-option>
           </el-select>
         </div>
-        <div class="filter_">
+        <!-- <p>{{areaOptions}}444</p> -->
+        <!-- 地区 -->
+         <div class="filter_">
           <span>{{filterTitle[3].name}}</span>
-          <el-select class="os" v-model="areaValue" size="medium">
+          <el-select class="os" 
+          filterable 
+          collapse-tags
+          multiple 
+          @change="areaSelectAll"
+          v-model="areaValue" size="medium"
+           :filter-method="areaFilter">
             <el-option
-              v-for="item in $$getChannelInfo.channelNameData[channelValue==''? 0 : channelValue]"
-              :key="item.key"
+              v-for="item in areaOptions"
+              :key="item.value"
               :label="item.label"
               :value="item.value"
             ></el-option>
           </el-select>
         </div>
-        <el-button type="danger" plain @click="filterReset()">重置</el-button>
-        <el-button type="success" plain @click="filterData()">应用</el-button>
-
+        <div class="filter_">
+          <el-button type="danger" plain @click="filterReset()">重置</el-button>
+          <el-button type="success" plain @click="filterData()">应用</el-button>
+        </div>
       </section>
       <!-- 表格 -->
       <div v-show="$store.state.o_r_delivery.tableIsVisible" class="table-item">
@@ -146,8 +163,6 @@
             :formatter="formatter"
             :width="getWidth(item)"
             :sortable = "i>=2?true:false"
-            
-
           ></el-table-column>
         </el-table>
       </div>
@@ -158,6 +173,7 @@
 <script>
 // import totalFloat from "./total-float";
 import http from 'src/services/http';
+import { log } from 'util';
 export default {
   props: ['data', '_config', '_types'],
   data: () => {
@@ -172,24 +188,30 @@ export default {
       newlist: [],
       inputTxt: "",
       value: "table",
-      width: -200,
+      width: -300,
       viewValue: '1',     //视图下标
       systemValue: '2',   //系统下标
       lineValue: 0,       //
-      channelValue: '',   //渠道下标
-      areaValue: '',      //地区下标
+      channelValue: [],   //渠道下标
+      areaValue: [],      //地区下标
       chart: null,
       restaurants: [ ],
       rightListArr: [],
       leftlistArr: [],
+      channelOptions:[],
+      channelOptionsCopy:[],
+      channelOldOptions: [[]],
+      areaOptions:[],
+      areaOptionsCopy:[],
+      areaOldOptions:[[]],
       lineArr: [],
       options: [{ value: "table", label: "表格" }, { value: "legend", label: "图例" },],
-      filterTitle: [{ name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' },] },
+      filterTitle: [{ name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' }] },
       { name: "系统", value: '2', options: [{ value: '2', label: '全部' }, { value: '0', label: 'IOS' }, { value: '1', label: 'android' },] },
       { name: "渠道", value: 'qb', options: [{ value: 'qb', label: '全部' }] },
       { name: "地区", value: 'qb', options: [{ value: 'qb', label: '全部' }] }],
       lineData: [],
-      areaArr: [{ media_source: 'qb', country_name: '全部' }]
+      areaArr: [{ media_source: 'qb', country_name: '全部' }],
     };
   },
   computed: {
@@ -209,7 +231,6 @@ export default {
         this.leftlistArr = allData.leftlistArr
         this.rightListArr = allData.rightListArr
         this.lineData = allData.lineData
-        // this.leftlistArr = this.$$legend.leftlistArr.slice(0);
          this.$nextTick(() => {
           this.createChart();
           
@@ -230,6 +251,11 @@ export default {
     this.value = 'table'
   },
   watch:{
+    $$getChannelInfo(newValue,oldValue){
+      // this.channelOptions = newValue.channelName;
+      // this.channelOptionsCopy = newValue.channelName;
+      this.channel_init()   
+    },
     channels(channels) {
       this.$store.commit("o_r_delivery/set_channels", channels);
     },
@@ -253,15 +279,15 @@ export default {
       this.slide(0)
       this.$store.state.o_r_delivery.tableIsVisible = !this.$store.state.o_r_delivery.tableIsVisible;
       if (this.$store.state.o_r_delivery.tableIsVisible ) {
-        this.filterTitle[0] = { name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' },] }
+        this.filterTitle[0] = { name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' }] }
       }else{
-        this.filterTitle[0] = { name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '3', label: '地区' },] }
+        this.filterTitle[0] = { name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '3', label: '地区' }] }
       }
       // 恢复默认筛选条件
       this.viewValue = '1';
       this.systemValue = '2';
-      this.channelValue = '';
-      this.areaValue = '';
+      this.channel_init()   
+      // this.areaValue = [];
       this.lineValue = 0;
       var params = {
         in_install_date1: this._state.date[0],          //激活开始日期
@@ -281,7 +307,8 @@ export default {
     },
     // 渠道改变，国家恢复默认
     channelValue(newValue, oldValue) {
-      this.areaValue = ""
+        // this.areaValue = []
+        this.area_init(newValue)       
     },
   },
   methods: {
@@ -489,7 +516,7 @@ export default {
     },
     slide(width) {
       if (width == 0) {
-        this.width = -200
+        this.width = -300
         this.isShow = !this.isShow
         return 
       }
@@ -609,9 +636,9 @@ export default {
         in_pay_date2:this._state.payDate[1],            //充值结束时间
         in_os: this.$data.systemValue == 2 ? '0,1' : this.$data.systemValue, //系统                  
         in_area_app_ids: this._key,                          //游戏层级 
-        in_media_source: this.$$getChannelInfo.channelName[+this.channelValue]['lable'] == '全部' ? '' :this.$$getChannelInfo.channelName[+this.channelValue]['lable'],   //渠道
+        in_country: this.areaValue.includes("all") ? '' : this.areaValue.join(','),                     //国家
+        in_media_source: this.getChannelData(),   //渠道
         in_rpt_type: 4,                                      //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
-        in_country: this.$data.areaValue == "全部" ? '' : this.$data.areaValue,                     //国家
         in_chart_type: this.in_chart_type,                  //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
         in_view_type: this.$data.viewValue                     //视图类型：1 渠道 2 时间 3 地区
       };
@@ -621,16 +648,14 @@ export default {
       // 恢复默认筛选条件
       this.viewValue = '1';
       this.systemValue = '2';
-      this.channelValue = '';
-      this.areaValue = '';
+      this.channel_init()
       this.lineValue = 0;
     },
     dataInit(){
       localStorage.setItem("lineValue",0)
       if (this._state.viewIndex) {this.viewValue = this._state.viewIndex}else{this.viewValue = '1'}
       if (this._state.systemIndex) {this.systemValue = this._state.systemIndex}else{this.systemValue = '2'}
-      if (this._state.channelIndex) {this.channelValue = this._state.channelIndex}else{this.channelValue = ''}
-      if (this._state.areaIndex) {this.areaValue = this._state.areaIndex}else{this.areaValue = ''}
+      this.channel_init()
     },
     getWidth(str) {
       var len = str ? str.length:0;
@@ -649,8 +674,203 @@ export default {
       if (len <= 9) {
         return 120
       }
+    },
+    // 渠道多选
+    channelSelectAll(val) {
+      let allValues = []
+      //保留所有值
+      for (let item of this.channelOptions) {
+        allValues.push(item.value)
+      }
+      // 用来储存上一次的值，可以进行对比
+      const oldVal = this.channelOldOptions.length === 1 ? [] : this.channelOldOptions[1]
+      
+      // 若是全部选择
+      if ( val.includes('all')) {
+        if (this.channelOptionsCopy.length != allValues.length) {
+          allValues.shift()
+        }
+        this.channelValue = allValues
+      }
+      // 取消全部选中  上次有 当前没有 表示取消全选
+      if (oldVal.includes('all') && !val.includes('all')) this.channelValue = []
+
+      // 点击非全部选中  需要排除全部选中 以及 当前点击的选项 
+      // 新老数据都有全部选中 
+      if (oldVal.includes('all') && val.includes('all')) {
+        const index = val.indexOf('all')
+        val.splice(index, 1) // 排除全选选项
+        this.channelValue = val
+      }
+
+      //全选未选 但是其他选项全部选上 则全选选上 上次和当前 都没有全选
+      if (!oldVal.includes('all') && !val.includes('all')) {
+        if (val.length === allValues.length - 1) this.channelValue = ['all'].concat(val)
+      }
+
+      //储存当前最后的结果 作为下次的老数据 
+      this.channelOldOptions[1] = this.channelValue
+    },
+    areaSelectAll(val) {
+      let allValues = []
+      //保留所有值
+      for (let item of this.areaOptions) {
+        allValues.push(item.value)
+      }
+      // 用来储存上一次的值，可以进行对比
+      const oldVal = this.areaOldOptions.length === 1 ? [] : this.areaOldOptions[1]
+      
+      // 若是全部选择
+      if ( val.includes('all')) {
+        if (this.areaOptionsCopy.length != allValues.length) {
+          allValues.shift()
+        }
+        this.areaValue = allValues
+      }
+
+      // 取消全部选中  上次有 当前没有 表示取消全选
+      if (oldVal.includes('all') && !val.includes('all')) this.areaValue = []
+
+      // 点击非全部选中  需要排除全部选中 以及 当前点击的选项 
+      // 新老数据都有全部选中 
+      if (oldVal.includes('all') && val.includes('all')) {
+        const index = val.indexOf('all')
+        val.splice(index, 1) // 排除全选选项
+        this.areaValue = val
+      }
+
+      //全选未选 但是其他选项全部选上 则全选选上 上次和当前 都没有全选
+      if (!oldVal.includes('all') && !val.includes('all')) {
+        if (val.length === allValues.length - 1) this.areaValue = ['all'].concat(val)
+      }
+
+      //储存当前最后的结果 作为下次的老数据 
+      this.areaOldOptions[1] = this.areaValue
+    },
+    channelFilter (val) {
+      if (val) { //val存在
+          var number = 0;
+          this.channelOptions.filter((item) => {
+            if (!!~item.lable.indexOf(val) || !!~item.lable.toUpperCase().indexOf(val.toUpperCase())) {
+              number++
+            }
+          })
+          if (number>0) {
+            this.channelOptions = this.channelOptions.filter((item) => {
+              if ((item.value == "all")|| !!~item.lable.indexOf(val) || !!~item.lable.toUpperCase().indexOf(val.toUpperCase())) {
+                return true
+              }
+            })
+          }else{
+             this.channelOptions = []
+          }
+          
+        } else { //val为空时，还原数组
+          this.channelOptions = this.channelOptionsCopy;
+        }
+    },
+    areaFilter (val) {
+      if (val) { //val存在
+          var number = 0;
+          this.areaOptions.filter((item) => {
+            if (!!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
+              number++
+            }
+          })
+          if (number>0) {
+            this.areaOptions = this.areaOptions.filter((item) => {
+              if ((item.value == "all")|| !!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
+                return true
+              }
+            })
+          }else{
+            this.areaOptions = []
+          }
+         
+        } else { //val为空时，还原数组
+          this.areaOptions = this.areaOptionsCopy;
+        }
+    },
+    getChannelData(){
+      var data = "";
+      var all = "";
+      if (this.channelValue.includes("all")) {
+        return all 
+      }else{
+        for (let index = 0; index < this.channelValue.length; index++) {
+          data += this.$$getChannelInfo.channelName[this.channelValue[index]].lable+','
+        }
+        return data
+      }
+    },
+    channel_init(){
+      let channelAllValues = []
+      let areaAllValues = []
+      if (this._state.channelSelectData.channelName) {
+        this.channelOptions = this._state.channelSelectData.channelName;
+        this.channelOptionsCopy = this._state.channelSelectData.channelName; 
+        for (let item of this._state.channelSelectData.channelName) {
+          channelAllValues.push(item.value)
+        }
+          this.channelValue = channelAllValues
+      }else{
+        for (let item of this.channelOptions) {
+          channelAllValues.push(item.value)
+        }
+          this.channelValue = channelAllValues
+      }
+      console.log(channelAllValues);
+      
+      
+    },
+    area_init(newValue){
+      if(newValue.length == 0){
+            this.areaValue = [];
+            return
+        } 
+        for (let index = 0; index < newValue.length; index++) {
+         if (newValue.includes("all")) {
+            console.log("渠道包含全部")
+            // 地区
+            let arr = [];
+            let flag = []
+            for (let index = 0; index < this.$$getChannelInfo.channelNameData[0].length; index++) {
+              if (!arr.includes(this.$$getChannelInfo.channelNameData[0][index].value)) {
+                arr.push(this.$$getChannelInfo.channelNameData[0][index].value)
+                flag.push(this.$$getChannelInfo.channelNameData[0][index])
+              }else{
+                console.log(">>>>>>>>>>>>>>>>",index);
+              }
+              
+            }
+            this.areaOptions = flag;
+            this.areaOptionsCopy = flag;   
+            this.areaValue = arr;
+            return
+        }else{
+          console.log("渠道不包含全部")
+          // 地区
+          let allArr = [];
+          let arr = [];
+          let flag = []
+          // 合并索索结果
+          for (let index = 0; index < newValue.length; index++) {
+            allArr = allArr.concat(this.$$getChannelInfo.channelNameData[newValue[index]]);
+          }
+          // 对结果去重
+          for (let index = 0; index < allArr.length; index++) {
+            if (!arr.includes(allArr[index].value)) {
+              arr.push(allArr[index].value)
+              flag.push(allArr[index])
+            }
+          }
+          this.areaOptions = flag;
+          this.areaOptionsCopy = flag; 
+          this.areaValue = arr;
+          
+        }        
+      }
     }
-    
   }
 }; 
 </script>
@@ -679,14 +899,6 @@ export default {
   .el-table__row {
     td.channel {
       padding: 0;
-      //   .cell {
-      //     cursor: pointer;
-      //     line-height: 48px;
-      //     &:hover {
-      //       background: #5b5691;
-      //       color: #fff;
-      //     }
-      //   }
     }
   }
 }
@@ -694,7 +906,6 @@ export default {
 .centerBox {
   width: 100%;
   min-height: 700px;
-  // border: 1px solid red;
   .btns {
     display: flex;
     justify-content: flex-end;
@@ -779,8 +990,8 @@ export default {
   }
 
   .filterBox {
-    width: 200px;
-    height: 350px;
+    width: 300px;
+    height: auto;
     position: absolute;
     top: 50px;
     right: 0;
@@ -789,15 +1000,22 @@ export default {
     background: white;
     button {
       width: 75px;
-      margin-left: 15px;
-      margin-top: 35px;
+      position: absolute;
+      left: 58px;
+      top: 20px;
+    }
+    button:nth-child(2){
+      left: 160px;
+      top: 20px;
     }
     .filter_ {
       width: 100%;
-      min-height: 60px;
+      min-height: auto;
+      padding-bottom: 12px;
       padding-top: 12px;
       text-align: center;
       border-bottom: 1px solid #c0c4cc;
+      position: relative;
       span {
         min-width: 35px;
         color: rgb(92, 91, 91);
@@ -805,8 +1023,12 @@ export default {
         display: inline-block;
       }
       .os {
-        width: 120px;
+        width: 200px;
       }
+    }
+    .filter_:nth-child(5){
+      min-height: 80px;
+      // border-bottom: 1px solid red;
     }
   }
 }

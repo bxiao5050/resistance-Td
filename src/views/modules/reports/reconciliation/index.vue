@@ -17,12 +17,17 @@
             top="100"
           ></el-date-picker>
         </div>
-
         <!-- 渠道 -->
         <section style="margin-left:20px">
-          <el-select v-model="channelListValue" filterable  style="width: 200px; height:40px">
+          <el-select v-model="channelListValue" 
+          filterable 
+          collapse-tags
+          multiple 
+          @change="channelSelectAll" 
+          :filter-method="channelFilter"
+          style="width: 250px; height:40px">
             <el-option
-              v-for="(item) in $$ChannelList"
+              v-for="(item) in channelOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -66,7 +71,7 @@ export default {
       input:'',
       source: '',
       $_chartIsReady: 0,
-      channelListValue:'',
+      channelListValue:[],
       visibleChannelSelect:false,
       pickerOptions1: {
         onPick({ minDate, maxDate }) {
@@ -129,6 +134,9 @@ export default {
         }]
 
       },
+      channelOptions:[],
+      channelOptionsCopy:[],
+      channelOldOptions: [[]],
     }
   },
   watch: {
@@ -138,11 +146,16 @@ export default {
     },
     channelListValue(newValue, oldValue) {
       this.$store.commit("o_r_reconciliation/setChannelListValue", newValue);
+    },
+    $$ChannelList(newValue,oldValue){
+      this.channelOptions = newValue;
+      this.channelOptionsCopy = newValue;
     }
   },
   computed: {
-    $$ChannelList() {
-      return this.$store.getters["o_r_reconciliation/getChannelList"];
+    $$ChannelList() { 
+       let data = this.$store.getters["o_r_reconciliation/getChannelList"];
+       return data;
     },
     _state() {
       return this.$store.state.o_r_reconciliation;
@@ -181,7 +194,7 @@ export default {
         var params = {
           in_begin_date: this._state.date[0],       //开始日期
           in_end_date: this._state.date[1],         //结束日期
-          in_media_source: this.$$ChannelList[this.channelListValue - 1].label,             //渠道                  
+          in_media_source: this.getChannelString(),             //渠道                  
           in_operator_type: 2,                      //查询类型(1:渠道列表,2:数据)  
         };
       }
@@ -274,6 +287,10 @@ export default {
             .format("YYYY-MM-DD")
         ];
       }
+      if (this._state.channelSelectData.length>1) {
+        this.channelOptions = this._state.channelSelectData;
+        this.channelOptionsCopy = this._state.channelSelectData;
+      }
       // 渠道下拉框初始化
       if (this._state.channelListValue) {
         this.channelListValue = this._state.channelListValue;
@@ -281,6 +298,79 @@ export default {
         this.channelListValue = '';
       }
     },
+    // 渠道多选
+    channelSelectAll(val) {
+      let allValues = []
+      //保留所有值
+      for (let item of this.channelOptions) {
+        allValues.push(item.value)
+      }
+      // 用来储存上一次的值，可以进行对比
+      const oldVal = this.channelOldOptions.length === 1 ? [] : this.channelOldOptions[1]
+      // 若是全部选择
+      if ( val.includes('all')) {
+        if (this.channelOptionsCopy.length != allValues.length) {
+          allValues.shift()
+        }
+        this.channelListValue = allValues
+      }
+
+      // 取消全部选中  上次有 当前没有 表示取消全选
+      if (oldVal.includes('all') && !val.includes('all')) this.channelListValue = []
+
+      // 点击非全部选中  需要排除全部选中 以及 当前点击的选项 
+      // 新老数据都有全部选中 
+      if (oldVal.includes('all') && val.includes('all')) {
+        const index = val.indexOf('all')
+        val.splice(index, 1) // 排除全选选项
+        this.channelListValue = val
+      }
+
+      //全选未选 但是其他选项全部选上 则全选选上 上次和当前 都没有全选
+      if (!oldVal.includes('all') && !val.includes('all')) {
+        if (val.length === allValues.length - 1) this.channelListValue = ['all'].concat(val)
+      }
+
+      //储存当前最后的结果 作为下次的老数据 
+      this.channelOldOptions[1] = this.channelListValue
+    },
+    channelFilter (val) {
+      if (val) { //val存在
+          var number = 0;
+          this.channelOptions.filter((item) => {
+            if (!!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
+              number++
+            }
+          })
+          if (number>0) {
+            this.channelOptions = this.channelOptions.filter((item) => {
+              if ((item.value == "all")|| !!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
+                return true
+              }
+            })
+          }else{
+             this.channelOptions = []
+          }
+          
+        } else { //val为空时，还原数组
+          this.channelOptions = this.channelOptionsCopy;
+        }
+    },
+    getChannelString(){
+      var str = ""
+      if (this.channelListValue.includes("all")) {
+        var arr = this.channelListValue.slice(1);
+        for (let index = 0; index <arr.length; index++) {
+          str+= this.$$ChannelList[arr[index]].label+',';
+        }
+        return str;
+      }else{
+         for (let index = 0; index < this.channelListValue.length; index++) {
+          str+= this.$$ChannelList[this.channelListValue[index]].label+',';
+        }
+        return str
+      }
+    }
 
   },
 

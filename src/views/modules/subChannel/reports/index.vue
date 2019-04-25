@@ -3,10 +3,15 @@
   <div class="sub-channel-reports">
     <my-row>
       <div class="time-picker">
+        激活
         <el-date-picker @change="dateChange" size="medium" :picker-options="pickerOptions" ref="picker" v-model="pickerOptions.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" top="100">
         </el-date-picker>
       </div>
-
+      <div class="time-picker">
+        充值
+        <el-date-picker @change="payDateChange" size="medium" :picker-options="pickerOptions2" ref="picker2" v-model="pickerOptions2.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" top="100">
+        </el-date-picker>
+      </div>
       <div class="system-sel">
         <el-button-group class="group">
 
@@ -43,27 +48,37 @@
           </el-select>
         </el-button-group>
       </div>
-
-    </my-row>
-
-    <my-row style="margin: 16px 0 0 16px; width: auto">
-      <div class="level-query">
-        <el-input v-model="levelOptions.level" clearable @change="levelChange" style="width: 180px;">
-          <template slot="prepend">等级点</template>
-        </el-input>
-      </div>
-
-      <div class="excel">
-        <el-button @click="ckeck() && excel()">
-          导出表格
-        </el-button>
-      </div>
-
       <div class="query">
         <el-button @click="ckeck() && query()">
           查询
         </el-button>
       </div>
+       <div class="excel">
+        <el-button @click="ckeck() && excel()">
+          导出表格
+        </el-button>
+      </div>
+       
+    </my-row>
+
+    <my-row style="margin: 16px 0 0 16px; width: auto">
+      <!-- <div class="level-query">
+        <el-input v-model="levelOptions.level" clearable @change="levelChange" style="width: 180px;">
+          <template slot="prepend">等级点</template>
+        </el-input>
+      </div> -->
+
+      <!-- <div class="excel">
+        <el-button @click="ckeck() && excel()">
+          导出表格
+        </el-button>
+      </div> -->
+
+      <!-- <div class="query">
+        <el-button @click="ckeck() && query()">
+          查询
+        </el-button>
+      </div> -->
 
     </my-row>
     <my-row>
@@ -82,8 +97,9 @@
     </my-row>
 
     <div class="table" v-if="__data" style="margin: 16px 0 0 0;">
-      <el-table :data="__data.list" :cell-class-name="cellClassName" @cell-click="cellClick" :width="'2000px'">
-        <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key" :label="item.key" :formatter="formatter" :width="item.width" :min-width="item['min-width']" :sortable="item.sortable"></el-table-column>
+      <el-table :data="__data.list" :cell-class-name="cellClassName" @cell-click="cellClick" :width="'2000px'" :cell-style="addStyle">
+        <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key"  
+         :label="item.key" :formatter="formatter" :width="item.width" :min-width="item['min-width']" :sortable="item.sortable" v-if="!item.hide"></el-table-column>
         <div slot="append">
           <totalFloat :updateHook="updateHook" :params="{
             total: __data.total,
@@ -99,6 +115,7 @@
 <script>
 import tsdp from "src/component/widget/tree-degree-select-box/index.vue";
 import totalFloat from "src/component/widget/total-float/index.vue"
+import { valid } from 'semver';
 export default {
   name: 'sub-channel-reports',
   components: {
@@ -116,6 +133,17 @@ export default {
 
       // 日期选择
       pickerOptions: {
+        onPick({ minDate, maxDate }) {
+          if (!maxDate) {
+            this._parentEl.querySelector("input").value = moment(
+              minDate
+            ).format("YYYY-MM-DD");
+          }
+        },
+        date: null
+      },
+       // 日期选择
+      pickerOptions2: {
         onPick({ minDate, maxDate }) {
           if (!maxDate) {
             this._parentEl.querySelector("input").value = moment(
@@ -170,6 +198,7 @@ export default {
       if (this.tableOptions.siteId) {
         return this.$store.getters[this.SMN + '/subChannelRegionData'];
       }
+      console.log("1111111111111111111",this.$store.getters[this.SMN + '/subChannelData'])
       return this.$store.getters[this.SMN + '/subChannelData'];
     },
     _config() {
@@ -213,6 +242,13 @@ export default {
       })
       this.$store.commit(this.SMN + '/setDate', arr)
     },
+    payDateChange(value){
+      var arr = []
+      value.forEach(date => {
+        arr.push(moment(date).format("YYYY-MM-DD"))
+      })
+      this.$store.commit(this.SMN + '/setPayDate', arr)
+    },
     osChange(value) {
       this.$store.commit(this.SMN + '/setOs', value)
     },
@@ -225,13 +261,25 @@ export default {
       this.$store.commit(this.SMN + '/setLevel', this.levelOptions.level * 1)
     },
     formatter(row, column, value) {
-      var { label } = column
-      var { keys, index } = this._config
-      if (label === keys[index.registerRateIndex] || label === keys[index.createRateIndex] || label === keys[index.levelAfRateIndex]) {
+      var {
+        index, keys
+      } = this._config
+      var {
+        label
+      } = column
+      if (
+        label === keys[index.registerRateIndex]
+        || label === keys[index.createRateIndex]
+        || label === keys[index.roiIndex]
+        || label === keys[index.minuteIndex]        
+      ) {
         value += '%'
-      }
-      if (this.tableOptions.siteId && column.label === keys[index.regionIndex]) {
-        value = this.$store.state.overseas_common.regionMap[value] || value
+      } else if (
+        label === keys[index.keep1Index]
+        || label === keys[index.keep2Index]
+        || label === keys[index.keep3Index]
+      ) {
+        value = (value / row[keys[index.activeIndex]] * 100).format(2) + '%';
       }
       return value
     },
@@ -315,24 +363,111 @@ export default {
     },
     query() {
       var param = {
-        begin_date: this._state.date[0],
-        end_date: this._state.date[1],
+        in_install_date1:this._state.date[0],
+        in_install_date2:this._state.date[1],
+        in_pay_date1: this._state.payDate[0],
+        in_pay_date2: this._state.payDate[1],
         in_os: this._state.os,
-        area_app_id: this._state.gameArr[0],
-        media_source: this._state.channel,
-        level: this._state.level
+        in_area_app_ids: this._state.gameArr[0],
+        in_media_source: this._state.channel,
       }
       console.log(param)
       this.$store.dispatch(this.SMN + '/subChannelData', param).then(data => { })
+    },
+    getWidth(str) {
+      var len = str ? str.length:0;
+      if (len <= 2) {
+        return 80
+      }
+      if (len <= 3) {
+        return 90
+      }
+      if (len <= 4) {
+        return 100
+      }
+      if (len <= 6) {
+        return 110
+      }
+      if (len <= 9) {
+        return 120
+      }
+    },
+    addStyle({ row, column, rowIndex, columnIndex }) {
+      function r2g(value, avg) {
+        var percent = value;
+        if (percent < 30)
+          return '#f9686a'
+        else if (percent <= 50)
+          return '#ffc0cb'
+        else if (percent <= 70)
+          return '#ffeb85'
+        else if (percent <= 90)
+          return '#98fb98'
+        else
+          return '#228b22'
+      }
+      function g2r(value, avg) {
+        var middle = avg / 0.5;
+        var percent = value / middle;
+        if (percent <= 0.2)
+          return '#228b22'
+        else if (percent <= 0.4)
+          return '#98fb98'
+        else if (percent <= 0.6)
+          return '#ffeb85'
+        else if (percent <= 0.8)
+          return '#ffc0cb'
+        else
+          return '#f9686a'
+      }
+      function retColor(mmaObj, data) {
+        var avg = mmaObj.avg;
+        var isReversal = mmaObj.isReversal;
+        var style = {
+          fontWeight: 700,
+          color: '#000'
+        }
+        // if (avg === 0) return;
+        if (isReversal == true) {
+          style['background'] = g2r(data, avg);
+        } else {
+          style['background'] = r2g(data, avg);
+        }
+        return style
+      }
+      var { keys, index } = this._config
+      var { label } = column
+      var mmaObj = this.__data.mmas[label]
+      switch (label) {
+        case keys[index.registerRateIndex]:
+          return retColor(mmaObj, row[label])
+          break;
+        case keys[index.createRateIndex]:
+          return retColor(mmaObj, row[label])
+          break;
+        case keys[index.activeCostIndex]:
+          return retColor(mmaObj, row[label])
+          break;
+        case keys[index.registerCostIndex]:
+          return retColor(mmaObj, row[label])
+          break;
+        case keys[index.createCostIndex]:
+          return retColor(mmaObj, row[label])
+          break;
+      }
     }
   },
   mounted() {
     var picker = this.$refs.picker
     picker.mountPicker();
     picker.picker._parentEl = picker.$el;
+    var picker2 = this.$refs.picker2
+    picker2.mountPicker();
+    picker2.picker._parentEl = picker2.$el;
   },
   created() {
     this.pickerOptions.date = this._state.date
+    this.pickerOptions2.date = this._state.payDate
     this.osOptions.os = this._state.os
     this.levelOptions.level = this._state.level
     if (this._state.region) this.tsdp.region = this._state.region
@@ -381,7 +516,7 @@ export default {
   .channel-sel,
   .query,
   .excel {
-    margin-left: 16px;
+    margin-left: 10px;
   }
 
   .back-row {
@@ -404,6 +539,22 @@ export default {
     .group {
       display: flex;
       flex-wrap: nowrap;
+    }
+  }
+}
+.el-table {
+  th,td{
+    padding-left: 0;
+    padding-right: 0
+
+  }
+  tr:first-child {
+    th {
+      .region {
+        font-family: "黑体";
+        color: #5b5691;
+        font-size: 16px;
+      }
     }
   }
 }
