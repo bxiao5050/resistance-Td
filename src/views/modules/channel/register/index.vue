@@ -24,7 +24,8 @@
         return this.$store.state.RegChannel.ply
       },
       curView() {
-        return this.ply === 1 ? 'plyone' : this.ply === 3 ? 'plythree' : 'plytwo'
+        return 'plythree'
+        // return this.ply === 1 ? 'plyone' : this.ply === 3 ? 'plythree' : 'plytwo'
       }
     }
   }

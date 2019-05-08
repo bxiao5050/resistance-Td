@@ -122,7 +122,7 @@ export default {
       },
       // 比例
       proportion(data){
-        this.$store.commit("o_c_divided_into/setProportion",  data.format(2));
+        this.$store.commit("o_c_divided_into/setProportion",  data.format(4));
       }
   },
   methods:{

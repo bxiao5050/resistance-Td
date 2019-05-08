@@ -1,61 +1,27 @@
 <template>
 	<section id="ss-data">
 		<div class="content-header">
-			<moduleHeader :isShowReg="true" :dateList="dateList"></moduleHeader>
+			<moduleHeader :isShowReg="true" v-on:datetypeChange='selsectView'  :dateList="dateList"></moduleHeader>
 		</div>
 		<div class="content-body">
-			<card>
+			<card v-if="0">
 				<div slot="header">{{$t('common.IndexKey')}}</div>
-				<div slot="body">
-					<div class="key-index-group">
-						<div class="key-index-item">
-							<div class="item-top">{{$t('onlineData.PayUser')}}</div>
-							<div class="item-middle">3301
-								<span class="item-add-rate">+156.2</span>
-							</div>
-							<div class="item-bottom">{{$t('onlineData.Day')}} 1.10%</div>
-						</div>
-						<div class="key-index-item">
-							<div class="item-top">{{$t('onlineData.PayMoney')}}</div>
-							<div class="item-middle">3301
-								<span class="item-add-rate">+156.2</span>
-							</div>
-							<div class="item-bottom">{{$t('onlineData.Day')}} 1.10%</div>
-						</div>
-						<div class="key-index-item">
-							<div class="item-top">{{$t('onlineData.RegUserNew')}}</div>
-							<div class="item-middle">3301
-								<span class="item-add-rate">+156.2</span>
-							</div>
-							<div class="item-bottom">{{$t('onlineData.Day')}} 1.10%</div>
-						</div>
-						<div class="key-index-item">
-							<div class="item-top">{{$t('onlineData.CreateRoles')}}</div>
-							<div class="item-middle">3301
-								<span class="item-add-rate">+156.2</span>
-							</div>
-							<div class="item-bottom">{{$t('onlineData.Day')}} 1.10%</div>
-						</div>
-					</div>
-				</div>
 			</card>
 			<card>
 				<div slot="header">
-					<div class="card-header-title">{{$t('onlineData.HourData')}}</div>
-					<div class="tabs">
-						<div class="tab-item" :class="{'active':type==1}" @click="type=1">{{$t('onlineData.PayMoney')}}</div>
-						<div class="tab-item" :class="{'active':type==2}" @click="type=2">{{$t('onlineData.PayUser')}}</div>
-						<div class="tab-item" :class="{'active':type==3}" @click="type=3">{{$t('onlineData.RegUserNew')}}</div>
-						<div class="tab-item" :class="{'active':type==4}" @click="type=4">{{$t('onlineData.CreateRoles')}}</div>
-						<div class="tab-item" :class="{'active':type==5}" @click="type=5">{{$t('onlineData.PayArpu')}}</div>
-					</div>
+					<div class="card-header-title">图表数据</div>
 				</div>
 				<div slot="body">
 					<div id="hourChart"></div>
 				</div>
 			</card>
 			<card>
-				<div slot="header">详细数据</div>
+				<div slot="header">
+          <div class="card-header-title">{{$t('common.DataDetails')}}</div>
+          <div class="export-link">
+            <a href="javascript:void(0)" @click="exportData"><i class="icon-download"></i>导出数据</a>
+          </div>
+        </div>
 				<div slot="body">
 					<div class="table-content">
 						<normalTable :tableData="detailData"></normalTable>
@@ -84,10 +50,10 @@ export default {
 	},
 	data() {
 		return {
-			date1: moment().format("YYYY-MM-DD"),
+			date1: [moment().add(-7, 'day').format('YYYY-MM-DD'),moment().add(-1, 'day').format('YYYY-MM-DD')],
 			nowTime: '',
 			type: 1,
-
+			in_date_type:'day',
 			payMoneyData: [],
 			payCountData: [],
 			regCountData: [],
@@ -102,12 +68,13 @@ export default {
 		dateList() {
 			return [
 				{
-					single: true,
+					single: false,
 					uid: 'date1',
 					label: this.$t('common.Date'),
-					startDate: this.date1,
-					endDate: '',
-					change: (newDate) => { this.date1 = newDate.startDate; this.query(); }
+					startDate: this.date1[0],
+					isShowDatetype:1,
+					endDate: this.date1[1],
+					change: (newDate) => { this.date1[0] = newDate.startDate;this.date1[1] = newDate.endDate;this.query() }
 				}]
 		}
 	},
@@ -120,140 +87,186 @@ export default {
 		clearInterval(window.timeInterval);
 	},
 	methods: {
+		selsectView(newValue){
+			switch (newValue) {
+				case 1:
+					this.in_date_type = 'day';
+					this.date1 = [moment().add(-7, "day").format("YYYY-MM-DD"), moment().add(-1, "day").format("YYYY-MM-DD")];
+					break;
+				case 2:
+					this.in_date_type = 'week';
+					this.date1 = [moment().add(-7, "week").format("YYYY-MM-DD"), moment().add(-1, "week").format("YYYY-MM-DD")];
+					break;
+				case 3:
+					this.in_date_type = 'month';
+					this.date1 = [moment().add(-7, "month").format("YYYY-MM-DD"), moment().add(-1, "month").format("YYYY-MM-DD")];
+					break;	
+				default:
+					break;
+			}
+			this.query()
+		},
 		getDateTime() {
 			this.nowTime = moment().format("HH:mm:ss")
 		},
 		query() {
-			this.getPayMoney()//获取付费金额
-			this.getPayCount()//获取付费用户数
-			this.getRegCount()//获取注册用户数
-			this.getRoleCount()//获取创角用户数
-			this.getPayARPU()//获取付费ARPU
-			this.getDetailData()//获取详细信息
-		},
-		getPayMoney() {
-			this.getQuery(1).then((data) => {
-				if (data.code == 401) {
-					this.payMoneyData = data.state[0];
-					if (this.type == 1) {
-						this.drawChart(this.payMoneyData)
-					}
-				}
-				else {
-					Utils.Notification.error({ message: data.message });
-					console.error(data.message);
-				}
-			})
-		},
-		getPayCount() {
-			this.getQuery(2).then((data) => {
-				if (data.code == 401) {
-					this.payCountData = data.state[0];
-					if (this.type == 2) {
-						this.drawChart(this.payCountData)
-					}
-				}
-				else {
-					Utils.Notification.error({ message: data.message });
-					console.error(data.message);
-				}
-			})
-		},
-		getRegCount() {
-			this.getQuery(3).then((data) => {
-				if (data.code == 401) {
-					this.regCountData = data.state[0];
-					if (this.type == 3) {
-						this.drawChart(this.regCountData)
-					}
-				}
-				else {
-					Utils.Notification.error({ message: data.message });
-					console.error(data.message);
-				}
-			})
-		},
-		getRoleCount() {
-			this.getQuery(4).then((data) => {
-				if (data.code == 401) {
-					this.roleCountData = data.state[0];
-					if (this.type == 4) {
-						this.drawChart(this.roleCountData)
-					}
-				}
-				else {
-					Utils.Notification.error({ message: data.message });
-					console.error(data.message);
-				}
-			})
-		},
-		getPayARPU() {
-			this.getQuery(5).then((data) => {
-				if (data.code == 401) {
-					this.payARPUData = data.state[0];
-					if (this.type == 5) {
-						this.drawChart(this.payARPUData)
-					}
-				}
-				else {
-					Utils.Notification.error({ message: data.message });
-					console.error(data.message);
-				}
-			})
-		},
-		getDetailData() {
-			this.getQuery(6).then((data) => {
-				if (data.code == 401) {
-					this.detailData = data.state[0];
-
-					this.columnData = data.state[1];
-				}
-				else {
-					Utils.Notification.error({ message: data.message });
-					console.error(data.message);
-				}
-			})
-		},
-		getQuery(select_type) {
 			var params = {
-				isCache: 1,
-				in_date1: this.date1,
-				in_date2: moment(this.date1).add(-1, 'day').format('YYYY-MM-DD'),
-				in_date3: moment(this.date1).add(-7, 'day').format('YYYY-MM-DD'),
-				dataview: this.$store.state.common.nowmenu.dataView,
-				in_gamezoneid: this.$store.getters['Agent/selectedIdList'],
-				in_regchannel: this.$store.getters['RegChannel/selectedIdList'],
-				in_platform: '1,2',
-				select_type: select_type
+				in_begin_date: this.date1[0],
+				in_end_date: this.date1[1],
+				in_app_id:this.$store.state['common'].nowgame,
+				dataview: this.$store.state.common.nowmenu.dataView[0],
+				in_gamezone_id: this.$store.getters['Agent/selectedIdList'],
+				in_channel_id: this.$store.getters['RegChannel/selected3IdList'],
+				in_date_type: 'day'
 			}
-			return api.user.getQuery(params)
-		},
-		drawChart(data) {
-			var chartData = data.reverse()
-			var date1 = this.date1;
-			var date2 = moment(this.date1).add(-1, 'day').format('YYYY-MM-DD');
-			var date3 = moment(this.date1).add(-7, 'day').format('YYYY-MM-DD')
-
-			var dateList = [date1, date2, date3];
-			var categories = [];
-			var seriesData = []
-			data.map((item) => {
-				categories.push(item.count_time);
-			})
-			dateList.forEach((date) => {
-				seriesData.push({
-					name: date,
-					data: (() => {
-						let array = []
-						data.map((item) => {
-							array.push(item[date] * 1)
+			api.user.getQuery(params).then((data)=>{
+				if (data.code == 401) {
+					this.detailData = data.state[0]
+					var xAxis = [];
+					var chartData = [];
+					// 获取data
+					Object.keys(this.detailData[0]).forEach((key,index)=>{
+						if (index > 0) {
+							chartData.push({name:key,data:[]})
+						}
+					})
+					// 获取x轴横坐标
+					for (let index = 0; index < this.detailData.length; index++) {
+						Object.keys(this.detailData[index]).forEach((key,msg)=>{
+						switch (msg) {
+							case 0:
+							xAxis.push(this.detailData[index][key])
+							break;
+							case 1:
+							chartData[0].data.push(+this.detailData[index][key])
+							break;
+							case 2:
+							chartData[1].data.push(+this.detailData[index][key])
+							break;
+							case 3:
+							chartData[2].data.push(+this.detailData[index][key])
+							break;
+							case 4:
+							chartData[3].data.push(+this.detailData[index][key])
+							break;
+							case 5:
+							chartData[4].data.push(+this.detailData[index][key])
+							break;
+							case 6:
+							chartData[5].data.push(+this.detailData[index][key])
+							break;
+							case 7:
+							chartData[6].data.push(+this.detailData[index][key])
+							break;
+							default:
+							break;
+						}
 						})
-						return array
-					})(),
-					max: 0				})
+					}  
+					this.drawChart(xAxis,chartData)
+				}
+				else {
+					Utils.Notification.error({ message: data.message });
+					console.error(data.message);
+				}
+
 			})
-			highchartUtil.drawFiveMinLine('hourChart', categories, seriesData)
-		}
+
+		},
+		exportData() {
+      var params = {
+				in_begin_date: this.date1[0],
+				in_end_date: this.date1[1],
+				in_app_id:this.$store.state['common'].nowgame,
+				dataview: this.$store.state.common.nowmenu.dataView[0],
+				in_gamezone_id: this.$store.getters['Agent/selectedIdList'],
+				in_channel_id: this.$store.getters['RegChannel/selected3IdList'],
+				in_date_type: this.in_date_type,
+			}
+      api.user.exportData(params)
+    },
+		drawChart(xAxis,data) {
+			var chart = Highcharts.chart('hourChart', {
+				chart: {
+					type: 'spline',
+				},
+				legend: {
+					align: 'center', //水平方向位置
+					// layout: 'vertical',
+					verticalAlign: 'top', //垂直方向位置
+					x: 0, //距离x轴的距离
+					y: 20 //距离Y轴的距离
+				},
+				title: {
+					text: '',
+				},
+				subtitle: {
+					text: ''
+				},
+				xAxis: {
+					categories: xAxis,
+					crosshair: {
+					width: 1,
+					color: '#747474'
+					}
+				},
+				yAxis: {
+					title: {
+					text: ''
+					},
+					labels: {
+					// 
+					formatter: function (index) {
+						// if (+localStorage.getItem("percent")>=3) {
+						//   return this.value + '%';//y轴加上%
+						// }else{
+						return this.value
+						// }
+					}
+
+					},
+					crosshair: {
+					width: 1,
+					color: '#747474'
+					}
+				},
+				tooltip: {
+					shared: true,
+				},
+				plotOptions: {
+					line: {
+					dataLabels: {
+						// 开启数据标签
+						enabled: false
+					},
+					// 关闭鼠标跟踪，对应的提示框、点击事件会失效
+					enableMouseTracking: true
+					},
+					series: {
+					// 隐藏拐点
+					marker: {
+						enabled: false
+					},
+					events: {
+						// legendItemClick: function () {
+						//   // return false 即可禁止图例点击响应
+						//   return false;
+						// }
+					}
+					}
+				},
+				credits: {
+					enabled: false　　　　　　//去除highcharts的链接
+				},
+				series: data,
+				navigation: {
+					buttonOptions: {
+					enabled: true
+					}
+				}
+
+				});
+			}
 	},
 	watch: {
 		type(v, ov) {

@@ -47,7 +47,7 @@ export default {
 <style lang="scss" scoped>
 .game-list {
   color: #000;
-  overflow: hidden;
+  overflow: auto;
   .ctn {
     padding: 16px;
     // float: left;
@@ -84,3 +84,4 @@ export default {
   }
 }
 </style>
+  

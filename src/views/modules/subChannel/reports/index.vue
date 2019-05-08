@@ -4,12 +4,31 @@
     <my-row>
       <div class="time-picker">
         激活
-        <el-date-picker @change="dateChange" size="medium" :picker-options="pickerOptions" ref="picker" v-model="pickerOptions.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" top="100">
+        <el-date-picker 
+          @change="dateChange" 
+          size="medium" 
+          :picker-options="pickerOptions" 
+          ref="picker" 
+          v-model="pickerOptions.date" 
+          type="daterange" 
+          range-separator="至" 
+          start-placeholder="开始日期" 
+          end-placeholder="结束日期" 
+          top="100">
         </el-date-picker>
       </div>
       <div class="time-picker">
         充值
-        <el-date-picker @change="payDateChange" size="medium" :picker-options="pickerOptions2" ref="picker2" v-model="pickerOptions2.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" top="100">
+        <el-date-picker 
+        @change="payDateChange" 
+        size="medium" 
+        :picker-options="pickerOptions2" 
+        ref="picker2" 
+        v-model="pickerOptions2.date" 
+        type="daterange" 
+        range-separator="至" 
+        start-placeholder="开始日期" 
+        end-placeholder="结束日期" top="100">
         </el-date-picker>
       </div>
       <div class="system-sel">
@@ -95,11 +114,11 @@
         </el-button>
       </div>
     </my-row>
-
     <div class="table" v-if="__data" style="margin: 16px 0 0 0;">
       <el-table :data="__data.list" :cell-class-name="cellClassName" @cell-click="cellClick" :width="'2000px'" :cell-style="addStyle">
         <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key"  
-         :label="item.key" :formatter="formatter" :width="item.width" :min-width="item['min-width']" :sortable="item.sortable" v-if="!item.hide"></el-table-column>
+         :label="item.key" :formatter="formatter" :width="item.width" :min-width="item['min-width']" :sortable="item.sortable" v-if="!item.hide"
+         :fixed="i<=2?true:false"></el-table-column>
         <div slot="append">
           <totalFloat :updateHook="updateHook" :params="{
             total: __data.total,
@@ -140,6 +159,57 @@ export default {
             ).format("YYYY-MM-DD");
           }
         },
+         shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.dateShortcuts('今天', picker)
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              picker.dateShortcuts('昨天', picker)
+            }
+          }, {
+            text: '近7天',
+            onClick(picker) {
+              picker.dateShortcuts('近7天', picker)
+            }
+          }, {
+            text: '近15天',
+            onClick(picker) {
+              picker.dateShortcuts('近15天', picker)
+            }
+          }, {
+            text: '近30天',
+            onClick(picker) {
+              picker.dateShortcuts('近30天', picker)
+            }
+          }, {
+            text: '近30-60天',
+            onClick(picker) {
+              picker.dateShortcuts('近30-60天', picker)
+            }
+          }, {
+            text: '本月',
+            onClick(picker) {
+              picker.dateShortcuts('本月', picker)
+            }
+          }, {
+            text: '上月',
+            onClick(picker) {
+              picker.dateShortcuts('上月', picker)
+            }
+          }, {
+            text: '今年',
+            onClick(picker) {
+              picker.dateShortcuts('今年', picker)
+            }
+          }, {
+            text: '去年',
+            onClick(picker) {
+              picker.dateShortcuts('去年', picker)
+            }
+          }],
         date: null
       },
        // 日期选择
@@ -151,6 +221,57 @@ export default {
             ).format("YYYY-MM-DD");
           }
         },
+         shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.dateShortcuts('今天', picker)
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              picker.dateShortcuts('昨天', picker)
+            }
+          }, {
+            text: '近7天',
+            onClick(picker) {
+              picker.dateShortcuts('近7天', picker)
+            }
+          }, {
+            text: '近15天',
+            onClick(picker) {
+              picker.dateShortcuts('近15天', picker)
+            }
+          }, {
+            text: '近30天',
+            onClick(picker) {
+              picker.dateShortcuts('近30天', picker)
+            }
+          }, {
+            text: '近30-60天',
+            onClick(picker) {
+              picker.dateShortcuts('近30-60天', picker)
+            }
+          }, {
+            text: '本月',
+            onClick(picker) {
+              picker.dateShortcuts('本月', picker)
+            }
+          }, {
+            text: '上月',
+            onClick(picker) {
+              picker.dateShortcuts('上月', picker)
+            }
+          }, {
+            text: '今年',
+            onClick(picker) {
+              picker.dateShortcuts('今年', picker)
+            }
+          }, {
+            text: '去年',
+            onClick(picker) {
+              picker.dateShortcuts('去年', picker)
+            }
+          }],
         date: null
       },
 
@@ -198,7 +319,6 @@ export default {
       if (this.tableOptions.siteId) {
         return this.$store.getters[this.SMN + '/subChannelRegionData'];
       }
-      console.log("1111111111111111111",this.$store.getters[this.SMN + '/subChannelData'])
       return this.$store.getters[this.SMN + '/subChannelData'];
     },
     _config() {
@@ -271,16 +391,13 @@ export default {
         label === keys[index.registerRateIndex]
         || label === keys[index.createRateIndex]
         || label === keys[index.roiIndex]
-        || label === keys[index.minuteIndex]        
+        || label === keys[index.minuteIndex]   
+        || label === keys[index.keep1Index]
+        || label === keys[index.keep2Index]
+        || label === keys[index.keep3Index]     
       ) {
         value += '%'
-      } else if (
-        label === keys[index.keep1Index]
-        || label === keys[index.keep2Index]
-        || label === keys[index.keep3Index]
-      ) {
-        value = (value / row[keys[index.activeIndex]] * 100).format(2) + '%';
-      }
+      } 
       return value
     },
     cellClick(row, column, cell, event) {
@@ -455,15 +572,90 @@ export default {
           return retColor(mmaObj, row[label])
           break;
       }
-    }
+    },
+    dateShortcuts(txt, picker) {
+      var date
+      switch (txt) {
+        case '今天':
+          var date_ = new Date
+          date = [date_, date_]
+          break
+        case '昨天':
+          var date_ = new Date
+          date_.setTime(Date.now() - 3600 * 1000 * 24);
+          date = [date_, date_]
+          break
+        case '近7天':
+          var dateBegin = new Date
+          var dataEnd = new Date
+          dateBegin.setTime(Date.now() - 3600 * 1000 * 24 * 7);
+          dataEnd.setTime(Date.now() - 3600 * 1000 * 24);
+          date = [dateBegin, dataEnd]
+          break
+        case '近15天':
+          var dateBegin = new Date
+          var dataEnd = new Date
+          dateBegin.setTime(Date.now() - 3600 * 1000 * 24 * 15);
+          dataEnd.setTime(Date.now() - 3600 * 1000 * 24);
+          date = [dateBegin, dataEnd]
+          break
+        case '近30天':
+          var dateBegin = new Date
+          var dataEnd = new Date
+          dateBegin.setTime(Date.now() - 3600 * 1000 * 24 * 30);
+          dataEnd.setTime(Date.now() - 3600 * 1000 * 24);
+          date = [dateBegin, dataEnd]
+          break
+        case '近30-60天':
+          var dateBegin = new Date
+          var dataEnd = new Date
+          dateBegin.setTime(Date.now() - 3600 * 1000 * 24 * 60);
+          dataEnd.setTime(Date.now() - 3600 * 1000 * 24 * 30);
+          date = [dateBegin, dataEnd]
+          break
+        case '本月':
+          var dataEnd = new Date
+          var curyear = dataEnd.getFullYear()
+          var curmonth = dataEnd.getMonth()
+          dateBegin = new Date(curyear, curmonth, 1)
+          date = [dateBegin, dataEnd]
+          break
+        case '上月':
+          var dataEnd = new Date
+          var curyear = dataEnd.getFullYear()
+          var curmonth = dataEnd.getMonth()
+          dateBegin = new Date(curyear, curmonth - 1, 1)
+          dataEnd = new Date(curyear, curmonth, 0)
+          date = [dateBegin, dataEnd]
+          break
+        case '今年':
+          var dataEnd = new Date
+          var curyear = dataEnd.getFullYear()
+          dateBegin = new Date(curyear, 0, 1)
+          date = [dateBegin, dataEnd]
+          break
+        case '去年':
+          var dataEnd = new Date
+          var curyear = dataEnd.getFullYear()
+          var curmonth = dataEnd.getMonth()
+          dateBegin = new Date(curyear - 1, 0, 1)
+          dataEnd = new Date(curyear, 0, 0)
+          date = [dateBegin, dataEnd]
+          break
+      }
+      picker.$emit('pick', date);
+    },
   },
   mounted() {
     var picker = this.$refs.picker
     picker.mountPicker();
     picker.picker._parentEl = picker.$el;
+    picker.picker.dateShortcuts = this.dateShortcuts
+
     var picker2 = this.$refs.picker2
     picker2.mountPicker();
     picker2.picker._parentEl = picker2.$el;
+    picker2.picker.dateShortcuts = this.dateShortcuts
   },
   created() {
     this.pickerOptions.date = this._state.date

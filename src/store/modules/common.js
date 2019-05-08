@@ -6,7 +6,6 @@ const state = {
   nowgame: null,
   menus: [],
   nowmenu: null,
-
   curLanguage: 'CHS',
   languages: {
     // CHS: require('src/components/system/language/packs/chs.js'), Tradition:

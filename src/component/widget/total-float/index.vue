@@ -12,6 +12,16 @@
         </tr>
       </tbody>
     </table>
+        <!-- <el-table
+        :data="[params.total]"
+        :show-header= 'false'
+        >
+        <el-table-column v-for="(item, i) in params.tableKey" :key="i"
+          :prop="item.key"  
+          :label="item.key"  :width="item.width" :min-width="item['min-width']"  v-if="!item.hide" 
+          :fixed="i<=2?true:false">
+        </el-table-column>
+      </el-table> -->
   </div>
 </template>
 

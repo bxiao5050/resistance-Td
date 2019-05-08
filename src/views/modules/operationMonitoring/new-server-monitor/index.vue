@@ -4,14 +4,28 @@
       <moduleHeader :header="header" :isShowReg="true" :dateList="dateList"></moduleHeader>
     </div>
     <div class="content-body">
-        <card>
-          <div slot="header">详细数据</div>
-          <div slot="body">
-            <div class="table-content">
-            <normalTable :tableData="data"></normalTable>
-            </div>
+      <card>
+				<div slot="header">
+					<div class="card-header-title">图表数据</div>
+				</div>
+				<div slot="body">
+					<div id="hourChart"></div>
+				</div>
+			</card>
+      <card>
+        <!-- <div slot="header">详细数据</div> -->
+        <div slot="header">
+          <div class="card-header-title">{{$t('common.DataDetails')}}</div>
+          <div class="export-link">
+            <a href="javascript:void(0)" @click="exportData"><i class="icon-download"></i>导出数据</a>
           </div>
-        </card>
+        </div>
+        <div slot="body">
+          <div class="table-content">
+          <normalTable :tableData="tableData"></normalTable>
+          </div>
+        </div>
+      </card>
     </div>
   </section>
 </template>
@@ -19,6 +33,7 @@
 <script>
 import moduleHeader from 'src/views/modules/module-header'
 import card from 'src/components/card.vue'
+import api from 'src/services/api'
 import normalTable from 'src/components/normal-table.vue'
 export default {
   name: 'new-server-monitor',
@@ -26,9 +41,17 @@ export default {
     card, moduleHeader,  normalTable
   },
   computed: {
-    data() {
-      return this.$store.state.NewServerMonitor.data
-    }
+    dateList() {
+			return [
+				{
+					single: false,
+					uid: 'date1',
+					label: this.$t('common.Date'),
+					startDate: this.date1[0],
+					endDate: this.date1[1],
+					change: (newDate) => { this.date1[0] = newDate.startDate;this.date1[1] = newDate.endDate;this.query() }
+				}]
+		}
   },
   data() {
     return {
@@ -37,17 +60,7 @@ export default {
         definedContent: '',
         isShowIndex: false,
       },
-      dateList: [
-        {
-          single: true,
-          uid: 'date1',
-          label: '日期',
-          startDate: this.date1,
-          endDate: '',
-          change: (newDate) => { this.date1 = newDate.startDate; this.query(); }
-        }],
-
-      date1: moment().format("YYYY-MM-DD"),
+			date1: [moment().add(-8, 'day').format('YYYY-MM-DD'),moment().add(-2, 'day').format('YYYY-MM-DD')],
       tableData: [],
     }
   },
@@ -55,20 +68,156 @@ export default {
     this.query();
   },
   methods: {
-    changeDate(newDate) {
-      this.date1 = newDate.startDate
-      // console.log(newDate.startDate)
-    },
     query() {
-      this.$store.dispatch('NewServerMonitor/data', {
-        isCache: 1,
-        in_date1: this.date1,
-        dataview: this.$store.state.common.nowmenu.dataView,
-        in_gamezoneid: this.$store.getters['Agent/selectedIdList'],
-        in_regchannel: this.$store.getters['RegChannel/selectedIdList'],
-        platformId: '1,2'
+      var params = {
+				in_begin_date: this.date1[0],
+				in_end_date: this.date1[1],
+				in_app_id:this.$store.state['common'].nowgame,
+        dataview: this.$store.state.common.nowmenu.dataView[0],
+				in_gamezone_id: this.$store.getters['Agent/selectedIdList'],
+				in_channel_id: this.$store.getters['RegChannel/selected3IdList'],
+			}
+			api.user.getQuery(params).then((data)=>{
+				if (data.code == 401) {
+					this.tableData = data.state[0]
+          var xAxis = [];
+					var chartData = [];
+					// 获取data
+					Object.keys(this.tableData[0]).forEach((key,index)=>{
+            switch (index) {
+              case 1:
+							  chartData.push({name:'次日留存率',data:[]})                
+                break;
+              case 7:
+							  chartData.push({name:'7日留存率',data:[]})                
+                break;
+              case 9:
+							  chartData.push({name:'30日留存率',data:[]})                
+                break;
+              default:
+                break;
+            }
+          })
+					// 获取x轴横坐标
+					for (let index = 0; index < this.tableData.length; index++) {
+						Object.keys(this.tableData[index]).forEach((key,msg)=>{
+						switch (msg) {
+							case 0:
+                xAxis.push(this.tableData[index][key])
+                break;
+							case 1:
+                chartData[0].data.push(+this.tableData[index][key])
+                break;
+							case 7:
+                chartData[1].data.push(+this.tableData[index][key])
+                break;
+							case 9:
+                chartData[2].data.push(+this.tableData[index][key])
+                break;
+							default:
+							break;
+						}
+						})
+					}  
+          this.drawChart(xAxis,chartData)
+        }else {
+					Utils.Notification.error({ message: data.message });
+					console.error(data.message);
+				}
       })
-    }
+    },
+    drawChart(xAxis,data) {
+			var chart = Highcharts.chart('hourChart', {
+				chart: {
+					type: 'spline',
+				},
+				legend: {
+					align: 'center', //水平方向位置
+					// layout: 'vertical',
+					verticalAlign: 'top', //垂直方向位置
+					x: 0, //距离x轴的距离
+					y: 20 //距离Y轴的距离
+				},
+				title: {
+					text: '',
+				},
+				subtitle: {
+					text: ''
+				},
+				xAxis: {
+					categories: xAxis,
+					crosshair: {
+					width: 1,
+					color: '#747474'
+					}
+				},
+				yAxis: {
+					title: {
+					text: ''
+					},
+					labels: {
+					// 
+					formatter: function (index) {
+						// if (+localStorage.getItem("percent")>=3) {
+						//   return this.value + '%';//y轴加上%
+						// }else{
+						return this.value
+						// }
+					}
+
+					},
+					crosshair: {
+					width: 1,
+					color: '#747474'
+					}
+				},
+				tooltip: {
+					shared: true,
+				},
+				plotOptions: {
+					line: {
+					dataLabels: {
+						// 开启数据标签
+						enabled: false
+					},
+					// 关闭鼠标跟踪，对应的提示框、点击事件会失效
+					enableMouseTracking: true
+					},
+					series: {
+					// 隐藏拐点
+					marker: {
+						enabled: false
+					},
+					events: {
+						// legendItemClick: function () {
+						//   // return false 即可禁止图例点击响应
+						//   return false;
+						// }
+					}
+					}
+				},
+				credits: {
+					enabled: false　　　　　　//去除highcharts的链接
+				},
+				series: data,
+				navigation: {
+					buttonOptions: {
+					enabled: true
+					}
+				}
+			});
+    },
+    exportData() {
+      var params = {
+				in_begin_date: this.date1[0],
+				in_end_date: this.date1[1],
+				in_app_id:this.$store.state['common'].nowgame,
+        dataview: this.$store.state.common.nowmenu.dataView[0],
+				in_gamezone_id: this.$store.getters['Agent/selectedIdList'],
+				in_channel_id: this.$store.getters['RegChannel/selected3IdList'],
+			}
+      api.user.exportData(params)
+    },
   }
 }
 

@@ -143,6 +143,7 @@ export default {
     date(data) {
       var date = data.map(item => moment(item).format("YYYY-MM-DD"));
       this.$store.commit("o_r_reconciliation/setDate", date);
+      this.getData('channelList')
     },
     channelListValue(newValue, oldValue) {
       this.$store.commit("o_r_reconciliation/setChannelListValue", newValue);
@@ -178,8 +179,8 @@ export default {
       if (tag == 'channelList') {
         // 获取渠道
         var params = {
-          in_begin_date: '2019-01-01',   //开始日期
-          in_end_date: '2019-01-02',    //结束日期
+          in_begin_date: this._state.date?this._state.date[0]: moment().add(-1, "day").format("YYYY-MM-DD"),   //开始日期
+          in_end_date: this._state.date?this._state.date[1]: moment().add(-1, "day").format("YYYY-MM-DD"),    //结束日期
           in_media_source: '',          //渠道                  
           in_operator_type: 1,          //查询类型(1:渠道列表,2:数据) 
         };

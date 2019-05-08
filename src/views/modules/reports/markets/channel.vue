@@ -161,8 +161,9 @@
             :prop="item"
             :label="item"
             :formatter="formatter"
+            :fixed="i<=2?true:false"
             :width="getWidth(item)"
-            :sortable = "i>=2?true:false"
+            :sortable="i!=1?(i==0?(isSort?true:false):true):false"
           ></el-table-column>
         </el-table>
       </div>
@@ -190,6 +191,7 @@ export default {
       value: "table",
       width: -300,
       viewValue: '1',     //视图下标
+      isSort:false,
       systemValue: '2',   //系统下标
       lineValue: 0,       //
       channelValue: [],   //渠道下标
@@ -215,6 +217,9 @@ export default {
     };
   },
   computed: {
+    $$tableSort(){
+      return this.$store.getters['o_r_delivery/getAllChannel'];
+    },
     $$getChannelInfo(){
       var getChannelInfo = this.$store.getters["o_r_delivery/getChannelInfo"];
       return getChannelInfo
@@ -251,6 +256,13 @@ export default {
     this.value = 'table'
   },
   watch:{
+    $$tableSort(newValue,oldValue){
+      if(+this.viewValue == 2){
+        this.isSort = true;
+      }else{
+        this.isSort = false;
+      }
+    },
     $$getChannelInfo(newValue,oldValue){
       // this.channelOptions = newValue.channelName;
       // this.channelOptionsCopy = newValue.channelName;
@@ -315,6 +327,8 @@ export default {
     getSummaries(param) {
       const { columns, data } = param;
       const sums = [];
+      var activeData = []; 
+      var constData = [];
       columns.forEach((column, index) => {
         if (index === 0) {
           sums[index] = '全部';
@@ -324,11 +338,33 @@ export default {
           sums[index] = '全部';
           return;
         }
-
-        const values = data.map(item => Number(item[column.property]));
+        var values = data.map((item) => Number(item[column.property]));
+        if (index === 2) {
+          activeData = values
+        }
+        // if (index === 10) {
+        //   constData = values;
+        // }
+        // console.log(index,values);
+        // if (index === 13 || index === 12) {
+        //   var arr = [];
+        //   for (let index = 0; index < values.length; index++) {
+        //     arr.push(values[index]*(constData[index]))
+        //   }
+        //   // console.log(index,arr);
+        //   values = arr
+        // }else 
+        if(index > 13){
+          var arr = [];
+          for (let index = 0; index < values.length; index++) {
+            arr.push(values[index]*(activeData[index]))
+          }
+          values = arr
+        }
         if (!values.every(value => isNaN(value))) {
+          
           sums[index] = values.reduce((prev, curr) => {
-            const value = Number(curr);
+            const value = Number(curr);            
             if (!isNaN(value)) {
               return (prev + curr).format(2);
             } else {
@@ -345,13 +381,17 @@ export default {
           sums[index] = (sums[4] / sums[2] * 100).format(2) + '%';
         }
       });
-      sums[7] = (sums[10] / sums[2]).format(2);
-      sums[8] = (sums[10] / sums[3]).format(2);
-      sums[9] = (sums[10] / sums[4]).format(2);
-      sums[12] = (sums[11] / sums[10]).format(2) + '%';
-      sums[14] = (sums[14] / sums[2]).format(2) + '%';
-      sums[15] = (sums[15] / sums[2]).format(2) + '%';
-      sums[16] = (sums[16] / sums[2]).format(2) + '%';
+      sums[7] = (sums[10] / sums[2]).format(2); //激活成本
+      sums[8] = (sums[10] / sums[3]).format(2); //注册成本
+      sums[9] = (sums[10] / sums[4]).format(2); //创角成本
+      sums[12] = ((sums[11] / sums[10])*100).format(2) + '%'; //ROI
+      sums[14] = ((sums[13] / sums[10])*100).format(2) + '%'; //分成ROI
+      sums[15] = ((sums[14] / sums[2])).format(2); //7日LTV
+      sums[16] = ((sums[15] / sums[2])).format(2); //14日LTV
+      sums[17] = ((sums[16] / sums[2])).format(2); //30日LTV
+      sums[18] = ((sums[17] / sums[2])).format(2) + '%';
+      sums[19] = ((sums[18] / sums[2])).format(2) + '%';
+      sums[120] = ((sums[19] / sums[2])).format(2) + '%';
       return sums;
     },
     back() {
@@ -365,18 +405,17 @@ export default {
       if (
         label === '注册率'
         || label === '创角率'
-        || label === 'ROI'
+        
       ) {
         // value += '%'
         value = +value ? value.format(2)+'%':value.format(0)+'%';
-
-      }
-      else if (
+      }else if(label === 'ROI'|| label === '分成ROI'){
+        value = (value).format(2) + '%';
+      }else if (
         label === '次日留存'
         || label === '3日留存'
         || label === '7日留存'
       ) {
-        // value = (value / row[keys[index.activeIndex]] * 100).format(2) + '%';
         value = value.format(2) + '%';
       }else if(label === '激活成本'
         || label === '注册成本'
@@ -522,7 +561,7 @@ export default {
       }
       if (this.width == 0) {
         let timer = setInterval(() => {
-          this.width -= 10;
+          this.width -= 20;
           if (this.width == -width) {
             clearInterval(timer);
             this.isShow = !this.isShow
@@ -530,7 +569,7 @@ export default {
         }, 10);
       } else if (this.width == -width) {
         let timer = setInterval(() => {
-          this.width += 10;
+          this.width += 20;
           if (this.width == 0) {
             clearInterval(timer);
             this.isShow = !this.isShow
@@ -755,9 +794,15 @@ export default {
               number++
             }
           })
-          if (number>0) {
+          if (number > 1) {
             this.channelOptions = this.channelOptions.filter((item) => {
               if ((item.value == "all")|| !!~item.lable.indexOf(val) || !!~item.lable.toUpperCase().indexOf(val.toUpperCase())) {
+                return true
+              }
+            })
+          }else if(number == 1){
+            this.channelOptions = this.channelOptions.filter((item) => {
+              if (!!~item.lable.indexOf(val) || !!~item.lable.toUpperCase().indexOf(val.toUpperCase())) {
                 return true
               }
             })
@@ -777,12 +822,19 @@ export default {
               number++
             }
           })
-          if (number>0) {
+          if (number==1) {
+            this.areaOptions = this.areaOptions.filter((item) => {
+              if (!!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
+                return true
+              }
+            })
+          }else if(number>1){
             this.areaOptions = this.areaOptions.filter((item) => {
               if ((item.value == "all")|| !!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
                 return true
               }
             })
+          
           }else{
             this.areaOptions = []
           }
@@ -819,9 +871,6 @@ export default {
         }
           this.channelValue = channelAllValues
       }
-      console.log(channelAllValues);
-      
-      
     },
     area_init(newValue){
       if(newValue.length == 0){
@@ -839,7 +888,7 @@ export default {
                 arr.push(this.$$getChannelInfo.channelNameData[0][index].value)
                 flag.push(this.$$getChannelInfo.channelNameData[0][index])
               }else{
-                console.log(">>>>>>>>>>>>>>>>",index);
+                // console.log(">>>>>>>>>>>>>>>>",index);
               }
               
             }

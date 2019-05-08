@@ -5,7 +5,12 @@
      -->
     <div class="table-item" v-for="(region, i) in $$data.category" :key="i">
       <el-table :default-sort="{prop: _config.keys[_config.index.activeIndex], order: $data.$_order}" :data="$$data[region]" :cell-style="addStyle">
-        <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key" :label="item.key" :sortable="item.sortable" :width="item.width" 
+        <el-table-column v-for="(item, i) in _config.tableKey" :key="i" 
+        :prop="item.key" 
+        :label="item.key" 
+        :fixed="i<=2?true:false"
+        :sortable="item.sortable" 
+        :width="item.width" 
         :formatter="formatter" 
         v-if="!item.hide">
         <template slot="header" ><span :class="[i==0?'region':'']">{{i==0?region:item.key}}</span></template>
@@ -83,16 +88,13 @@ export default {
         label === keys[index.registerRateIndex]
         || label === keys[index.createRateIndex]
         || label === keys[index.roiIndex]
-        || label === keys[index.minuteIndex]        
+        || label === keys[index.minuteIndex]     
+        || label === keys[index.keep1Index]
+        || label === keys[index.keep2Index]
+        || label === keys[index.keep3Index]   
       ) {
         value += '%'
-      } else if (
-        label === keys[index.keep1Index]
-        || label === keys[index.keep2Index]
-        || label === keys[index.keep3Index]
-      ) {
-        value = (value / row[keys[index.activeIndex]] * 100).format(2) + '%';
-      }
+      } 
       return value
     },
     createChart() {

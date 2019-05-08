@@ -245,7 +245,7 @@ export default {
       // 求和
       function getTotal(data, regionName, isLast) {
         var total = comprehensiveData.total[regionName]
-        tableKey.forEach(({ key }) => {
+        config.tableKey.forEach(({ key }) => {
           switch (key) {
             case keys[index.gameIndex]:
               if (!comprehensiveData.total[regionName].hasOwnProperty(key)) {
@@ -258,12 +258,21 @@ export default {
               }
               break;
             default:
+            
+
+              const titleArr = ['7日LTV','14日LTV','30日LTV','次日留存','3日留存','7日留存'];
               if (!comprehensiveData.total[regionName].hasOwnProperty(key)) {
-                comprehensiveData.total[regionName][key] = 0
+                comprehensiveData.total[regionName][key] = 0;
               }
+              // console.log(key,data['激活'],data[key],comprehensiveData.total[regionName]);
               if (data[key]) {
-                comprehensiveData.total[regionName][key] += data[key];
-                comprehensiveData.total[regionName][key] = comprehensiveData.total[regionName][key].format(2);
+                if (titleArr.includes(key)) {
+                  comprehensiveData.total[regionName][key] += data[key]*data['激活']
+                  comprehensiveData.total[regionName][key] = comprehensiveData.total[regionName][key].format(2);
+                }else{
+                  comprehensiveData.total[regionName][key] += data[key];
+                  comprehensiveData.total[regionName][key] = comprehensiveData.total[regionName][key].format(2);
+                }
               }
               break;
           }
@@ -295,26 +304,51 @@ export default {
                 comprehensiveData.total[regionName][key] = (cost / create).format(2)
                 break;
               case keys[index.roiIndex]:
+                var roi = comprehensiveData.total[regionName][keys[index.rechargeIndex]]
                 var cost = comprehensiveData.total[regionName][keys[index.costIndex]]
-                var recharge = comprehensiveData.total[regionName][keys[index.rechargeIndex]]
-                comprehensiveData.total[regionName][key] = ((recharge / cost) * 100).format(2) + '%'
-                break;
+                comprehensiveData.total[regionName][key] = ((roi / cost)*100).format(2) + '%'
+                break; 
               case keys[index.minuteIndex]:
-                var cost = comprehensiveData.total[regionName][keys[index.minuteIndex]]
-                // var recharge = comprehensiveData.total[regionName][keys[index.rechargeIndex]]
-                comprehensiveData.total[regionName][key] = cost.format(2) + '%'
+                var cost = comprehensiveData.total[regionName][keys[index.minuteRechargeIndex]]
+                var allCost = comprehensiveData.total[regionName][keys[index.costIndex]]
+                comprehensiveData.total[regionName][key] = ((cost/allCost)*100).format(2) + '%'
                 break;
-              // case keys[index.ltvIndex]:
-              //   var mounthActiveKey = keys[index.mounthActiveIndex]
-              //   var mounthChargeKey = keys[index.mounthChargeIndex]
-              //   total.LTV = (!total[mounthChargeKey] || !total[mounthActiveKey]) ? 0 : (total[mounthChargeKey] / total[mounthActiveKey]).format(2);
-              //   break
-              default:
-                var keyValue = comprehensiveData.total[regionName][key]
+              case keys[index.ltv1Index]://7日LTV
+                var cost = comprehensiveData.total[regionName][keys[index.ltv1Index]]
                 var active = comprehensiveData.total[regionName][keys[index.activeIndex]]
-                if (key === keys[index.keep1Index] || key === keys[index.keep2Index] || key === keys[index.keep3Index]) {
-                  comprehensiveData.total[regionName][key] = ((keyValue / active) * 100).format(2) + '%'
-                }
+                comprehensiveData.total[regionName][key] = (cost/active).format(2)
+                break;
+              case keys[index.ltv2Index]://14日LTV
+                var cost = comprehensiveData.total[regionName][keys[index.ltv2Index]]
+                var active = comprehensiveData.total[regionName][keys[index.activeIndex]]
+                comprehensiveData.total[regionName][key] = (cost/active).format(2)
+                break;
+              case keys[index.ltv3Index]://30日LTV
+                var cost = comprehensiveData.total[regionName][keys[index.ltv3Index]]
+                var active = comprehensiveData.total[regionName][keys[index.activeIndex]]
+                comprehensiveData.total[regionName][key] = (cost/active).format(2)
+                break;
+              case keys[index.keep1Index]://次日留存
+                var cost = comprehensiveData.total[regionName][keys[index.keep1Index]]
+                var active = comprehensiveData.total[regionName][keys[index.activeIndex]]
+                comprehensiveData.total[regionName][key] = ((cost/active)).format(2) + '%';
+                break;
+              case keys[index.keep2Index]://3日留存
+                var cost = comprehensiveData.total[regionName][keys[index.keep2Index]]
+                var active = comprehensiveData.total[regionName][keys[index.activeIndex]]
+                comprehensiveData.total[regionName][key] = ((cost/active)).format(2) + '%';
+                break;
+              case keys[index.keep3Index]://7日留存
+                var cost = comprehensiveData.total[regionName][keys[index.keep3Index]]
+                var active = comprehensiveData.total[regionName][keys[index.activeIndex]]
+                comprehensiveData.total[regionName][key] = ((cost/active)).format(2) + '%';
+                break;
+              default:
+                // var keyValue = comprehensiveData.total[regionName][key]
+                // var active = comprehensiveData.total[regionName][keys[index.activeIndex]]
+                // if (key === keys[index.keep1Index] || key === keys[index.keep2Index] || key === keys[index.keep3Index]) {
+                //   comprehensiveData.total[regionName][key] = ((keyValue / active) * 100).format(2) + '%'
+                // }
                 break;
             }
           }
@@ -332,7 +366,7 @@ export default {
       function init(arr, config) {
         if (!config.keys) {
           config.keys = Object.keys(arr[0]).map(item => item);
-          config.keys.push('LTV');
+          // config.keys.push('LTV');
         }
         if (!config.index) {
           config.index = {
@@ -351,17 +385,18 @@ export default {
             costIndex:13,        //花费
             rechargeIndex: 14,    //充值
             roiIndex: 15,         //roi
-            minuteIndex:16,       //分成roi
-            ltv1Index: 17,         //7日ltv
-            ltv2Index: 18,         //14日ltv
-            ltv3Index: 19,         //30日ltv
-            keep1Index: 20,       //次留
-            keep2Index: 21,       //3日留存
-            keep3Index: 22,       //7日留存
+            minuteRechargeIndex: 16,//分成充值
+            minuteIndex:17,       //分成roi
+            ltv1Index: 18,         //7日ltv
+            ltv2Index: 19,         //14日ltv
+            ltv3Index: 20,         //30日ltv
+            keep1Index: 21,       //次留
+            keep2Index: 22,       //3日留存
+            keep3Index: 23,       //7日留存
             countryIndex: 1,      //国家  
-            newCreateIndex: 14,   //
-            mounthChargeIndex: 21,
-            mounthActiveIndex: 22
+            // newCreateIndex: ,   //
+            // mounthChargeIndex: 21,
+            // mounthActiveIndex: 22
           }
         }
         if (!config.colorKey) {
@@ -413,6 +448,9 @@ export default {
             sortable: true,
           }, {
             key: config.keys[config.index.roiIndex],
+            sortable: true,
+          }, {
+            key: config.keys[config.index.minuteRechargeIndex],
             sortable: true,
           },{
             key: config.keys[config.index.minuteIndex],
@@ -574,17 +612,18 @@ export default {
             costIndex: 10,         //花费
             rechargeIndex: 11,     //充值
             roiIndex: 12,          //roi
-            minuteIndex:13,        //分成roi
-            ltv1Index: 14,         //ltv
-            ltv2Index: 15,         //ltv
-            ltv3Index: 16,         //ltv
-            keep1Index: 17,       //次留
-            keep2Index: 18,       //3日次留
-            keep3Index: 19,       //7日次留
-            newCreateIndex: 7,    
-            newCreateCostIndex: 8,
-            mounthChargeIndex: 18,
-            mounthActiveIndex: 19,
+            minuteRechargeIndex: 13,//分成充值            
+            minuteIndex:14,        //分成roi
+            ltv1Index: 15,         //ltv
+            ltv2Index: 16,         //ltv
+            ltv3Index: 17,         //ltv
+            keep1Index: 18,       //次留
+            keep2Index: 19,       //3日次留
+            keep3Index: 20,       //7日次留
+            // newCreateIndex: 7,    
+            // newCreateCostIndex: 8,
+            // mounthChargeIndex: 18,
+            // mounthActiveIndex: 19,
           }
         }
         if (!config.colorKey) {
@@ -636,6 +675,9 @@ export default {
             sortable: true
           }, {
             key: config.keys[config.index.roiIndex],
+            sortable: true
+          },{
+            key: config.keys[config.index.minuteRechargeIndex],
             sortable: true
           },{
             key: config.keys[config.index.minuteIndex],
@@ -748,10 +790,19 @@ export default {
                 }
                 break
               default:
+                const titleArr = ['7日LTV','14日LTV','30日LTV','次日留存','3日留存','7日留存'];
                 if (!dailyData.total.hasOwnProperty(key)) {
-                  dailyData.total[key] = item[key]
+                  if (titleArr.includes(key)) {
+                    dailyData.total[key] =  ((item[key])*item['激活']).format(2)
+                  }else{
+                    dailyData.total[key] = item[key]
+                  }
                 } else {
-                  dailyData.total[key] = (item[key] + dailyData.total[key]).format(2)
+                  if (titleArr.includes(key)) {
+                    dailyData.total[key] = ((item[key]*item['激活']) + dailyData.total[key]).format(2)
+                  }else{
+                    dailyData.total[key] = (item[key] + dailyData.total[key]).format(2);
+                  }
                 }
                 break
             }
@@ -762,56 +813,83 @@ export default {
         })
 
         tableKey.forEach(({ key }) => {
-          var total = dailyData.total
+          var total = dailyData.total   
           switch (key) {
-            case keys[index.registerRateIndex]:
+            case keys[index.registerRateIndex]://注册率
               var active = dailyData.total[keys[index.activeIndex]]
               var register = dailyData.total[keys[index.registerIndex]]
               dailyData.total[key] = ((register / active) * 100).format(2) + '%'
               break;
-            case keys[index.createRateIndex]:
+            case keys[index.createRateIndex]://创角率
               var active = dailyData.total[keys[index.activeIndex]]
               var create = dailyData.total[keys[index.createIndex]]
               dailyData.total[key] = ((create / active) * 100).format(2) + '%'
               break;
-            case keys[index.activeCostIndex]:
+            case keys[index.activeCostIndex]://激活成本
               var active = dailyData.total[keys[index.activeIndex]]
               var cost = dailyData.total[keys[index.costIndex]]
               dailyData.total[key] = (cost / active).format(2)
               break;
-            case keys[index.registerCostIndex]:
+            case keys[index.registerCostIndex]://注册成本
               var register = dailyData.total[keys[index.registerIndex]]
               var cost = dailyData.total[keys[index.costIndex]]
               dailyData.total[key] = (cost / register).format(2)
               break;
-            case keys[index.createCostIndex]:
+            case keys[index.createCostIndex]://创角成本
               var create = dailyData.total[keys[index.createIndex]]
               var cost = dailyData.total[keys[index.costIndex]]
               dailyData.total[key] = (cost / create).format(2)
               break;
-            case keys[index.roiIndex]:
+            case keys[index.roiIndex]://ROI
+              var roi = dailyData.total[keys[index.rechargeIndex]]
               var cost = dailyData.total[keys[index.costIndex]]
-              var recharge = dailyData.total[keys[index.rechargeIndex]]
-              dailyData.total[key] = ((recharge / cost) * 100).format(2) + '%'
+              dailyData.total[key] = ((roi / cost)*100).format(2) + '%'
               break;
-            case keys[index.minuteIndex]:
-              var cost = dailyData.total[keys[index.minuteIndex]]
-              dailyData.total[key] = cost.format(2) + '%'
+            case keys[index.minuteIndex]://分成ROI
+              var cost = dailyData.total[keys[index.minuteRechargeIndex]]
+              var allCost = dailyData.total[keys[index.costIndex]]
+              dailyData.total[key] = ((cost/allCost)*100).format(2) + '%'
               break;
-            case keys[index.ltvIndex]:
-              var mounthChargeKey = keys[index.mounthChargeIndex]
-              var mounthActiveKey = keys[index.mounthActiveIndex]
-              total.LTV = !total[mounthChargeKey] || !total[mounthActiveKey] ? 0 : (total[mounthChargeKey] / total[mounthActiveKey]).format(2);
-            default:
-              var keyValue = dailyData.total[key]
+            case keys[index.ltv1Index]://7日LTV
+              var cost = dailyData.total[keys[index.ltv1Index]]
               var active = dailyData.total[keys[index.activeIndex]]
-              if (key === keys[index.keep1Index] || key === keys[index.keep2Index] || key === keys[index.keep3Index]) {
-                dailyData.total[key] = ((keyValue / active) * 100).format(2) + '%'
-              }
+              dailyData.total[key] = (cost/active).format(2)
+              break;
+            case keys[index.ltv2Index]://14日LTV
+              var cost = dailyData.total[keys[index.ltv2Index]]
+              var active = dailyData.total[keys[index.activeIndex]]
+              dailyData.total[key] = (cost/active).format(2)
+              break;
+            case keys[index.ltv3Index]://30日LTV
+              var cost = dailyData.total[keys[index.ltv3Index]]
+              var active = dailyData.total[keys[index.activeIndex]]
+              dailyData.total[key] = (cost/active).format(2)
+              break;
+            case keys[index.keep1Index]://次日留存
+              var cost = dailyData.total[keys[index.keep1Index]]
+              var active = dailyData.total[keys[index.activeIndex]]
+              dailyData.total[key] = ((cost/active)).format(2) + '%';
+              break;
+            case keys[index.keep2Index]://3日留存
+              var cost = dailyData.total[keys[index.keep2Index]]
+              var active = dailyData.total[keys[index.activeIndex]]
+              dailyData.total[key] = ((cost/active)).format(2) + '%';
+              break;
+            case keys[index.keep3Index]://7日留存
+              var cost = dailyData.total[keys[index.keep3Index]]
+              var active = dailyData.total[keys[index.activeIndex]]
+              dailyData.total[key] = ((cost/active)).format(2) + '%';
+              break;
+            default://留存
+              // var keyValue = dailyData.total[key]
+              // var active = dailyData.total[keys[index.activeIndex]]
+              // if (key === keys[index.keep1Index] || key === keys[index.keep2Index] || key === keys[index.keep3Index]) {
+              //   dailyData.total[key] = ((keyValue / active) * 100).format(2) + '%'
+              // }
               break;
           }
         })
-
+      
       } else {
         dailyData = null
       }
@@ -824,6 +902,15 @@ export default {
       var arr
       if (state['channel'][getters.getIdStr] && state['channel'][getters.getIdStr][0].length) {
         arr = state['channel'][getters.getIdStr][0];
+        console.log(">>>>>>>>>>>>>>>>>>>>new",arr);
+        for (let index = 0; index < arr.length; index++) {
+          Object.keys(arr[index]).forEach((key, flag) => {
+            if (flag>=2) {
+              arr[index][key] = +arr[index][key];
+            }
+          })
+        }
+        
        
       }
       return arr

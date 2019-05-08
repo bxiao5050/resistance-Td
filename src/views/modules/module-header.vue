@@ -3,14 +3,14 @@
     <div class="switch-group">
       <div class="switchs-item" v-for="(item,index) in dateList" :key="index">
         <span class="item-header">{{item.label}}:</span>
-        <!-- <div class="item-type" v-if="item.isShowDatetype">
+        <div class="item-type" v-if="item.isShowDatetype">
           <select class="form-control item-type-select" v-model="datetype">
             <option :value="item.id" v-for="(item,index) in types" :key="index">{{item.name}}</option>
           </select>
-        </div> -->
-        <div class="item-content" v-if="item.isShowDatetype">
-          <div class="bt-item" :class="{'check':datetype===item.id}" v-for="(item,index) in types" @click="datetype=item.id" :key="index">{{item.name}}</div>
         </div>
+        <!-- <div class="item-content" v-if="item.isShowDatetype">
+          <div class="bt-item" :class="{'check':datetype===item.id}" v-for="(item,index) in types" @click="datetype=item.id" :key="index">{{item.name}}</div>
+        </div> -->
         <datepicker class="item-input" :class="{'item-input-range':!item.single}" :daypicker="daypicker" :uid="item.uid" :date="{startDate:item.startDate,endDate:item.endDate}" :single="item.single" :changeDate="item.change"></datepicker>
         <slot name="after-datepicker"></slot>
       </div>
@@ -94,6 +94,7 @@
         }
       }
     },
+    
   }
 </script>
 

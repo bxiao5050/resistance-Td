@@ -5,20 +5,24 @@ export default {
       101: require('src/assets/gameicon/DDT_.png'), // 手游弹弹堂
     },
     2: {// 海外发行分析系统
-      1: require('src/assets/gameicon/game_icon_10002.png'), // 越南超级英雄
-      2: require('src/assets/gameicon/game_icon_1004.png'), // 越南攻城掠地
-      3: require('src/assets/gameicon/game_icon_10052.png'), // 泰国口袋3DS
-      4: require('src/assets/gameicon/game_icon_10062.png'), // 越南口袋3DS
-      5: require('src/assets/gameicon/game_icon_10009.png'), // 越南全民主公
-
-      11:require('src/assets/gameicon/game_icon_1006.png'), // 泰国攻城掠地
-      12:require('src/assets/gameicon/game_icon_10086.png'), // 港台口袋妖怪
-      13:require('src/assets/gameicon/印尼3DS.png'), // 印尼口袋3DS
-
-      14:require('src/assets/gameicon/德国3ds.png'), // 德国口袋3DS
-      15:require('src/assets/gameicon/韩国3DS.png'), // 韩国口袋3DS
-      16: require('src/assets/gameicon/法国3DS.png'), // 法国口袋3DS
-      
+      1004: require('src/assets/gameicon/game_icon_1004.png'), // 越南_攻城略地
+      1006: require('src/assets/gameicon/game_icon_1006.png'), // 泰国_攻城掠地
+      10002: require('src/assets/gameicon/game_icon_10002.png'), //越南_超级英雄
+      10009: require('src/assets/gameicon/game_icon_10009.png'), //越南_全名主公
+      10052: require('src/assets/gameicon/game_icon_10052.png'), // 泰国_口袋3DS
+      10062:require('src/assets/gameicon/game_icon_10062.png'), // 越南_口袋3DS
+      10085:require('src/assets/gameicon/game_icon_10085.png'), // 印尼_口袋3DS
+      10086:require('src/assets/gameicon/game_icon_10086.png'), // 港台_VS
+      10091:require('src/assets/gameicon/game_icon_10091.png'), // 德国_口袋3DS
+      10092:require('src/assets/gameicon/game_icon_10092.png'), // 法国_口袋3DS
+      10096:require('src/assets/gameicon/game_icon_10096.png'), // 韩国_口袋3DS
+      10107:require('src/assets/gameicon/game_icon_10107.png'), // 新马_露娜
+      10116:require('src/assets/gameicon/game_icon_10116.png'), // 越南_独步江湖
+      10120:require('src/assets/gameicon/game_icon_10120.png'), // 港台_仙灵记
+      10133:require('src/assets/gameicon/game_icon_10133.png'), // 全球_像素口袋
+      10143:require('src/assets/gameicon/game_icon_10143.png'), // 越南_全名主公2
+      10153:require('src/assets/gameicon/game_icon_10153.png'), // 全球_3D超英
+      10163:require('src/assets/gameicon/game_icon_10163.png'), // 新马_SNK大乱斗
     },
     3: {// efunfun分析系统
 

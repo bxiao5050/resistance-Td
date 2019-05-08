@@ -3,7 +3,7 @@
     <!-- <div class="chart-area" ref="chart"></div> -->
     <div class="table-item">
       <el-table :default-sort="{prop: _config.keys[_config.index.dateIndex], order: $data.$_order}" :data="$$data.list" :cell-style="addStyle">
-        <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key" :label="item.key" :sortable="item.sortable" :width="item.width" :formatter="formatter" v-if="!item.hide"></el-table-column>
+        <el-table-column v-for="(item, i) in _config.tableKey" :key="i"  :fixed="i<=2?true:false"  :prop="item.key" :label="item.key" :sortable="item.sortable" :width="item.width" :formatter="formatter" v-if="!item.hide"></el-table-column>
         <div slot="append">
           <total-float :_config="{
                                   _config: _config,
@@ -54,16 +54,17 @@ export default {
         label === keys[index.registerRateIndex]
         || label === keys[index.createRateIndex]
         || label === keys[index.roiIndex]
-        || label === keys[index.minuteIndex]        
+        || label === keys[index.minuteIndex]   
+        || label === keys[index.keep1Index]
+        || label === keys[index.keep2Index]
+        || label === keys[index.keep3Index]     
       ) {
         value += '%'
-      } else if (
-        label === keys[index.keep1Index]
-        || label === keys[index.keep2Index]
-        || label === keys[index.keep3Index]
-      ) {
-        value = (value / row[keys[index.activeIndex]] * 100).format(2) + '%';
       }
+      //  {
+      //   value = (value  * 100).format(2) + '%';
+      //   // value = (value / row[keys[index.activeIndex]] * 100).format(2) + '%';
+      // }
       return value
     },
     createChart() {

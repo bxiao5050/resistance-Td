@@ -2,14 +2,16 @@
   <table class="table table-bordered">
     <thead v-if="!isHideHeader">
       <tr>
-        <th v-for="column in columnArr" :key="column">{{column}}</th>
+        <th v-for="column in columnArr" :key="column" >{{column}}</th>
       </tr>
     </thead>
     <tbody v-if="tableData">
       <tr v-for="(item,index) in tableData" :key="index" :class="{selected:selectedIndex === index}" @click="selectedIndex=index">
         <td v-for="column in columnArr" :key="column">
           <i v-if="trendCol&&trendCol==column" class="icon-arrow" :class="{'up':Number(item[column])>0,'right':Number(item[column])==0,'down':Number(item[column])<0}"></i>
-          <span v-else>{{item[column]}}</span>
+          <span v-else :class="column=='趋势'?(parseInt(item[column])>=0?'upData':'downData'):''">{{item[column]}}</span>
+          <i v-if="column=='趋势' && parseInt(item[column])>=0" class="el-icon-arrow-up" />
+          <i v-if="column=='趋势' && parseInt(item[column])<0" class="el-icon-arrow-down" />
         </td>
       </tr>
     </tbody>
@@ -97,7 +99,12 @@
       }
     }
   }
-  
+  .upData{
+    color: #67C23A;
+  }
+  .downData{
+    color: #E6A23C;
+  }
   .icon-arrow {
     font-size: 14px;
     display: block;

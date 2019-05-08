@@ -81,6 +81,7 @@ export default {
           gameIconConfig.config[this.systemId][item.id] ||
           gameIconConfig.defaultIcon;
       });
+      
       return games;
     },
     nowgame() {
@@ -110,7 +111,6 @@ export default {
       }
     },
     gameSelect(item) {
-      // console.log(item.id)
       if (item.id != this.nowgame) {
         this.$store.commit("selectGame", item.id);
         commonMethod.changeGame();

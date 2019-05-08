@@ -14,10 +14,10 @@ if (IS_DEV) {
         require(['src/views/modules/operationMonitoring/online-data'], resolve)
     },
     103: {
-      name: 'virtual-currency',
+      name: 'five-force-model',
       component: resolve =>
         require([
-          'src/views/modules/operationMonitoring/virtual-currency'
+          'src/views/modules/operationMonitoring/five-force-model'
         ], resolve)
     },
     104: {
@@ -26,6 +26,21 @@ if (IS_DEV) {
         require([
           'src/views/modules/operationMonitoring/new-server-monitor'
         ], resolve)
+    },
+    105:{
+      name:'new-user-payout-ratio',
+      component:resolve =>
+        require([
+          'src/views/modules/operationMonitoring/new-user-payout-ratio'
+        ],resolve)
+
+    },
+    106:{
+      name:'big-R-user',
+      component:resolve =>
+        require([
+          'src/views/modules/operationMonitoring/big-R-user'
+        ],resolve)
     },
     201: {
       name: 'five-force',
