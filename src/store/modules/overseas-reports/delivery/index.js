@@ -40,8 +40,22 @@ export default {
       system: null,
     },
     channelSelectData:null,
-    date: null,
-    payDate:null,
+    date: [
+      moment()
+        .add(-1, "day")
+        .format("YYYY-MM-DD"),
+      moment()
+        .add(-1, "day")
+        .format("YYYY-MM-DD")
+    ],
+    payDate:[
+      moment()
+        .add(-1, "day")
+        .format("YYYY-MM-DD"),
+      moment()
+        .add(-1, "day")
+        .format("YYYY-MM-DD")
+    ],
     os: null,
 
     region: null,

@@ -1,47 +1,46 @@
 <template>
 
   <div class="sub-channel-reports">
-    <my-row>
-      <div class="time-picker">
-        激活
-        <el-date-picker 
-          @change="dateChange" 
+    <my-row class="selection-box">
+      <section class="dateTime">
+        <div class="time-picker">
+          激活时间
+          <el-date-picker 
+            @change="dateChange" 
+            size="medium" 
+            :picker-options="pickerOptions" 
+            ref="picker" 
+            v-model="pickerOptionsDate" 
+            type="daterange" 
+            range-separator="至" 
+            start-placeholder="开始日期" 
+            end-placeholder="结束日期" 
+            top="100">
+          </el-date-picker>
+        </div>
+        <div class="time-picker" style="margin-left:98px">
+          充值时间
+          <el-date-picker 
+          @change="payDateChange" 
           size="medium" 
-          :picker-options="pickerOptions" 
-          ref="picker" 
-          v-model="pickerOptions.date" 
+          :picker-options="pickerOptions2" 
+          ref="picker2" 
+          v-model="pickerOptions2Date" 
           type="daterange" 
           range-separator="至" 
           start-placeholder="开始日期" 
-          end-placeholder="结束日期" 
-          top="100">
-        </el-date-picker>
-      </div>
-      <div class="time-picker">
-        充值
-        <el-date-picker 
-        @change="payDateChange" 
-        size="medium" 
-        :picker-options="pickerOptions2" 
-        ref="picker2" 
-        v-model="pickerOptions2.date" 
-        type="daterange" 
-        range-separator="至" 
-        start-placeholder="开始日期" 
-        end-placeholder="结束日期" top="100">
-        </el-date-picker>
-      </div>
-      <div class="system-sel">
+          end-placeholder="结束日期" top="100">
+          </el-date-picker>
+        </div>
+      </section>
+      <div class="system-sel" style="padding-left:200px">
         <el-button-group class="group">
-
           <el-button size="medium">
             <span>系统</span>
           </el-button>
-
           <el-select @change="osChange" class="os" v-model="osOptions.os" size="medium" style="width: 100px;">
             <el-option v-for="item in osOptions.list" :key="item.os" :label="item.txt" :value="item.os"></el-option>
           </el-select>
-
         </el-button-group>
       </div>
 
@@ -67,13 +66,13 @@
           </el-select>
         </el-button-group>
       </div>
-      <div class="query">
-        <el-button @click="ckeck() && query()">
+      <div class="query" style="padding-left:50px">
+        <el-button type="info" @click="ckeck() && query()">
           查询
         </el-button>
       </div>
        <div class="excel">
-        <el-button @click="ckeck() && excel()">
+        <el-button type="info" @click="ckeck() && excel()">
           导出表格
         </el-button>
       </div>
@@ -149,7 +148,8 @@ export default {
         siteId: null
 
       },
-
+      pickerOptionsDate:null,
+      pickerOptions2Date:null,
       // 日期选择
       pickerOptions: {
         onPick({ minDate, maxDate }) {
@@ -328,6 +328,28 @@ export default {
       return this._state.subChannelConfig
     },
   },
+  watch: {
+    pickerOptionsDate(newValue,oldValue){
+      var date = newValue.map(item => moment(item).format("YYYY-MM-DD"));
+      if(new Date(date[0]).getTime()>new Date(this.pickerOptions2Date[1]).getTime()){
+        this.pickerOptionsDate = oldValue;
+        return Utils.Notification.error({ message: '激活开始时间大于充值结束时间,请重新选择' });
+      }else{
+        this.$store.commit(this.SMN + '/setDate', date)
+        this.pickerOptions2Date = [date[0],this.pickerOptions2Date[1]]
+      }
+    },
+    pickerOptions2Date(newValue,oldValue){
+       var date = newValue.map(item => {
+        if(typeof item === 'string'){
+          return item
+        }
+        return moment(item).format("YYYY-MM-DD")
+      });
+      this.$store.commit(this.SMN + '/setPayDate', date)
+    },
+    
+  },
   methods: {
     excel() {
       var thead = document.querySelector('.el-table__header thead').innerHTML
@@ -356,18 +378,18 @@ export default {
       this.channelQuery();
     },
     dateChange(value) {
-      var arr = []
-      value.forEach(date => {
-        arr.push(moment(date).format("YYYY-MM-DD"))
-      })
-      this.$store.commit(this.SMN + '/setDate', arr)
+      // var arr = []
+      // value.forEach(date => {
+      //   arr.push(moment(date).format("YYYY-MM-DD"))
+      // })
+      // this.$store.commit(this.SMN + '/setDate', arr)
     },
     payDateChange(value){
-      var arr = []
-      value.forEach(date => {
-        arr.push(moment(date).format("YYYY-MM-DD"))
-      })
-      this.$store.commit(this.SMN + '/setPayDate', arr)
+      // var arr = []
+      // value.forEach(date => {
+      //   arr.push(moment(date).format("YYYY-MM-DD"))
+      // })
+      // this.$store.commit(this.SMN + '/setPayDate', arr)
     },
     osChange(value) {
       this.$store.commit(this.SMN + '/setOs', value)
@@ -658,8 +680,8 @@ export default {
     picker2.picker.dateShortcuts = this.dateShortcuts
   },
   created() {
-    this.pickerOptions.date = this._state.date
-    this.pickerOptions2.date = this._state.payDate
+    this.pickerOptionsDate = this._state.date
+    this.pickerOptions2Date = this._state.payDate
     this.osOptions.os = this._state.os
     this.levelOptions.level = this._state.level
     if (this._state.region) this.tsdp.region = this._state.region
@@ -719,7 +741,15 @@ export default {
       margin-left: -16px;
     }
   }
-
+.selection-box {
+    position: relative;
+    .dateTime{
+      position: absolute;
+      top: -55px;
+      left: 200px;
+      display: flex;
+    }
+  }
   .channel {
     min-width: 160px;
     max-width: 160px;

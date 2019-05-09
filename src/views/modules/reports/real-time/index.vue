@@ -37,12 +37,12 @@
             <span>{{_rcg}}</span>
           </el-button>
         </section>
-        <el-button size="medium" class="search" @click="getData()" style="margin-left:20px">查询</el-button>
-        <div class="mail">
-          <el-button class="exportBtn" @click="exportChart(index)" style="margin-left:300px">
+        <el-button size="medium" class="search" type="info"  @click="getData()" style="margin-left:20px">查询</el-button>
+        <!-- <div class="mail"> -->
+          <el-button type="info" class="exportBtn" @click="exportChart(index)">
             <i class="el-icon-download"></i>导出xls文件
           </el-button>
-        </div>
+        <!-- </div> -->
       </div>
     </my-row>
     <!-- 游戏下拉框 -->
@@ -91,7 +91,7 @@ export default {
       os: null,
       chart: null,
       $_chartIsReady: 0,
-      timeZoneValue: 0,
+      timeZoneValue: 8,
       chartName: [{ name: 'activation', title: '实时激活数据(延迟1小时)', hide: true, isZoom: false },
       { name: 'registered', title: '实时注册数据(延迟1小时)', hide: true, isZoom: false },
       { name: 'wreck', title: '实时创角数据(延迟1小时)', hide: true, isZoom: false },

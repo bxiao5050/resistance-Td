@@ -2,39 +2,44 @@
   <div class="reports-market">
     <!-- 投放报表查询条件 -->
     <my-row class="selection-box">
-      <div class="date-box-item">
-        <span>激活</span>
-        <el-date-picker
-          size="medium"
-          :picker-options="pickerOptions1"
-          ref="picker1"
-          v-model="date"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          top="100"
-        ></el-date-picker>
-      </div>
-      <!-- 充值时间 -->
-      <div class="date-box-item">
-        <span>充值</span>
-        <el-date-picker
-          size="medium"
-          :picker-options="pickerOptions2"
-          ref="picker2"
-          v-model="payDate"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          top="100"
-        ></el-date-picker>
-      </div>
-      <el-button size="medium" class="selection" @click="data.isShow=true">
-        <span>已选择：</span>
-        <span>{{_rcg}}</span>
-      </el-button>
+      <section class="dateTime">
+        <div class="date-box-item">
+          <span>激活时间</span>
+          <el-date-picker
+            size="medium"
+            :picker-options="pickerOptions1"
+            ref="picker1"
+            v-model="date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            top="100"
+          ></el-date-picker>
+        </div>
+        <!-- 充值时间 -->
+        <div class="date-box-item">
+          <span>充值时间</span>
+          <el-date-picker
+            size="medium"
+            :picker-options="pickerOptions2"
+            ref="picker2"
+            v-model="payDate"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            top="100"
+          ></el-date-picker>
+        </div>
+      </section>
+      <section style="padding-left:165px">
+        <el-button size="medium" class="selection" @click="data.isShow=true">
+          <span>已选择：</span>
+          <span>{{_rcg}}</span>
+        </el-button>
+      </section>   
+      
 
       <div class="date-box-item" v-show="!data.game">
         <span style="min-width:40px">系统</span>
@@ -55,10 +60,10 @@
         size="medium"
         class="search"
         @click="getData(taging_,false)"
-        style="margin-left:20px"
+        style="margin-left:95px"
       >查询</el-button>
 
-      <div class="mail">
+      <!-- <div class="mail"> -->
         <!-- <el-button type="info" v-show="!isSingle" size="medium" @click="tagClick(true)">系统对比</el-button> -->
 
         <el-button type="info" size="medium" @click="excel()">导出表格</el-button>
@@ -75,7 +80,7 @@
           <el-button type="info" size="medium" style="margin: 0 15px" @click="createMail()">邮件生成</el-button>
         </div>
         <el-button type="info" size="medium" @click="checkMail()">邮件查看</el-button>
-      </div>
+      <!-- </div> -->
     </my-row>
 
     <my-row>
@@ -87,7 +92,7 @@
     </my-row> -->
 
     <my-row>
-      <el-tabs v-model="taging" @tab-click="tagClick(false)" style="marginTop:50px">
+      <el-tabs v-model="taging" @tab-click="tagClick(false)" style="marginTop:35px">
         <el-tab-pane
           v-if="(isSingle && _tagState[tag])"
           v-for="({ label }, tag) in tags"
@@ -429,12 +434,25 @@ export default {
     }
   },
   watch: {
-    date(data) {
-      var date = data.map(item => moment(item).format("YYYY-MM-DD"));
-      this.$store.commit("o_r_delivery/setDate", date);
+    date(newData,oldData) {
+      var date = newData.map(item => moment(item).format("YYYY-MM-DD"));
+      if(new Date(date[0]).getTime()>new Date(this.payDate[1]).getTime()){
+        this.date = oldData;
+        return Utils.Notification.error({ message: '激活开始时间大于充值结束时间,请重新选择' });
+      }else{
+        this.$store.commit("o_r_delivery/setDate", date);
+        this.payDate = [date[0],this.payDate[1]]
+      }
+      
     },
     payDate(data){
-      var date = data.map(item => moment(item).format("YYYY-MM-DD"));
+      // var date = data.map(item => moment(item).format("YYYY-MM-DD"));
+      var date = data.map(item => {
+        if(typeof item === 'string'){
+          return item
+        }
+        return moment(item).format("YYYY-MM-DD")
+      });
       this.$store.commit("o_r_delivery/setPayDate", date);
     },
     os(data) {
@@ -792,7 +810,7 @@ export default {
     this.$refs.picker1.picker._parentEl = this.$refs.picker1.$el;
     this.$refs.picker2.mountPicker();
     this.$refs.picker2.picker.dateShortcuts = this.dateShortcuts
-    this.$refs.picker2.picker._parentEl = this.$refs.picker1.$el;
+    this.$refs.picker2.picker._parentEl = this.$refs.picker2.$el;
     window.addEventListener("keydown", this.onKeyDown);
   },
   destroyed() {
@@ -815,6 +833,13 @@ export default {
   margin-left: 15px;
 }
 .selection-box {
+  position: relative;
+  .dateTime{
+    position: absolute;
+    top: -60px;
+    left: 165px;
+    display: flex;
+  }
   .tag {
     margin: 15px 0 15px 16px;
   }
@@ -825,7 +850,7 @@ export default {
   margin-top: 5px;
   .mail {
     display: flex;
-    justify-content: flex-end;
+    // justify-content: flex-end;
     flex-grow: 1;
     margin: 0px 10px 0 0;
     button:nth-child(1) {
