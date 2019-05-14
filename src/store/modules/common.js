@@ -89,7 +89,7 @@ const actions = {
 
 const getters = {
   games(state) {
-    return state.systems ? state.systems[state.systems.systemId].children : null
+    return state.systems ? state.systems[state.systems.systemId].children : null 
   },
   system(state) {
     return state.systems ? state.systems[state.systems.systemId] : null

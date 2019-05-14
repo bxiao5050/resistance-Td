@@ -2,6 +2,7 @@
   <div class="reports-market">
     <!-- 投放报表查询条件 -->
     <my-row class="selection-box">
+      <!-- 时间 -->
       <section class="dateTime">
         <div class="date-box-item">
           <span>激活时间</span>
@@ -17,7 +18,6 @@
             top="100"
           ></el-date-picker>
         </div>
-        <!-- 充值时间 -->
         <div class="date-box-item">
           <span>充值时间</span>
           <el-date-picker
@@ -33,28 +33,21 @@
           ></el-date-picker>
         </div>
       </section>
+      <!-- 游戏 -->
       <section style="padding-left:165px">
         <el-button size="medium" class="selection" @click="data.isShow=true">
           <span>已选择：</span>
           <span>{{_rcg}}</span>
         </el-button>
       </section>   
-      
-
+      <!-- 系统 -->
       <div class="date-box-item" v-show="!data.game">
         <span style="min-width:40px">系统</span>
         <el-select class="os" v-model="os" size="medium">
           <el-option v-for="item in options" :key="item.value" :label="item.txt" :value="item.os"></el-option>
         </el-select>
       </div>
-
-      <!-- <div class="date-box-item" v-if="tags_">
-        <span>选择报表</span>
-        <el-select class="os" v-model="taging_" size="medium" style="width: 150px; margin-right: 20px;">
-          <el-option v-for="item in tags_" :key="item.tag" :label="item.label" :value="item.tag"></el-option>
-        </el-select>
-      </div>-->
-
+      <!-- 查询按钮 -->
       <el-button
          type="info"
         size="medium"
@@ -62,35 +55,25 @@
         @click="getData(taging_,false)"
         style="margin-left:95px"
       >查询</el-button>
-
-      <!-- <div class="mail"> -->
-        <!-- <el-button type="info" v-show="!isSingle" size="medium" @click="tagClick(true)">系统对比</el-button> -->
-
-        <el-button type="info" size="medium" @click="excel()">导出表格</el-button>
-
-        <div style="position:relative;">
-          <el-date-picker
-            ref="picker"
-            v-model="value2"
-            align="right"
-            type="date"
-            style="position:absolute;z-index:-1;width:200px;left:24px;visibility:hidden;"
-            @change="pickerChange"
-          ></el-date-picker>
-          <el-button type="info" size="medium" style="margin: 0 15px" @click="createMail()">邮件生成</el-button>
-        </div>
-        <el-button type="info" size="medium" @click="checkMail()">邮件查看</el-button>
-      <!-- </div> -->
+      <el-button type="info" size="medium" @click="excel()">导出表格</el-button>
+      <!-- 邮件 -->
+      <div style="position:relative;">
+        <el-date-picker
+          ref="picker"
+          v-model="value2"
+          align="right"
+          type="date"
+          style="position:absolute;z-index:-1;width:200px;left:24px;visibility:hidden;"
+          @change="pickerChange"
+        ></el-date-picker>
+        <el-button type="info" size="medium" style="margin: 0 15px" @click="createMail()">邮件生成</el-button>
+      </div>
+      <el-button type="info" size="medium" @click="checkMail()">邮件查看</el-button>
     </my-row>
-
+    <!-- 游戏下拉框 -->
     <my-row>
       <tsdp :data="data" v-if="data.isShow"></tsdp>
     </my-row>
-
-    <!-- <my-row class="selection-box" v-if="_rcg_.length">
-      <el-tag class="tag" v-for="(item, i) in _rcg_" :key="i">{{item}}</el-tag>
-    </my-row> -->
-
     <my-row>
       <el-tabs v-model="taging" @tab-click="tagClick(false)" style="marginTop:35px">
         <el-tab-pane
@@ -104,8 +87,6 @@
         <component :is="main" :data="data" :_config="_config" :_types="$data.types"></component>
       </el-tabs>
     </my-row>
-
-    <!-- <MailCreation :date="$data.mailDate" /> -->
   </div>
 </template>
 
@@ -446,7 +427,6 @@ export default {
       
     },
     payDate(data){
-      // var date = data.map(item => moment(item).format("YYYY-MM-DD"));
       var date = data.map(item => {
         if(typeof item === 'string'){
           return item
@@ -804,7 +784,6 @@ export default {
     if (this.data.game) {
       this.isSingle = false;
     }
-    this.$refs.picker.mountPicker();
     this.$refs.picker1.mountPicker();
     this.$refs.picker1.picker.dateShortcuts = this.dateShortcuts
     this.$refs.picker1.picker._parentEl = this.$refs.picker1.$el;

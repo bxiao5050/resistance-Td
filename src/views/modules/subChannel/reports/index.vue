@@ -18,7 +18,7 @@
             top="100">
           </el-date-picker>
         </div>
-        <div class="time-picker" style="margin-left:98px">
+        <div class="time-picker" style="margin-left:8px">
           充值时间
           <el-date-picker 
           @change="payDateChange" 
@@ -77,27 +77,6 @@
         </el-button>
       </div>
        
-    </my-row>
-
-    <my-row style="margin: 16px 0 0 16px; width: auto">
-      <!-- <div class="level-query">
-        <el-input v-model="levelOptions.level" clearable @change="levelChange" style="width: 180px;">
-          <template slot="prepend">等级点</template>
-        </el-input>
-      </div> -->
-
-      <!-- <div class="excel">
-        <el-button @click="ckeck() && excel()">
-          导出表格
-        </el-button>
-      </div> -->
-
-      <!-- <div class="query">
-        <el-button @click="ckeck() && query()">
-          查询
-        </el-button>
-      </div> -->
-
     </my-row>
     <my-row>
       <tsdp :data="tsdp" v-if="tsdp.isShow" :auto-confirm="true"></tsdp>

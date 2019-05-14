@@ -14,6 +14,7 @@ port = 7011
 // port = 7011
 
 // requrl = "http://172.16.10.132"
+// port = 80
 
 var baseUrl = requrl + ':' + port + '/api/v1.0'
 export {

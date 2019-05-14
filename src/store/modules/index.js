@@ -33,6 +33,10 @@ import o_r_overall from './overseas-roi/overall'
 import o_r_channel_status from './overseas-roi/channel_status'
 import o_r_service_status from './overseas-roi/service_status'
 
+import h5_game_url from './h5-system-deploy/game-url/index'
+import h5_channel_config from './h5-system-deploy/channel-config/index'
+import h5_link_config from './h5-system-deploy/link-config/index'
+
 
 
 import o_c_complement from './overseas-configuration/complement'
@@ -44,6 +48,7 @@ import overseas_common from './overseas-common'
 import overseas_common_realTime from './overseas-common/realTime/'
 
 import o_s_c_reports from './overseas-sub-channel/reports'
+import gameUrl from './h5-system-deploy/game-url';
 
 export default {
   // agent,
@@ -83,5 +88,8 @@ export default {
   o_r_overall,        //roi整体情况模块
   o_r_channel_status, //roi渠道状况模块
   o_r_service_status, //roi渠道状况模块
+  h5_game_url,        //h5游戏URL模块
+  h5_channel_config,  //h5渠道配置模块
+  h5_link_config,     //h5游戏link配置模块
 
 }

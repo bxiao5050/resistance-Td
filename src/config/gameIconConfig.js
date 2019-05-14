@@ -26,6 +26,9 @@ export default {
     },
     3: {// efunfun分析系统
 
+    },
+    5:{//H5
+
     }
   }
 }

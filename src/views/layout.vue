@@ -1,9 +1,11 @@
 <template>
   <div class="viewApp">
+    <!-- 顶部导航栏 -->
     <viewHeader></viewHeader>
+    <!-- 路由 -->
     <div class="viewMain">
       <div class="module" :class="{sm:isCompact,'hide-aside':$store.state.common.hideAside}">
-        <viewAside v-if="$store.state.common.systems.systemId!==Config.OverseasReleaseSysId"></viewAside>
+        <viewAside v-if="$store.state.common.systems.systemId==Config.DistributionSystemId"></viewAside>
         <div class="wrapper">
           <div class="scroll" ref="scroll">
             <div class="module-head">
@@ -11,11 +13,14 @@
               <i class="icon-quest" style="color:#b9bec2;cursor:pointer;" @click="showTip"></i>
               <a href="javascript:void(0)" @click="refresh" v-if="userInfo&&userInfo.userName=='jishan.fan'">刷新</a>
             </div>
+            <!-- 路由视图入口 -->
             <router-view ref="components" class="components"></router-view>
           </div>
         </div>
       </div>
+      <!-- 侧边导航栏 -->
       <viewSidebar></viewSidebar>
+      <!-- 指标说明弹窗 -->
       <Modal class="index-tip" headerName="指标说明" width="800" v-show="isShowTip" @close="isShowTip=false">
         <div class="index-table" slot="modal-body">
           <table class="table table-hover">

@@ -2,6 +2,7 @@ import menuConfig from 'src/config/menuConfig.js'
 import api from 'src/services/api'
 import store from 'src/store'
 import router from 'src/router'
+import { OverseasReleaseSysId } from '../../config/dev.config';
 const getSystemGames = () => {
   api.user.getSystemGames({}).done(data => {
     if (data.code == 401) {
@@ -63,8 +64,9 @@ const changeGame = () => {
   }).then(data => {
     if (data.code == 303) {
       Promise.all([
+        // 
         new Promise((resolve, reject) => {
-          if (store.state.common.systems.systemId == 4) {
+          if (store.state.common.systems.systemId == 4 || store.state.common.systems.systemId == 5) {
             resolve();
           } else {
             store.dispatch('Agent/data').then(() => {
@@ -74,8 +76,9 @@ const changeGame = () => {
             });
           }
         }),
+        // 注册渠道
         new Promise((resolve, reject) => {
-          if (store.state.common.systems.systemId == 4) {
+          if (store.state.common.systems.systemId == 4 || store.state.common.systems.systemId == 5) {
             resolve();
           } else {
             store.dispatch('RegChannel/data').then(() => {
@@ -85,6 +88,7 @@ const changeGame = () => {
             });
           }
         }),
+        // 付费渠道
         new Promise((resolve, reject) => {
           if (store.state.common.systems.systemId == 1) {
             store.dispatch('PayChannel/data').then(() => {

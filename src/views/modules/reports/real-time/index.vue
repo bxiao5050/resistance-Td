@@ -360,11 +360,9 @@ export default {
       }
       // 菜单获取成功,更新数据
       if (!this._state['real'][this._key]) {
-        console.log(new Date())
         this.getData();
         setInterval(() => {
           this.getData();
-          console.log(new Date())
         }, 1000*60*60);
       }
     });

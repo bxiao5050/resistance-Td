@@ -21,6 +21,7 @@ import {
   Checkbox,
   Row,
   Main,
+  Dialog,
   autocomplete,
 } from 'element-ui'
 Vue.use(Row)
@@ -43,6 +44,7 @@ Vue.use(Tabs)
 Vue.use(TabPane)
 Vue.use(Main)
 Vue.use(autocomplete)
+Vue.use(Dialog)
 Vue.prototype.$notify = Notification;
 import myRow from 'src/component/layout/row'
 import myCol from 'src/component/layout/col'
@@ -59,6 +61,10 @@ import VueI18n from 'vue-i18n' //多语言插件
 import messages from 'src/lang' // 多语言配置文件
 Vue.use(VueI18n)
 var lang = localStorage.lang || 'CHS' // 当前语言
+// copy
+import clipboard from 'clipboard';
+//注册到vue原型上
+Vue.prototype.clipboard = clipboard;
 
 Number.prototype.format = String.prototype.format = function (number) {
   var {

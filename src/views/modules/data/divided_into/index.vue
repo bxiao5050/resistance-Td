@@ -27,6 +27,19 @@
         <el-button size="medium" class="search" @click="addData()" style="margin-left:20px">添加</el-button>
       </div>
     </my-row>
+    <!-- 移除对话框 -->
+    <el-dialog
+        title="移除数据提示"
+        :visible.sync="centerDialogVisible"
+        width="30%"
+        :before-close="Undelete"
+        center>
+        <span>该操作具有一定风险,你确认继续吗?</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="Undelete">取 消</el-button>
+            <el-button type="danger" @click="confirmDeletion">确 定</el-button>
+        </span>
+    </el-dialog>
     <!-- 表格 -->
       <div v-show="$store.state.o_r_delivery.tableIsVisible" class="table-item">
         <el-table
@@ -97,6 +110,7 @@ export default {
       proportion:'',    //比例
       delIndex:0,      //del下标
       activityIndex:-1,
+      centerDialogVisible:false,
 
     }
   },
@@ -154,7 +168,17 @@ export default {
     //删除数据
     deleteRow(index,data){
         this.delIndex = this.$store.getters['o_c_divided_into/getTableData'][index]['序号']
-        this.getData('dividedInto',4)
+        this.centerDialogVisible = true;
+    },
+    // 确认删除
+    confirmDeletion(){
+        this.getData('dividedInto',4);
+        this.centerDialogVisible = false;
+    },
+    // 取消删除
+    Undelete(){
+        this.centerDialogVisible = false;
+        this.delIndex = 0;
     },
     // 修改数据
     changeRow(index){
@@ -163,6 +187,9 @@ export default {
                 message: '请将分成比例填写完整'
             })
             return
+        }
+        if (this.activityIndex<0) {
+            return Utils.Notification.warning({message: '请先选择修改的内容'})
         }
         var params = {
           in_count_date: this._state.date,       //开始日期
@@ -185,7 +212,6 @@ export default {
         }else if (this.$store.getters['o_c_divided_into/getTableData'][0] && this.$store.getters['o_c_divided_into/getTableData'][0]['最后录入时间']) {
             var lastTime = new Date(this.$store.getters['o_c_divided_into/getTableData'][0]['最后录入时间']).getTime() ;
             var newTime = new Date(this.date).getTime();
-            console.log(lastTime, newTime)
             if (newTime <= lastTime) {
                 Utils.Notification.warning({
                     message: '当前补充时间小于或等于最后录入时间,请重新选择'
@@ -233,11 +259,11 @@ export default {
         this.date = moment().add(-1, "day").format("YYYY-MM-DD")
       }
       //分成比例
-        if (this._state.proportion) {
-            this.proportion = this._state.proportion
-        }else{
-            this.proportion = ''
-        }
+        // if (this._state.proportion) {
+        //     this.proportion = this._state.proportion
+        // }else{
+        //     this.proportion = ''
+        // }
       // 游戏下拉框初始化
       if (this._state.gameListIndex) {
         this.gameListIndex = this._state.gameListIndex;

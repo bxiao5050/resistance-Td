@@ -342,23 +342,13 @@ export default {
         if (index === 2) {
           activeData = values
         }
-        // if (index === 10) {
-        //   constData = values;
-        // }
-        // console.log(index,values);
-        // if (index === 13 || index === 12) {
-        //   var arr = [];
-        //   for (let index = 0; index < values.length; index++) {
-        //     arr.push(values[index]*(constData[index]))
-        //   }
-        //   // console.log(index,arr);
-        //   values = arr
-        // }else 
+
         if(index > 13){
           var arr = [];
           for (let index = 0; index < values.length; index++) {
             arr.push(values[index]*(activeData[index]))
           }
+          
           values = arr
         }
         if (!values.every(value => isNaN(value))) {
@@ -386,12 +376,12 @@ export default {
       sums[9] = (sums[10] / sums[4]).format(2); //创角成本
       sums[12] = ((sums[11] / sums[10])*100).format(2) + '%'; //ROI
       sums[14] = ((sums[13] / sums[10])*100).format(2) + '%'; //分成ROI
-      sums[15] = ((sums[14] / sums[2])).format(2); //7日LTV
-      sums[16] = ((sums[15] / sums[2])).format(2); //14日LTV
-      sums[17] = ((sums[16] / sums[2])).format(2); //30日LTV
-      sums[18] = ((sums[17] / sums[2])).format(2) + '%';
-      sums[19] = ((sums[18] / sums[2])).format(2) + '%';
-      sums[120] = ((sums[19] / sums[2])).format(2) + '%';
+      sums[15] = ((sums[15] / sums[2])).format(2); //7日LTV
+      sums[16] = ((sums[16] / sums[2])).format(2); //14日LTV
+      sums[17] = ((sums[17] / sums[2])).format(2); //30日LTV
+      sums[18] = ((sums[18] / sums[2])).format(2) + '%';
+      sums[19] = ((sums[19] / sums[2])).format(2) + '%';
+      sums[20] = ((sums[20] / sums[2])).format(2) + '%';
       return sums;
     },
     back() {

@@ -275,8 +275,39 @@ if (IS_DEV) {
     1204: {
       name: "budget-complement",
       component: resolve => require(['src/views/modules/data/budget'], resolve)
-    }
-
+    },
+    1301:{
+      name:"h5-game-url",
+      component: resolve => require(['src/views/modules/h5_system/h5-common-configuration/h5-game-url'], resolve)
+    },
+    1302:{
+      name: "h5-channel-configuration",
+      component: resolve => require(['src/views/modules/h5_system/h5-common-configuration/h5-channel-configuration'], resolve)
+    },
+    1303:{
+      name: "h5-game-link",
+      component: resolve => require(['src/views/modules/h5_system/h5-common-configuration/h5-game-link'], resolve)
+    },
+    1304:{
+      name: "h5-data-supplement",
+      component: resolve => require(['src/views/modules/h5_system/h5-common-configuration/h5-data-supplement'], resolve)
+    },
+    1305:{
+      name: "h5-budget-supplement",
+      component: resolve => require(['src/views/modules/h5_system/h5-common-configuration/h5-budget-supplement'], resolve)
+    },
+    1306:{
+      name: "h5-divided-into-supplements",
+      component: resolve => require(['src/views/modules/h5_system/h5-common-configuration/h5-divided-into-supplements'], resolve)
+    },
+    1401:{
+      name: "h5-delivery-report",
+      component: resolve => require(['src/views/modules/h5_system/h5-report/h5-delivery-report'], resolve)
+    },
+    1402:{
+      name: "h5-detailed-report",
+      component: resolve => require(['src/views/modules/h5_system/h5-report/h5-detailed-report'], resolve)
+    },
   }
 
 
