@@ -9,19 +9,7 @@
         <i class="el-icon-plus"/>新增
       </el-button>
     </my-row>
-    <!-- 移除对话框 -->
-    <el-dialog
-        title="移除数据提示"
-        :visible.sync="centerDialogVisible"
-        width="30%"
-        :before-close="Undelete"
-        center>
-        <span>该操作具有一定风险,你确认继续吗?</span>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="Undelete">取 消</el-button>
-            <el-button type="danger" @click="confirmDeletion">确 定</el-button>
-        </span>
-    </el-dialog>
+    <hr style="width:100%;margin-bottom: 0;">
     <!-- 表格 -->
     <div class="table-item">
       <el-table
@@ -89,7 +77,6 @@ export default {
       in_media_source: "",
       in_id: 0,
       activityIndex: -1,
-      centerDialogVisible:false,
     }
   },
   created() {
@@ -123,16 +110,7 @@ export default {
         this.activityIndex = row.index;
       }
     },
-    // 取消删除
-    Undelete(){
-        this.centerDialogVisible = false;
-        this.in_id = 0;
-    },
-    // 确认删除
-    confirmDeletion(){
-        this.getData(3);
-        this.centerDialogVisible = false;
-    },
+    
     // 新增
     addUrlData() {
       // 判断渠道名称是否为空
@@ -154,20 +132,23 @@ export default {
     },
     //删除数据
     deleteRow(index, data) {
-      this.in_id = this._state.tableData[0][index]["序号"];
-      this.centerDialogVisible = true;
+      if (confirm("确认移除？")) {
+        this.in_id = this._state.tableData[0][index]["序号"];
+        this.getData(3);
+      }
     },
     // 修改数据
     changeRow(index) {
       if (!this._state.tableData[0][index]['渠道']) {
         return Utils.Notification.warning({ message: '请将渠道名称填写完整再提交' })
       }
-      if (this.activityIndex<0) {
-            return Utils.Notification.warning({message: '请先选择修改的内容'})
+      if (confirm("确认修改？")) {
+        this.in_id = this._state.tableData[0][index]["序号"];
+        this.in_media_source = this._state.tableData[0][index]['渠道'];
+        this.getData(4);
       }
-      this.in_id = this._state.tableData[0][index]["序号"];
-      this.in_media_source = this._state.tableData[0][index]['渠道'];
-      this.getData(4);
+
+      
     },
     getData(index) {
       var params = {

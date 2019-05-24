@@ -9,6 +9,7 @@
         <i class="el-icon-plus"/>筛选
       </el-button>
     </my-row>
+    <hr style="width:100%;margin-bottom: 0;">
     <!-- 新增对话框 -->
     <el-dialog
         title="新增游戏link"

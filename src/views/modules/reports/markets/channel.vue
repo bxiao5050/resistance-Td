@@ -477,6 +477,7 @@ export default {
     },
     createChart() {
       var chart = Highcharts.chart(this.$refs.chart, {
+        colors: ['#7cb5ec', '#C106EB', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'], 
         chart: {
           type: 'line'
         },

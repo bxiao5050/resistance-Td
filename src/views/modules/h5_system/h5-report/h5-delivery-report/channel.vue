@@ -1,5 +1,6 @@
-
-    <!-- <div v-if="$data.$_curChannel">
+<template>
+  <div>
+    <div v-if="$data.$_curChannel">
       <el-button size="medium" @click="back()">
         <span>
           当前渠道:
@@ -7,11 +8,10 @@
           —— 返回
         </span>
       </el-button>
-    </div> -->
-
-    <!-- <div class="centerBox"> -->
+    </div>
+    <div class="centerBox">
       <!-- 筛选行 -->
-      <!-- <section class="btns">
+      <section class="btns">
         <el-select class="os" v-model="value" size="medium">
           <el-option
             v-for="item in options"
@@ -20,10 +20,10 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <el-button size="medium" @click="slide(200)">筛选</el-button>
-      </section> -->
+        <el-button size="medium" @click="slide(300)">筛选</el-button>
+      </section>
       <!-- 图例 -->
-      <!-- <div class="legendBox" v-show="!$store.state.o_r_delivery.tableIsVisible">
+      <div class="legendBox" v-show="!$store.state.h5_delivery_report.tableIsVisible">
         <div style="text-align: center;">
           <el-select class="os" v-model="lineValue">
             <el-option
@@ -35,7 +35,7 @@
           </el-select>
         </div>
         <!-- left -->
-        <!-- <section class="left">
+        <section class="left">
           <div style="width: 90%;      margin: 10px 10%;">
             <el-autocomplete
               class="inline-input"
@@ -61,9 +61,9 @@
               <i class="el-icon-remove-outline" v-show="!item.visible"></i>
             </section>
           </div>
-        </section> -->
+        </section>
         <!-- right -->
-        <!-- <section class="right">
+        <section class="right">
           <div class="chartBox">
             <section
               class="list_"
@@ -77,10 +77,11 @@
             </section>
           </div>
           <div class="chart-area" ref="chart"></div>
-        </section> -->
-      <!-- </div>  -->
+        </section>
+      </div>
       <!-- 筛选框 -->
-      <!-- <section class="filterBox" :style="{right:`${width}px`}">
+      <section class="filterBox" :style="{width:'300px',right:`${width}px`}">
+        <!-- 视图 -->
         <div class="filter_">
           <span>{{filterTitle[0].name}}</span>
           <el-select class="os" v-model="viewValue" size="medium">
@@ -92,88 +93,88 @@
             ></el-option>
           </el-select>
         </div>
-        <div class="filter_">
-          <span>{{filterTitle[1].name}}</span>
-          <el-select class="os" v-model="systemValue" size="medium">
+        <!-- 系统 -->
+        <div class="filter_1">
+          <!-- <span>{{filterTitle[1].name}}</span> -->
+          <!-- <el-select class="os" v-model="systemValue" size="medium">
             <el-option
               v-for="item in filterTitle[1].options"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             ></el-option>
-          </el-select>
+          </el-select> -->
         </div>
+        <!-- 渠道 -->
         <div class="filter_">
           <span>{{filterTitle[2].name}}</span>
-          <el-select class="os" v-model="channelValue" size="medium" @change="selectAll">
+          <el-select class="os" 
+          filterable 
+          multiple 
+          collapse-tags
+          v-model="channelValue" size="medium"
+           @change="channelSelectAll"
+           :filter-method="channelFilter">
             <el-option
-              v-for="item in $$getChannelInfo.channelName"
+              v-for="item in channelOptions"
               :key="item.value"
               :label="item.lable"
               :value="item.value"
             ></el-option>
           </el-select>
         </div>
-        <div class="filter_">
+        <!-- <p>{{areaOptions}}444</p> -->
+        <!-- 地区 -->
+         <div class="filter_">
           <span>{{filterTitle[3].name}}</span>
-          <el-select class="os" v-model="areaValue" size="medium">
+          <el-select class="os" 
+          filterable 
+          collapse-tags
+          multiple 
+          @change="areaSelectAll"
+          v-model="areaValue" size="medium"
+           :filter-method="areaFilter">
             <el-option
-              v-for="item in $$getChannelInfo.channelNameData[channelValue==''? 0 : channelValue]"
-              :key="item.key"
+              v-for="item in areaOptions"
+              :key="item.value"
               :label="item.label"
               :value="item.value"
             ></el-option>
           </el-select>
         </div>
-        <el-button type="danger" plain @click="filterReset()">重置</el-button>
-        <el-button type="success" plain @click="filterData()">应用</el-button>
-
-      </section> -->
+        <div class="filter_">
+          <el-button type="danger" plain @click="filterReset()">重置</el-button>
+          <el-button type="success" plain @click="filterData()">应用</el-button>
+        </div>
+      </section>
       <!-- 表格 -->
-      <!-- <div v-show="$store.state.o_r_delivery.tableIsVisible" class="table-item">
+      <div v-show="$store.state.h5_delivery_report.tableIsVisible" class="table-item">
         <el-table
-          :data="$store.getters['o_r_delivery/getAllChannel']"
+          :data="$store.getters['h5_delivery_report/getAllChannel']"
           :cell-style="addStyle"
           :summary-method="getSummaries"
           show-summary
         >
           <el-table-column
-            v-for="(item, i) in (Object.keys($store.getters['o_r_delivery/getAllChannel']?$store.getters['o_r_delivery/getAllChannel'][0]:[]))"
+            v-for="(item, i) in (Object.keys($store.getters['h5_delivery_report/getAllChannel']?$store.getters['h5_delivery_report/getAllChannel'][0]:[]))"
             :key="i"
             :prop="item"
             :label="item"
             :formatter="formatter"
+            :fixed="i<=2?true:false"
             :width="getWidth(item)"
-            :sortable = "i>=2?true:false"
-            
-
+            :sortable="i>0"
           ></el-table-column>
         </el-table>
-      </div> -->
-    <!-- </div> -->
-<template>
-    <div class="select-height">
-        <el-select 
-        filterable
-         v-model="value5" 
-         multiple
-         collapse-tags  
-         @change="selectAll"
-         :filter-method="handleCityFilter"
-         placeholder="请选择">
-            <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-            </el-option>
-        </el-select>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
 // import totalFloat from "./total-float";
 import http from 'src/services/http';
+import { log } from 'util';
 export default {
   props: ['data', '_config', '_types'],
   data: () => {
@@ -188,96 +189,53 @@ export default {
       newlist: [],
       inputTxt: "",
       value: "table",
-      width: -200,
+      width: -300,
       viewValue: '1',     //视图下标
+      isSort:false,
       systemValue: '2',   //系统下标
       lineValue: 0,       //
-      channelValue: '',   //渠道下标
-      areaValue: '',      //地区下标
+      channelValue: [],   //渠道下标
+      areaValue: [],      //地区下标
       chart: null,
       restaurants: [ ],
       rightListArr: [],
       leftlistArr: [],
+      channelOptions:[],
+      channelOptionsCopy:[],
+      channelOldOptions: [[]],
+      areaOptions:[],
+      areaOptionsCopy:[],
+      areaOldOptions:[[]],
       lineArr: [],
-      // options: [{ value: "table", label: "表格" }, { value: "legend", label: "图例" },],
-      filterTitle: [{ name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' },{ value: '4', label: '系统' },] },
+      options: [{ value: "table", label: "表格" }, { value: "legend", label: "图例" },],
+      filterTitle: [{ name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' }] },
       { name: "系统", value: '2', options: [{ value: '2', label: '全部' }, { value: '0', label: 'IOS' }, { value: '1', label: 'android' },] },
       { name: "渠道", value: 'qb', options: [{ value: 'qb', label: '全部' }] },
       { name: "地区", value: 'qb', options: [{ value: 'qb', label: '全部' }] }],
       lineData: [],
       areaArr: [{ media_source: 'qb', country_name: '全部' }],
-      optionsCopy: [
-          {
-          value: '选项0',
-          label: '所有选项'
-          },    
-          {
-            value: '选项1',
-            label: '黄金糕'
-          }, {
-            value: '选项2',
-            label: '双皮奶1'
-          }, {
-            value: '选项-1',
-            label: '双皮奶2'
-          }, {
-            value: '选项3',
-            label: '蚵仔煎'
-          }, {
-            value: '选项4',
-            label: '龙须面'
-          }, {
-            value: '选项5',
-            label: '北京烤鸭'
-          }],
-      options: [
-          {
-          value: '选项0',
-          label: '所有选项'
-          },    
-          {
-            value: '选项1',
-            label: '黄金糕'
-          }, {
-            value: '选项2',
-            label: '双皮奶1'
-          }, {
-            value: '选项-1',
-            label: '双皮奶2'
-          }, {
-            value: '选项3',
-            label: '蚵仔煎'
-          }, {
-            value: '选项4',
-            label: '龙须面'
-          }, {
-            value: '选项5',
-            label: '北京烤鸭'
-          }],
-      value5: [],
-      value11:[],
-      oldOptions: [[]]
     };
   },
-  
   computed: {
+    $$tableSort(){
+      return this.$store.getters['h5_delivery_report/getAllChannel'];
+    },
     $$getChannelInfo(){
-      var getChannelInfo = this.$store.getters["o_r_delivery/getChannelInfo"];
+      var getChannelInfo = this.$store.getters["h5_delivery_report/getChannelInfo"];
       return getChannelInfo
     },
     // 筛选条件
     $$channellist() {
-      var allData = this.$store.getters["o_r_delivery/getChannelList"];
+      var allData = this.$store.getters["h5_delivery_report/getChannelList"];
       return allData
     },
     // 图例
     $$legend() {
-      var allData = this.$store.getters["o_r_delivery/getLengendData"];
+      var allData = this.$store.getters["h5_delivery_report/getLengendData"];
       if (allData && allData.leftlistArr) {
         this.leftlistArr = allData.leftlistArr
         this.rightListArr = allData.rightListArr
         this.lineData = allData.lineData
-        // this.leftlistArr = this.$$legend.leftlistArr.slice(0);
          this.$nextTick(() => {
           this.createChart();
           
@@ -286,25 +244,32 @@ export default {
       return allData
     },
     _state() {
-      return this.$store.state.o_r_delivery;
+      return this.$store.state.h5_delivery_report;
     },
     _key() {
-      return this.$store.getters["o_r_delivery/getIdStr"];
+      return this.$store.getters["h5_delivery_report/getIdStr"];
     }
   },
   created(){
     this.dataInit()
-    this.$store.state.o_r_delivery.tableIsVisible = true;
+    this.$store.state.h5_delivery_report.tableIsVisible = true;
     this.value = 'table'
   },
   watch:{
-    value5(newValue,oldValue){
-      console.log(newValue);
-      // console.log(oldValue);
-     
+    $$tableSort(newValue,oldValue){
+      if(+this.viewValue == 2){
+        this.isSort = true;
+      }else{
+        this.isSort = false;
+      }
+    },
+    $$getChannelInfo(newValue,oldValue){
+      // this.channelOptions = newValue.channelName;
+      // this.channelOptionsCopy = newValue.channelName;
+      this.channel_init()   
     },
     channels(channels) {
-      this.$store.commit("o_r_delivery/set_channels", channels);
+      this.$store.commit("h5_delivery_report/set_channels", channels);
     },
     //切换linevalue 恢复默认显示
     lineValue(newValue, oldValue) {
@@ -324,57 +289,66 @@ export default {
     // 切换图利表格视图
     value(newValue, oldValue) {
       this.slide(0)
-      this.$store.state.o_r_delivery.tableIsVisible = !this.$store.state.o_r_delivery.tableIsVisible;
-      if (this.$store.state.o_r_delivery.tableIsVisible ) {
-        this.filterTitle[0] = { name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' },{ value: '4', label: '系统' },] }
+      this.$store.state.h5_delivery_report.tableIsVisible = !this.$store.state.h5_delivery_report.tableIsVisible;
+      if (this.$store.state.h5_delivery_report.tableIsVisible ) {
+        this.filterTitle[0] = { name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' }] }
       }else{
-        this.filterTitle[0] = { name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '3', label: '地区' },{ value: '3', label: '系统' },] }
+        this.filterTitle[0] = { name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '3', label: '地区' }] }
       }
       // 恢复默认筛选条件
       this.viewValue = '1';
-      this.systemValue = '2';
-      this.channelValue = '';
-      this.areaValue = '';
+      this.channel_init()   
+      // this.areaValue = [];
       this.lineValue = 0;
       var params = {
-        in_install_date1: this._state.date[0],          //激活开始日期
-        in_install_date2: this._state.date[1],          //激活结束日期
+        in_reg_date1: this._state.date[0],          //注册开始日期
+        in_reg_date2: this._state.date[1],          //注册结束日期
         in_pay_date1:this._state.payDate[0],            //充值开始时间
         in_pay_date2:this._state.payDate[1],            //充值结束时间
-        in_os: this._state.os,                         //系统                  
-        in_area_app_ids: this._key,                    //游戏层级 
-        in_media_source: "",                           //渠道
-        in_rpt_type: 4,                                //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
-        in_country: '',                                //国家
-        in_chart_type: this.$store.state.o_r_delivery.tableIsVisible ? 1:2,           //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
-        in_view_type: 1                                 //视图类型：1 渠道 2 时间 3 地区
+        in_app_ids: this._state.in_app_ids,             //游戏层级 
+        in_media_source: '',         //渠道
+        in_rpt_type: 4,                 //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
+        in_country: '',                               //国家
+        in_chart_type: this.$store.state.h5_delivery_report.tableIsVisible ? 1:2,             //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
+        in_view_type: 1,               //视图类型：1 渠道 2 时间 3 地区
       };
       // this._state.lastQueryParam[this.taging] = params;
-      this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible?'channel':'legend' });
+      this.$store.dispatch("h5_delivery_report/getReportInfo", { params, tag: this.$store.state.h5_delivery_report.tableIsVisible?'channel':'legend' });
     },
     // 渠道改变，国家恢复默认
     channelValue(newValue, oldValue) {
-      this.areaValue = ""
+        // this.areaValue = []
+        this.area_init(newValue)       
     },
   },
   methods: {
     getSummaries(param) {
       const { columns, data } = param;
       const sums = [];
+      var activeData = []; 
+      var constData = [];
       columns.forEach((column, index) => {
         if (index === 0) {
           sums[index] = '全部';
           return;
         }
-        if (index === 1) {
-          sums[index] = '全部';
-          return;
+        var values = data.map((item) => Number(item[column.property]));
+        if (index === 2) {
+          activeData = values
         }
 
-        const values = data.map(item => Number(item[column.property]));
+        if(index > 13){
+          var arr = [];
+          for (let index = 0; index < values.length; index++) {
+            arr.push(values[index]*(activeData[index]))
+          }
+          
+          values = arr
+        }
         if (!values.every(value => isNaN(value))) {
+          
           sums[index] = values.reduce((prev, curr) => {
-            const value = Number(curr);
+            const value = Number(curr);            
             if (!isNaN(value)) {
               return (prev + curr).format(2);
             } else {
@@ -391,18 +365,22 @@ export default {
           sums[index] = (sums[4] / sums[2] * 100).format(2) + '%';
         }
       });
-      sums[7] = (sums[10] / sums[2]).format(2);
-      sums[8] = (sums[10] / sums[3]).format(2);
-      sums[9] = (sums[10] / sums[4]).format(2);
-      sums[12] = (sums[11] / sums[10]).format(2) + '%';
-      sums[14] = (sums[14] / sums[2]).format(2) + '%';
-      sums[15] = (sums[15] / sums[2]).format(2) + '%';
-      sums[16] = (sums[16] / sums[2]).format(2) + '%';
+      sums[7] = (sums[10] / sums[2]).format(2); //激活成本
+      sums[8] = (sums[10] / sums[3]).format(2); //注册成本
+      sums[9] = (sums[10] / sums[4]).format(2); //创角成本
+      sums[12] = ((sums[11] / sums[10])*100).format(2) + '%'; //ROI
+      sums[14] = ((sums[13] / sums[10])*100).format(2) + '%'; //分成ROI
+      sums[15] = ((sums[15] / sums[2])).format(2); //7日LTV
+      sums[16] = ((sums[16] / sums[2])).format(2); //14日LTV
+      sums[17] = ((sums[17] / sums[2])).format(2); //30日LTV
+      sums[18] = ((sums[18] / sums[2])).format(2) + '%';
+      sums[19] = ((sums[19] / sums[2])).format(2) + '%';
+      sums[20] = ((sums[20] / sums[2])).format(2) + '%';
       return sums;
     },
     back() {
       this.$data.$_curChannel = null
-      this.$store.commit("o_r_delivery/set_is2", false);
+      this.$store.commit("h5_delivery_report/set_is2", false);
     },
     formatter(row, column, value) {
       var {
@@ -411,18 +389,17 @@ export default {
       if (
         label === '注册率'
         || label === '创角率'
-        || label === 'ROI'
+        
       ) {
         // value += '%'
         value = +value ? value.format(2)+'%':value.format(0)+'%';
-
-      }
-      else if (
+      }else if(label === 'ROI'|| label === '分成ROI'){
+        value = (value).format(2) + '%';
+      }else if (
         label === '次日留存'
         || label === '3日留存'
         || label === '7日留存'
       ) {
-        // value = (value / row[keys[index.activeIndex]] * 100).format(2) + '%';
         value = value.format(2) + '%';
       }else if(label === '激活成本'
         || label === '注册成本'
@@ -494,6 +471,7 @@ export default {
     },
     createChart() {
       var chart = Highcharts.chart(this.$refs.chart, {
+        colors: ['#7cb5ec', '#C106EB', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'], 
         chart: {
           type: 'line'
         },
@@ -517,7 +495,7 @@ export default {
           labels: {
             // format: '{value:.0f}'//设置y轴显示格式
              formatter: function (index) {
-                var indexArr = [3,4,10,11,15,16,17] 
+                var indexArr = [2,7,9,13,14,15] 
                 if (indexArr.includes(+localStorage.getItem("lineValue"))) {
                   return this.value + '%';//y轴加上%
                 }else{
@@ -562,13 +540,13 @@ export default {
     },
     slide(width) {
       if (width == 0) {
-        this.width = -200
+        this.width = -300
         this.isShow = !this.isShow
         return 
       }
       if (this.width == 0) {
         let timer = setInterval(() => {
-          this.width -= 10;
+          this.width -= 20;
           if (this.width == -width) {
             clearInterval(timer);
             this.isShow = !this.isShow
@@ -576,7 +554,7 @@ export default {
         }, 10);
       } else if (this.width == -width) {
         let timer = setInterval(() => {
-          this.width += 10;
+          this.width += 20;
           if (this.width == 0) {
             clearInterval(timer);
             this.isShow = !this.isShow
@@ -663,47 +641,44 @@ export default {
       }
     },
     filterData() {
-      if (this.$store.state.o_r_delivery.tableIsVisible) {
+      if (this.$store.state.h5_delivery_report.tableIsVisible) {
         this.in_chart_type = 1
         console.log('修改表格数据', )
          // 视图
-        this.$store.commit("o_r_delivery/setViewIndex", this.viewValue);
-        this.$store.commit("o_r_delivery/setSystemIndex", this.systemValue);
-        this.$store.commit("o_r_delivery/setChannelIndex", this.channelValue);
-        this.$store.commit("o_r_delivery/setAreaIndex", this.areaValue);
+        this.$store.commit("h5_delivery_report/setViewIndex", this.viewValue);
+        this.$store.commit("h5_delivery_report/setChannelIndex", this.channelValue);
+        this.$store.commit("h5_delivery_report/setAreaIndex", this.areaValue);
       } else {
         console.log('获取图例数据')
         this.in_chart_type = 2
       }
       var params = {
-        in_install_date1: this._state.date[0],          //激活开始日期
-        in_install_date2: this._state.date[1],          //激活结束日期
+        in_reg_date1: this._state.date[0],          //注册开始日期
+        in_reg_date2: this._state.date[1],          //注册结束日期
         in_pay_date1:this._state.payDate[0],            //充值开始时间
         in_pay_date2:this._state.payDate[1],            //充值结束时间
-        in_os: this.$data.systemValue == 2 ? '0,1' : this.$data.systemValue, //系统                  
-        in_area_app_ids: this._key,                          //游戏层级 
-        in_media_source: this.$$getChannelInfo.channelName[+this.channelValue]['lable'] == '全部' ? '' :this.$$getChannelInfo.channelName[+this.channelValue]['lable'],   //渠道
-        in_rpt_type: 4,                                      //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
-        in_country: this.$data.areaValue == "全部" ? '' : this.$data.areaValue,                     //国家
+        in_app_ids: this._state.in_app_ids,             //游戏层级 
+        in_country: this.areaValue.includes("all") ? '' : this.areaValue.join(','),                     //国家
+        in_media_source: this.getChannelData(),   //渠道
+        in_rpt_type: 4,                 //报表类型 1 查询游戏层级  2 综合报表  3 每日报表  4 渠道(媒体)报表   5 系统对比
         in_chart_type: this.in_chart_type,                  //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
         in_view_type: this.$data.viewValue                     //视图类型：1 渠道 2 时间 3 地区
       };
-      this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? 'channel' :'legend'  });
+      this.$store.dispatch("h5_delivery_report/getReportInfo", { params, tag: this.$store.state.h5_delivery_report.tableIsVisible ? 'channel' :'legend'  });
     },
     filterReset(){
       // 恢复默认筛选条件
       this.viewValue = '1';
       this.systemValue = '2';
-      this.channelValue = '';
-      this.areaValue = '';
+      this.channel_init()
       this.lineValue = 0;
     },
     dataInit(){
       localStorage.setItem("lineValue",0)
       if (this._state.viewIndex) {this.viewValue = this._state.viewIndex}else{this.viewValue = '1'}
       if (this._state.systemIndex) {this.systemValue = this._state.systemIndex}else{this.systemValue = '2'}
-      if (this._state.channelIndex) {this.channelValue = this._state.channelIndex}else{this.channelValue = ''}
-      if (this._state.areaIndex) {this.areaValue = this._state.areaIndex}else{this.areaValue = ''}
+      this.viewValue = '1';
+      this.channel_init()
     },
     getWidth(str) {
       var len = str ? str.length:0;
@@ -723,66 +698,212 @@ export default {
         return 120
       }
     },
-    handleCityFilter (val) {
-      // filter balabalbalb....
-      console.log(val);
-      if (val) { //val存在
-          var number = 0
-          this.options = this.options.filter((item) => {
-            console.log(number);
-            if ((item.label == "所有选项")|| !!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
-              number++; 
-              return true
-            }
-          })
-        } else { //val为空时，还原数组
-          this.options = this.optionsCopy;
-        }
-      
-    },
-    // 多选
-    selectAll(val) {
+    // 渠道多选
+    channelSelectAll(val) {
       let allValues = []
       //保留所有值
-      for (let item of this.options) {
+      for (let item of this.channelOptions) {
         allValues.push(item.value)
       }
-      
       // 用来储存上一次的值，可以进行对比
-      const oldVal = this.oldOptions.length === 1 ? [] : this.oldOptions[1]
-
+      const oldVal = this.channelOldOptions.length === 1 ? [] : this.channelOldOptions[1]
+      
       // 若是全部选择
-      if (val.includes('选项0')) {
-        console.log(this.optionsCopy.length)
-        console.log(this.optionsCopy.length);
-        
-        if (this.optionsCopy.length != allValues.length) {
+      if ( val.includes('all')) {
+        if (this.channelOptionsCopy.length != allValues.length) {
           allValues.shift()
         }
-        this.value5 = allValues
+        this.channelValue = allValues
       }
-
       // 取消全部选中  上次有 当前没有 表示取消全选
-      if (oldVal.includes('选项0') && !val.includes('选项0')) this.value5 = []
+      if (oldVal.includes('all') && !val.includes('all')) this.channelValue = []
 
       // 点击非全部选中  需要排除全部选中 以及 当前点击的选项 
       // 新老数据都有全部选中 
-      if (oldVal.includes('选项0') && val.includes('选项0')) {
-        const index = val.indexOf('选项0')
+      if (oldVal.includes('all') && val.includes('all')) {
+        const index = val.indexOf('all')
         val.splice(index, 1) // 排除全选选项
-        this.value5 = val
+        this.channelValue = val
       }
 
       //全选未选 但是其他选项全部选上 则全选选上 上次和当前 都没有全选
-      if (!oldVal.includes('选项0') && !val.includes('选项0')) {
-        console.log(11)
-        if (val.length === allValues.length - 1) this.value5 = ['选项0'].concat(val)
+      if (!oldVal.includes('all') && !val.includes('all')) {
+        if (val.length === allValues.length - 1) this.channelValue = ['all'].concat(val)
       }
 
       //储存当前最后的结果 作为下次的老数据 
-      this.oldOptions[1] = this.value5
+      this.channelOldOptions[1] = this.channelValue
+    },
+    areaSelectAll(val) {
+      let allValues = []
+      //保留所有值
+      for (let item of this.areaOptions) {
+        allValues.push(item.value)
+      }
+      // 用来储存上一次的值，可以进行对比
+      const oldVal = this.areaOldOptions.length === 1 ? [] : this.areaOldOptions[1]
+      
+      // 若是全部选择
+      if ( val.includes('all')) {
+        if (this.areaOptionsCopy.length != allValues.length) {
+          allValues.shift()
+        }
+        this.areaValue = allValues
+      }
+
+      // 取消全部选中  上次有 当前没有 表示取消全选
+      if (oldVal.includes('all') && !val.includes('all')) this.areaValue = []
+
+      // 点击非全部选中  需要排除全部选中 以及 当前点击的选项 
+      // 新老数据都有全部选中 
+      if (oldVal.includes('all') && val.includes('all')) {
+        const index = val.indexOf('all')
+        val.splice(index, 1) // 排除全选选项
+        this.areaValue = val
+      }
+
+      //全选未选 但是其他选项全部选上 则全选选上 上次和当前 都没有全选
+      if (!oldVal.includes('all') && !val.includes('all')) {
+        if (val.length === allValues.length - 1) this.areaValue = ['all'].concat(val)
+      }
+
+      //储存当前最后的结果 作为下次的老数据 
+      this.areaOldOptions[1] = this.areaValue
+    },
+    channelFilter (val) {
+      if (val) { //val存在
+          var number = 0;
+          this.channelOptions.filter((item) => {
+            if (!!~item.lable.indexOf(val) || !!~item.lable.toUpperCase().indexOf(val.toUpperCase())) {
+              number++
+            }
+          })
+          if (number > 1) {
+            this.channelOptions = this.channelOptions.filter((item) => {
+              if ((item.value == "all")|| !!~item.lable.indexOf(val) || !!~item.lable.toUpperCase().indexOf(val.toUpperCase())) {
+                return true
+              }
+            })
+          }else if(number == 1){
+            this.channelOptions = this.channelOptions.filter((item) => {
+              if (!!~item.lable.indexOf(val) || !!~item.lable.toUpperCase().indexOf(val.toUpperCase())) {
+                return true
+              }
+            })
+          }else{
+             this.channelOptions = []
+          }
+          
+        } else { //val为空时，还原数组
+          this.channelOptions = this.channelOptionsCopy;
+        }
+    },
+    areaFilter (val) {
+      if (val) { //val存在
+          var number = 0;
+          this.areaOptions.filter((item) => {
+            if (!!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
+              number++
+            }
+          })
+          if (number==1) {
+            this.areaOptions = this.areaOptions.filter((item) => {
+              if (!!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
+                return true
+              }
+            })
+          }else if(number>1){
+            this.areaOptions = this.areaOptions.filter((item) => {
+              if ((item.value == "all")|| !!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
+                return true
+              }
+            })
+          
+          }else{
+            this.areaOptions = []
+          }
+         
+        } else { //val为空时，还原数组
+          this.areaOptions = this.areaOptionsCopy;
+        }
+    },
+    getChannelData(){
+      var data = "";
+      var all = "";
+      if (this.channelValue.includes("all")) {
+        return all 
+      }else{
+        for (let index = 0; index < this.channelValue.length; index++) {
+          data += this.$$getChannelInfo.channelName[this.channelValue[index]].lable+','
+        }
+        return data
+      }
+    },
+    channel_init(){
+      let channelAllValues = []
+      let areaAllValues = []
+      if (this._state.channelSelectData.channelName) {
+        this.channelOptions = this._state.channelSelectData.channelName;
+        this.channelOptionsCopy = this._state.channelSelectData.channelName; 
+        for (let item of this._state.channelSelectData.channelName) {
+          channelAllValues.push(item.value)
+        }
+          this.channelValue = channelAllValues
+      }else{
+        for (let item of this.channelOptions) {
+          channelAllValues.push(item.value)
+        }
+          this.channelValue = channelAllValues
+      }
+    },
+    area_init(newValue){
+      if(newValue.length == 0){
+            this.areaValue = [];
+            return
+        } 
+        for (let index = 0; index < newValue.length; index++) {
+         if (newValue.includes("all")) {
+            console.log("渠道包含全部")
+            // 地区
+            let arr = [];
+            let flag = []
+            for (let index = 0; index < this.$$getChannelInfo.channelNameData[0].length; index++) {
+              if (!arr.includes(this.$$getChannelInfo.channelNameData[0][index].value)) {
+                arr.push(this.$$getChannelInfo.channelNameData[0][index].value)
+                flag.push(this.$$getChannelInfo.channelNameData[0][index])
+              }else{
+                // console.log(">>>>>>>>>>>>>>>>",index);
+              }
+              
+            }
+            this.areaOptions = flag;
+            this.areaOptionsCopy = flag;   
+            this.areaValue = arr;
+            return
+        }else{
+          console.log("渠道不包含全部")
+          // 地区
+          let allArr = [];
+          let arr = [];
+          let flag = []
+          // 合并索索结果
+          for (let index = 0; index < newValue.length; index++) {
+            allArr = allArr.concat(this.$$getChannelInfo.channelNameData[newValue[index]]);
+          }
+          // 对结果去重
+          for (let index = 0; index < allArr.length; index++) {
+            if (!arr.includes(allArr[index].value)) {
+              arr.push(allArr[index].value)
+              flag.push(allArr[index])
+            }
+          }
+          this.areaOptions = flag;
+          this.areaOptionsCopy = flag; 
+          this.areaValue = arr;
+          
+        }        
+      }
     }
-    
   }
 }; 
 </script>
@@ -811,14 +932,6 @@ export default {
   .el-table__row {
     td.channel {
       padding: 0;
-      //   .cell {
-      //     cursor: pointer;
-      //     line-height: 48px;
-      //     &:hover {
-      //       background: #5b5691;
-      //       color: #fff;
-      //     }
-      //   }
     }
   }
 }
@@ -826,7 +939,6 @@ export default {
 .centerBox {
   width: 100%;
   min-height: 700px;
-  // border: 1px solid red;
   .btns {
     display: flex;
     justify-content: flex-end;
@@ -911,8 +1023,8 @@ export default {
   }
 
   .filterBox {
-    width: 200px;
-    height: 350px;
+    width: 300px;
+    height: auto;
     position: absolute;
     top: 50px;
     right: 0;
@@ -921,15 +1033,22 @@ export default {
     background: white;
     button {
       width: 75px;
-      margin-left: 15px;
-      margin-top: 35px;
+      position: absolute;
+      left: 58px;
+      top: 20px;
+    }
+    button:nth-child(2){
+      left: 160px;
+      top: 20px;
     }
     .filter_ {
       width: 100%;
-      min-height: 60px;
+      min-height: auto;
+      padding-bottom: 12px;
       padding-top: 12px;
       text-align: center;
       border-bottom: 1px solid #c0c4cc;
+      position: relative;
       span {
         min-width: 35px;
         color: rgb(92, 91, 91);
@@ -937,11 +1056,16 @@ export default {
         display: inline-block;
       }
       .os {
-        width: 120px;
+        width: 200px;
       }
+    }
+    .filter_:nth-child(5){
+      min-height: 80px;
+      // border-bottom: 1px solid red;
     }
   }
 }
+
 </style>
 
 

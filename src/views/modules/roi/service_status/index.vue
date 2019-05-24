@@ -1,25 +1,5 @@
 <template>
   <div>
-    <!-- 游戏菜单 -->
-    <my-row>
-      <section class="gameBox">
-        <div class="title">游戏(单选):
-          <el-button
-            :class="isSlide?'el-icon-caret-top':'el-icon-caret-bottom'"
-            style="padding:6px"
-            @click="slide()"
-          ></el-button>
-        </div>
-        <div class="gameList">
-          <el-button
-            :class="[gameActiveIndex==index?'active':'']"
-            v-for="(item,index) in  $$gameList"
-            :key="index"
-            @click="changeGame(index)"
-          >{{item.app_name}}</el-button>
-        </div>
-      </section>
-    </my-row>
     <!-- 日期 -->
     <my-row>
       <section class="timeBox">
@@ -55,7 +35,7 @@
     <div class="table-item testcss">
       <el-table
         border
-        max-height="850"
+        max-height="550"
         :header-cell-style="{background:'#f2f2f2',textAlign:'left'}"
         :data="$store.getters['o_r_service_status/getService'].table"
       >
@@ -77,8 +57,6 @@ export default {
   data() {
     return {
       date: null,
-      isSlide: true,
-      gameActiveIndex: 0,
       in_query_type: 2,
     }
   },
@@ -89,25 +67,12 @@ export default {
   },
   created() {
     this.dataInit()
-    //获取游戏菜单
-    if (!this._state.gameList) {
-      this.$store.dispatch("o_r_service_status/getGame").then(data => {
-        // 区服列表获取成功
-        if (!this._state.service) this.getData();
-
-      })
-    }
+    this.getData();
   },
   computed: {
     _state() {
       return this.$store.state.o_r_service_status;
     },
-    $$gameList() {
-      return this.$store.getters["o_r_service_status/getGameList"];
-    },
-    $$service() {
-      return this.$store.getters["o_r_service_status/getService"];
-    }
   },
   methods: {
     formatter(row, column, value) {
@@ -118,23 +83,6 @@ export default {
         value = +value ? value.format(2) : value.format(0);
       } 
       return value
-    },
-    slide() {
-      this.isSlide = !this.isSlide
-      if (parseInt($('.gameList').css('height')) > 50) {
-        $(".gameList").animate({ height: "50px" });
-      } else {
-        $(".gameList").animate({ height: "180px" });
-      }
-    },
-    // 切换游戏
-    changeGame(index) {
-      this.gameActiveIndex = index;
-      console.log(this.$$gameList[this.gameActiveIndex].app_id);
-      this.$store.commit('o_r_service_status/setGameActiveIndex', this.gameActiveIndex)
-      this.$store.commit("o_r_service_status/setGameID", this.$$gameList[this.gameActiveIndex].app_id)
-      // 区服列表获取成功
-      this.getData();
     },
     // 导出
     exportData() {
@@ -152,25 +100,14 @@ export default {
     },
     // 初始化
     dataInit() {
-      if (this._state.date) {
         this.date = this._state.date;
-      } else {
-        this.date = moment().add(-1, "day").format("YYYY-MM-DD");
-      }
-      //
-      if (this._state.gameActiveIndex) {
-        this.gameActiveIndex = this._state.gameActiveIndex
-      } else {
-        this.gameActiveIndex = 0
-      }
-
     },
     //查询数据
     getData() {
       var params = {
         in_count_date: this._state.date,   //开始日期
-        in_app_id: this._state.gameID,       //游戏ID                  
-        in_gamezone_id: this._state.zoneID,   //区服ID 
+        in_app_id:this.$store.state['common'].nowgame,            //游戏ID
+        in_gamezone_id:this.$store.getters['Agent/selectedIdList'],       //区服ID        
         in_query_type: this.in_query_type,    //查询类型              
       }
       this.$store.dispatch("o_r_service_status/getReportInfo", { params, tag: 'service' })

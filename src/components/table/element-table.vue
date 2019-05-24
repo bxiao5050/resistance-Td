@@ -2,8 +2,11 @@
   <elTable ref="singleTable" :data="tableData" @row-click="rowClick" :show-header="!isHideHeader" :highlight-current-row="true" :max-height="maxHeight" :height="height" style="width:100%;" fit border>
       <elTableColumn v-for="(column,index) in columnArr" :key="column" :width="columnWidthObj[index]||''" :prop="column" :label="column">
         <template slot-scope="scope">
-          <i v-if="trendCol&&trendCol==column" class="icon-arrow" :class="{'up':Number(scope.row[column])>0,'right':Number(scope.row[column])==0,'down':Number(scope.row[column])<0}" :title="scope.row[column]+'%'"></i>
-          <span v-else>{{scope.row[column]}}</span>
+          <span :class="column=='趋势'?(parseInt(scope.row[column].replace('%','')*100)>=0?'upData':'downData'):''">{{scope.row[column]=='0.00'?'--':scope.row[column]}}</span>
+          <i v-if="column=='趋势' && parseInt(scope.row[column].replace('%','')*100)>=0" class="el-icon-arrow-up" />
+          <i v-if="column=='趋势' && parseInt(scope.row[column].replace('%','')*100)<0" class="el-icon-arrow-down" />
+          <!-- <i v-if="trendCol&&trendCol==column" class="icon-arrow" :class="{'up':Number(scope.row[column])>0,'right':Number(scope.row[column])==0,'down':Number(scope.row[column])<0}" :title="scope.row[column]+'%'"></i>
+          <span v-else>{{scope.row[column]}}</span> -->
         </template>
       </elTableColumn>
   </elTable>
@@ -93,5 +96,11 @@ export default{
       transform: rotate(90deg);
       color: orange;
     }
+  }
+  .upData{
+    color: #67C23A;
+  }
+  .downData{
+    color: #E6A23C;
   }
 </style>

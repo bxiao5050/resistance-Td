@@ -257,6 +257,7 @@ export default {
           chart: {
             type: 'spline',
           },
+  				colors: ['#7cb5ec', '#C106EB', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'], 
           legend: {
             align: 'center', //水平方向位置
             // layout: 'vertical',

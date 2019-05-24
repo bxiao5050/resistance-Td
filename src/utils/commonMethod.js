@@ -5,7 +5,9 @@ import router from 'src/router'
 import { OverseasReleaseSysId } from '../../config/dev.config';
 const getSystemGames = () => {
   api.user.getSystemGames({}).done(data => {
-    if (data.code == 401) {
+    if (data.code == 401) {     
+      // 设置优先展示拥有权限的系统
+      Config.OverseasReleaseSysId = data.state[0].systemId
       if (data.state.length == 0) {
         Utils.Notification.error({
           message: '无系统游戏权限'

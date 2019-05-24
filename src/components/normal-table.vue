@@ -1,5 +1,5 @@
 <template>
-  <table class="table table-bordered">
+  <table class="table table-bordered fixed_header">
     <thead v-if="!isHideHeader">
       <tr>
         <th v-for="column in columnArr" :key="column" >{{column}}</th>
@@ -9,9 +9,9 @@
       <tr v-for="(item,index) in tableData" :key="index" :class="{selected:selectedIndex === index}" @click="selectedIndex=index">
         <td v-for="column in columnArr" :key="column">
           <i v-if="trendCol&&trendCol==column" class="icon-arrow" :class="{'up':Number(item[column])>0,'right':Number(item[column])==0,'down':Number(item[column])<0}"></i>
-          <span v-else :class="column=='趋势'?(parseInt(item[column])>=0?'upData':'downData'):''">{{item[column]}}</span>
-          <i v-if="column=='趋势' && parseInt(item[column])>=0" class="el-icon-arrow-up" />
-          <i v-if="column=='趋势' && parseInt(item[column])<0" class="el-icon-arrow-down" />
+          <span v-else :class="column=='趋势'?(parseInt(item[column].replace('%','')*100)>=0?'upData':'downData'):''">{{item[column]=='0.00'?'--':item[column]}}</span>
+          <i v-if="column=='趋势' && parseInt(item[column].replace('%','')*100)>=0" class="el-icon-arrow-up" />
+          <i v-if="column=='趋势' && parseInt(item[column].replace('%','')*100)<0" class="el-icon-arrow-down" />
         </td>
       </tr>
     </tbody>
@@ -121,4 +121,26 @@
       color: orange;
     }
   }
+
+
+// table tbody {
+//     display:block;
+//     max-height:400px;
+//     overflow-y:auto;
+//     -webkit-overflow-scrolling: touch; // 为了滚动顺畅 
+// }
+
+// table tbody::-webkit-scrollbar {
+//     // display: none; // 隐藏滚动条
+// }
+
+// table thead, tbody tr {
+//     display:table;
+//     width:100%;
+//     table-layout:fixed;
+// }
+
+// table thead {
+//     width: calc( 100% - 1em )
+// }
 </style>

@@ -390,7 +390,7 @@ export default {
 
 .table-item {
   border: 15px solid #e7e1ea;
-  width: 600px;
+  width: 705px;
   height: auto;
   margin: 20px;
 }

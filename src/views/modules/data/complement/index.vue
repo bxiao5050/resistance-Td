@@ -271,7 +271,8 @@ export default {
         this.input.setAttribute("class", "cell-inline-input");
         this.input.focus();
         this.input.addEventListener("blur", this.onblurEvent);
-
+        console.log(event.target.dataset);
+        
         this.$_th[event.target.dataset.label * 1 + 1].classList.remove("pending");
       }
     },

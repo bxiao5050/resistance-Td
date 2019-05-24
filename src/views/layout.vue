@@ -7,7 +7,7 @@
       <div class="module" :class="{sm:isCompact,'hide-aside':$store.state.common.hideAside}">
         <viewAside v-if="$store.state.common.systems.systemId==Config.DistributionSystemId"></viewAside>
         <div class="wrapper">
-          <div class="scroll" ref="scroll">
+          <div :class="['scroll',OverseasIssueClass?'overseas':'']" ref="scroll">
             <div class="module-head">
               {{nowmenu?nowmenu.menuName:'null'}}
               <i class="icon-quest" style="color:#b9bec2;cursor:pointer;" @click="showTip"></i>
@@ -56,8 +56,15 @@ export default {
   , data() {
     return {
       isShowTip: false,
-      indicatorData: []
+      indicatorData: [],
+      OverseasIssueClass:false,
     }
+  },
+  beforeRouteUpdate (to, from, next) {
+  // just use `this`
+    var arr = ['/five-min-view','/online-data','/five-force-model','/new-server-monitor','/new-user-payout-ratio','/big-R-user','/overall_status','/service_status','/channel_status'];
+    this.OverseasIssueClass = arr.includes(to.path) ? true : false;
+    next()
   },
   computed: {
     Config() {
@@ -240,7 +247,9 @@ export default {
         }
       }
     }
-
+    .overseas{
+      height: 95%;
+    }
     &.hide-aside {
       transform: translateY(-100px);
       .wrapper {

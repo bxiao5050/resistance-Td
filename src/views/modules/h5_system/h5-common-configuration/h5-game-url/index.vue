@@ -18,20 +18,7 @@
         <i class="el-icon-plus"/>新增
       </el-button>
     </my-row>
-    <!-- 移除对话框 -->
-    <el-dialog
-        title="移除数据提示"
-        :visible.sync="centerDialogVisible"
-        width="30%"
-        :before-close="Undelete"
-        center>
-        <span>该操作具有一定风险,你确认继续吗?</span>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="Undelete">取 消</el-button>
-            <el-button type="danger" @click="confirmDeletion">确 定</el-button>
-        </span>
-    </el-dialog>
-    <!-- <p>{{_state.tableData}}</p> -->
+    <hr style="width:100%;margin-bottom: 0;">
     <!-- 表格 -->
     <div class="table-item">
       <el-table
@@ -100,8 +87,6 @@ export default {
       in_app_name: '',
       in_id: 0,
       activityIndex:-1,
-      centerDialogVisible:false,
-
     }
   },
   created() {
@@ -134,7 +119,7 @@ export default {
   methods: {
     //url修改   
     blurInput(index){
-    this.activityIndex = -1
+      this.activityIndex = -1
     },
     //添加行的索引值   
       tableRowClassName({row, rowIndex}) {
@@ -169,38 +154,26 @@ export default {
     },
     //删除数据
     deleteRow(index,data){
-      this.in_app_id = this._state.tableData[0][index]["游戏应用ID"];
-      this.in_app_name = this._state.tableData[0][index]["游戏"];
-      this.in_app_url = this._state.tableData[0][index]["url"];
-      this.in_id = this._state.tableData[0][index]["序号"];
-      this.centerDialogVisible = true;
-    },
-    // 确认删除
-    confirmDeletion(){
+      if (confirm("确认移除？")) {
+        this.in_app_id = this._state.tableData[0][index]["游戏应用ID"];
+        this.in_app_name = this._state.tableData[0][index]["游戏"];
+        this.in_app_url = this._state.tableData[0][index]["url"];
+        this.in_id = this._state.tableData[0][index]["序号"];
         this.getData('tableData',4);
-        this.centerDialogVisible = false;
-    },
-    // 取消删除
-    Undelete(){
-        this.centerDialogVisible = false;
-        this.in_app_id = 0;
-        this.in_app_name = '';
-        this.in_app_url = '';
-        this.in_id = 0;
+      }
     },
     // 修改数据
     changeRow(index){
-        if (!this._state.tableData[0][index]['url']) {
+      if (!this._state.tableData[0][index]['url']) {
             return Utils.Notification.warning({message: '请将url填写完整'})
         }
-        if (this.activityIndex<0) {
-            return Utils.Notification.warning({message: '请先选择修改的内容'})
-        }
+      if (confirm("确认修改？")) {
         this.in_app_id = this._state.tableData[0][index]["游戏应用ID"];
         this.in_app_name = this._state.tableData[0][index]["游戏"];
         this.in_app_url = this._state.tableData[0][index]["url"];
         this.in_id = this._state.tableData[0][index]["序号"];
         this.getData("tableData", 5);
+      }
     },
     getData(name, index) {
       var params = {
@@ -212,6 +185,7 @@ export default {
       }
       this.$store.dispatch("h5_game_url/getMOduleData", { params, tag: name, }).then(()=>{
         index == 3 && (this.input_url="")
+        this.activityIndex = -1
       })
     },
     getWidth(index) {

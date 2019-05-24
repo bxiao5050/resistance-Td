@@ -13,9 +13,9 @@
                 <p>{{item.name}}</p>
                 <p>
                     <span>{{item.data}}</span>
-                    <span :class="parseInt(item.scale)>=0?'upData':'downData'">{{item.scale}}
-                        <i v-if="parseInt(item.scale)>=0" class="el-icon-arrow-up" />
-                        <i v-if="parseInt(item.scale)<0" class="el-icon-arrow-down" />
+                    <span v-if="item.scale" :class="parseInt(item.scale.replace('%','')*100)>=0?'upData':'downData'">{{item.scale}}
+                        <i v-if="parseInt(item.scale.replace('%','')*100)>=0" class="el-icon-arrow-up" />
+                        <i v-if="parseInt(item.scale.replace('%','')*100)<0" class="el-icon-arrow-down" />
                     </span>
                 </p>
             </section>
@@ -43,7 +43,7 @@
 import moduleHeader from 'src/views/modules/module-header'
 import card from 'src/components/card.vue'
 import api from 'src/services/api'
-import normalTable from 'src/components/normal-table.vue'
+import normalTable from 'src/components/table/element-table.vue'
 import { log } from 'util';
 export default {
   name: 'new-server-monitor',
@@ -60,15 +60,15 @@ export default {
       date1: moment().add(-1, 'day').format('YYYY-MM-DD'),
       in_date_type:'day',
       tableData: [],
-      dataBoxArr:[{name:"日注册用户数",flag:"注册人数", data:0,scale:0},
-                  {name:"登录用户数",flag:'登录人数',data:0,scale:0},
-                  {name:"新用户活跃数",flag:'新用户活跃人数',data:0,scale:0},
-                  {name:"老用户活跃数",flag:'老用户活跃人数',data:0,scale:0},
-                  {name:"活跃用户数",flag:'活跃人数',data:0,scale:0},
-                  {name:"付费人数",flag:"付费人数",data:0,scale:0},
-                  {name:"活跃付费率",flag:"活跃付费率",data:0,scale:0},
-                  {name:"付费金额",flag:"付费金额",data:0,scale:0},
-                  {name:"付费ARPU",flag:"付费ARPU",data:0,scale:0},]
+      dataBoxArr:[{name:"日注册用户数",flag:"注册人数", data:0,scale:'0%'},
+                  {name:"登录用户数",flag:'登录人数',data:0,scale:'0%'},
+                  {name:"新用户活跃数",flag:'新用户活跃人数',data:0,scale:'0%'},
+                  {name:"老用户活跃数",flag:'老用户活跃人数',data:0,scale:'0%'},
+                  {name:"活跃用户数",flag:'活跃人数',data:0,scale:'0%'},
+                  {name:"付费人数",flag:"付费人数",data:0,scale:'0%'},
+                  {name:"活跃付费率",flag:"活跃付费率",data:0,scale:'0%'},
+                  {name:"付费金额",flag:"付费金额",data:0,scale:'0%'},
+                  {name:"付费ARPU",flag:"付费ARPU",data:0,scale:'0%'},]
     }
   },
   computed: {
@@ -134,9 +134,9 @@ export default {
           for (let index = 0; index < this.tableData.length; index++) {
             Object.keys(this.tableData[index]).forEach((key, msg) => {
                 if (dataKey == key) {
-                    // console.log(key,this.tableData[index][key],this.tableData[index].indicator_name);
+                    // console.log(key,this.tableData[index][key],this.tableData[index]['指标']);
                     for (let flag = 0; flag < this.dataBoxArr.length; flag++) {
-                        if (this.tableData[index].indicator_name === this.dataBoxArr[flag].flag) {
+                        if (this.tableData[index]['指标'] === this.dataBoxArr[flag].flag) {
                             this.dataBoxArr[flag].data = this.tableData[index][dataKey];
                             this.dataBoxArr[flag].scale = this.tableData[index]['趋势'];
                             // console.log(this.dataBoxArr[flag]);
@@ -309,8 +309,9 @@ export default {
         p{
             width: 100%;
             span{
-                width: 48%;
-                display: inline-block;
+              padding: 0 5%;
+                // width: 48%;
+                // display: inline-block;
             }
         }
         p:nth-child(2){

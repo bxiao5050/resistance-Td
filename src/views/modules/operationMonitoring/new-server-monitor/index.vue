@@ -22,7 +22,7 @@
         </div>
         <div slot="body">
           <div class="table-content">
-          <normalTable :tableData="tableData"></normalTable>
+          <normalTable :tableData="detailData"></normalTable>
           </div>
         </div>
       </card>
@@ -34,7 +34,7 @@
 import moduleHeader from 'src/views/modules/module-header'
 import card from 'src/components/card.vue'
 import api from 'src/services/api'
-import normalTable from 'src/components/normal-table.vue'
+import normalTable from 'src/components/table/element-table.vue'
 export default {
   name: 'new-server-monitor',
   components: {
@@ -61,7 +61,9 @@ export default {
         isShowIndex: false,
       },
 			date1: [moment().add(-8, 'day').format('YYYY-MM-DD'),moment().add(-2, 'day').format('YYYY-MM-DD')],
-      tableData: [],
+			tableData: [],
+			detailData: [],
+			
     }
   },
   mounted() {
@@ -79,7 +81,8 @@ export default {
 			}
 			api.user.getQuery(params).then((data)=>{
 				if (data.code == 401) {
-					this.tableData = data.state[0]
+					this.detailData = data.state[0]
+					this.tableData = [...data.state[0]].reverse()
           var xAxis = [];
 					var chartData = [];
 					// 获取data
@@ -131,6 +134,7 @@ export default {
 				chart: {
 					type: 'spline',
 				},
+				colors: ['#7cb5ec', '#C106EB', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'], 
 				legend: {
 					align: 'center', //水平方向位置
 					// layout: 'vertical',

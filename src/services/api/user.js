@@ -32,7 +32,7 @@ export default {
    * 游戏切换
    * @param params {Object} Object
    */
-  changeGame(params) {
+  changeGame(params) {   
     return http.jsonp('/user/change', params)
   },
 

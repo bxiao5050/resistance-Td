@@ -22,7 +22,7 @@
           <span class="input-group-addon">
             <i class="icon-login-password"></i>
           </span>
-          <input id="login-password" type="password" class="form-control" @keyup.enter="toLogin" :placeholder="$t('login.Password')">
+          <input id="login-password" type="password"  class="form-control" @keyup.enter="toLogin" :placeholder="$t('login.Password')">
         </div>
         <div class="input-group mb-3 form-item">
           <button class="login-btn" @click="toLogin">{{$t('login.submit')}}</button>

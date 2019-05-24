@@ -7,19 +7,19 @@ export default {
 	initConnect() {
 		//判断当前浏览器是否支持WebSocket
 		if ('WebSocket' in window) {
-			var SockJS = require('sockjs-client');
-			var Stomp = require('stompjs');
-			var socket = new SockJS(baseUrl + '/message');
-			var stompClient = Stomp.over(socket);
-			stompClient.connect({}, function (frame) {
-				console.log('Connected: ' + frame);
-				stompClient.subscribe('/topic/info', function (greeting) {
-					console.log(greeting);
-				});
-				stompClient.subscribe('/user/info', function (greeting) {
-					console.log(greeting);
-				});
-			});
+			// var SockJS = require('sockjs-client');
+			// var Stomp = require('stompjs');
+			// var socket = new SockJS(baseUrl + '/message');
+			// var stompClient = Stomp.over(socket);
+			// stompClient.connect({}, function (frame) {
+			// 	console.log('Connected: ' + frame);
+			// 	stompClient.subscribe('/topic/info', function (greeting) {
+			// 		console.log(greeting);
+			// 	});
+			// 	stompClient.subscribe('/user/info', function (greeting) {
+			// 		console.log(greeting);
+			// 	});
+			// });
 			function subscribe(url) {
 				stompClient.subscribe(url, function (greeting) {
 					console.log(greeting);

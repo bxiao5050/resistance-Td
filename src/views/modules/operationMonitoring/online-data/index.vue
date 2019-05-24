@@ -24,7 +24,7 @@
         </div>
 				<div slot="body">
 					<div class="table-content">
-						<normalTable :tableData="detailData"></normalTable>
+						<normalTable :tableData="tableData"></normalTable>
 					</div>
 				</div>
 
@@ -42,7 +42,7 @@ import moduleHeader from 'modules/module-header.vue'
 import trigger from 'modules/channel/register/components/trigger'
 import card from 'src/components/card.vue'
 import api from 'src/services/api'
-import normalTable from 'src/components/normal-table.vue'
+import normalTable from 'src/components/table/element-table.vue'
 export default {
 	name: 'online-data',
 	components: {
@@ -60,7 +60,7 @@ export default {
 			roleCountData: [],
 			payARPUData: [],
 			detailData: [],
-
+			tableData:[],
 			columnData: [],//表格列名数组
 		}
 	},
@@ -121,7 +121,8 @@ export default {
 			}
 			api.user.getQuery(params).then((data)=>{
 				if (data.code == 401) {
-					this.detailData = data.state[0]
+					this.tableData = data.state[0]
+					this.detailData = [...data.state[0]].reverse()
 					var xAxis = [];
 					var chartData = [];
 					// 获取data
@@ -158,6 +159,9 @@ export default {
 							case 7:
 							chartData[6].data.push(+this.detailData[index][key])
 							break;
+							case 8:
+							chartData[7].data.push(+this.detailData[index][key])
+							break;
 							default:
 							break;
 						}
@@ -190,6 +194,7 @@ export default {
 				chart: {
 					type: 'spline',
 				},
+				colors: ['#7cb5ec', '#C106EB', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'], 
 				legend: {
 					align: 'center', //水平方向位置
 					// layout: 'vertical',
@@ -339,5 +344,11 @@ export default {
       display: inline-block;
     }
   }
+}
+.table-content {
+  overflow: auto;
+  width: 100%;
+  max-height: 500px;
+  white-space: nowrap;
 }
 </style>
