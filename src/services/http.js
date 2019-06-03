@@ -89,6 +89,8 @@ export default {
     })
   },
   exportData(url, data) {
+    console.log({'url':url,'data':data});
+    
     window.open(baseUrl + url + '?' + $.param(data))
   }
 }

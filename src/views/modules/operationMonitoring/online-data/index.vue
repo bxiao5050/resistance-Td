@@ -95,11 +95,12 @@ export default {
 					break;
 				case 2:
 					this.in_date_type = 'week';
-					this.date1 = [moment().add(-7, "week").format("YYYY-MM-DD"), moment().add(-1, "week").format("YYYY-MM-DD")];
+					this.date1 = [moment().subtract(7, 'isoWeek').startOf('isoWeek').format("YYYY-MM-DD"), moment().subtract(1, 'isoWeek').startOf('isoWeek').format("YYYY-MM-DD")];
 					break;
 				case 3:
 					this.in_date_type = 'month';
-					this.date1 = [moment().add(-7, "month").format("YYYY-MM-DD"), moment().add(-1, "month").format("YYYY-MM-DD")];
+					this.date1 = [moment().subtract(7, 'months').startOf('month').format('YYYY-MM-DD'), moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD')];
+
 					break;	
 				default:
 					break;
@@ -117,7 +118,7 @@ export default {
 				dataview: this.$store.state.common.nowmenu.dataView[0],
 				in_gamezone_id: this.$store.getters['Agent/selectedIdList'],
 				in_channel_id: this.$store.getters['RegChannel/selected3IdList'],
-				in_date_type: 'day'
+				in_date_type: this.in_date_type
 			}
 			api.user.getQuery(params).then((data)=>{
 				if (data.code == 401) {
@@ -194,7 +195,7 @@ export default {
 				chart: {
 					type: 'spline',
 				},
-				colors: ['#7cb5ec', '#C106EB', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'], 
+				colors:"#f7a35c,#7cb5ec,#f15c80,#90ed7d,#8085e9,#e4d354,#2b908f,#f45b5b,#91e8e1".split(","),
 				legend: {
 					align: 'center', //水平方向位置
 					// layout: 'vertical',

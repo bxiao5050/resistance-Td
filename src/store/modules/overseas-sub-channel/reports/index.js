@@ -731,7 +731,7 @@ export default {
             total[levelAfRateKey] = (total[levelAfKey] / total[activeKey] * 100).format(2) + '%'
           }
         })
-
+         
         data.list = state.subChannelRegionData
         data.total = total
         console.log('subChannelRegionData', data)

@@ -26,6 +26,43 @@
         <paytrigger class="item-input"></paytrigger>
       </div>
     </div>
+    <div v-if="isShowSelect==1">
+      <span style="padding-left: 45px;">请选择充值金额</span>
+      <el-select
+          v-model="value1"
+          size="small"
+          @change="changeMoney"
+          filterable
+          allow-create
+          default-first-option
+          placeholder="请选择充值金额">
+          <el-option
+            v-for="item in options1"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+      </el-select>
+    </div>
+    <div v-if="isShowSelect==2">
+      <span style="padding-left: 45px;">请选择充值金额</span>
+      <el-select
+        v-model="value2"
+        size="small"
+        @change="changeMoney"
+        filterable
+        allow-create
+        default-first-option
+        placeholder="请选择充值金额">
+        <el-option
+          v-for="item in options2"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+    </div>
+    
   </div>
 </template>
 
@@ -44,8 +81,10 @@
     props: {
       isShowReg: Boolean,
       isShowPay: Boolean,
+      isShowSelect:Number,
       daypicker: Function,
       dayselect: Function,
+      changeMoney:Function,
       // header: {
       //   type: Object,
       //   default: () => {
@@ -85,6 +124,58 @@
           name: this.$t('common.Month')
         }, ],
         isShowTip: false,
+        options1: [{
+          value: '100',
+          label: '100'
+        }, {
+          value: '200',
+          label: '200'
+        }, {
+          value: '300',
+          label: '300'
+        }, {
+          value: '500',
+          label: '500'
+        }, {
+          value: '1000',
+          label: '1000'
+        }, {
+          value: '2000',
+          label: '2000'
+        }, {
+          value: '5000',
+          label: '5000'
+        }, {
+          value: '10000',
+          label: '10000'
+        }],
+        options2: [{
+          value: '2000',
+          label: '2000'
+        }, {
+          value: '3000',
+          label: '3000'
+        }, {
+          value: '4000',
+          label: '4000'
+        }, {
+          value: '5000',
+          label: '5000'
+        }, {
+          value: '10000',
+          label: '10000'
+        }, {
+          value: '20000',
+          label: '20000'
+        }, {
+          value: '50000',
+          label: '50000'
+        }, {
+          value: '100000',
+          label: '100000'
+        }],
+        value1: '100',
+        value2: '2000',
       }
     },
     watch: {

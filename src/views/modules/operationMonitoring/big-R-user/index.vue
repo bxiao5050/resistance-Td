@@ -1,17 +1,14 @@
 <template>
   <section id="new-server-monitor">
     <div class="content-header">
-      <moduleHeader :header="header" :isShowReg="true" :dateList="dateList"></moduleHeader>
+      <moduleHeader v-if="isShowSelect==1" :header="header"  :isShowSelect=isShowSelect :changeMoney="changeMoney" :dateList="dateList1"></moduleHeader>
+      <moduleHeader v-if="isShowSelect==2" :header="header"  :isShowSelect=isShowSelect :changeMoney="changeMoney" :dateList="dateList2"></moduleHeader>
     </div>
     <div class="content-body">
-      <card>
-        <div slot="header">
-          <div class="card-header-title">图表数据</div>
-        </div>
-        <div slot="body">
-          <div id="hourChart"></div>
-        </div>
-      </card>
+      <el-radio-group v-model="radioData" @change="changeRadioData">
+        <el-radio-button label="区间新增大R"></el-radio-button>
+        <el-radio-button label="充值大R"></el-radio-button>
+      </el-radio-group>
       <card>
         <div slot="header">
           <div class="card-header-title">{{$t('common.DataDetails')}}</div>
@@ -20,9 +17,27 @@
           </div>
         </div>
         <div slot="body">
-          <div class="table-content">
-            <normalTable :tableData="detailData"></normalTable>
-          </div>
+          <!-- <div class="table-content"> -->
+            <!-- <normalTable :tableData="tableData"></normalTable> -->
+          <!-- </div> -->
+          <!-- 表格 -->
+    <div class="table-item ">
+      <el-table
+        border
+        max-height="850"
+        :header-cell-style="{background:'#f2f2f2',textAlign:'left'}"
+        :data="tableData"
+      >
+        <el-table-column
+          v-for="(item, i) in (Object.keys(tableData[0]?tableData[0]:{}))"
+          :key="i"
+          :sortable="i==4||i==5"
+          :prop="item"
+          :label="item"
+          :width="i==0 ? 300:(i==9?130:'')"
+        ></el-table-column>
+      </el-table>
+    </div>
         </div>
       </card>
     </div>
@@ -34,23 +49,11 @@ import moduleHeader from 'src/views/modules/module-header'
 import card from 'src/components/card.vue'
 import api from 'src/services/api'
 import normalTable from 'src/components/table/element-table.vue'
+import { log } from 'util';
 export default {
   name: 'new-server-monitor',
   components: {
     card, moduleHeader, normalTable
-  },
-  computed: {
-    dateList() {
-      return [
-        {
-          single: false,
-          uid: 'date1',
-          label: this.$t('common.Date'),
-          startDate: this.date1[0],
-          endDate: this.date1[1],
-          change: (newDate) => { this.date1[0] = newDate.startDate; this.date1[1] = newDate.endDate; this.query() }
-        }]
-    }
   },
   data() {
     return {
@@ -59,170 +62,108 @@ export default {
         definedContent: '',
         isShowIndex: false,
       },
-      date1: [moment().add(-8, 'day').format('YYYY-MM-DD'), moment().add(-2, 'day').format('YYYY-MM-DD')],
+      radioData:'区间新增大R',
+      isShowSelect:1,//1:区间新增   2:充值大R
+      date1: [moment().add(-7, 'day').format('YYYY-MM-DD'), moment().add(-1, 'day').format('YYYY-MM-DD')],
+      date2: moment().add(-1, 'day').format('YYYY-MM-DD'),
       tableData: [],
-			detailData: [],
+      startValue:100,
+      value:'',
 
     }
   },
+  computed: {
+    dateList1() {
+      return [
+        {
+          single: false,
+          uid: 'date1',
+          label: this.$t('common.Date'),
+          startDate: this.date1[0],
+          endDate: this.date1[1],
+          change: (newDate) => { this.date1[0] = newDate.startDate; this.date1[1] = newDate.endDate; this.query(1) }
+        }]
+    },
+    dateList2() {
+      return [
+        {
+        single: true,
+          uid: 'date2',
+          label: this.$t('common.Date'),
+          startDate: this.date2,
+          endDate: '',
+          change: newDate => {
+            this.date2 = newDate.startDate
+            this.query(2)
+          }
+        }]
+    }
+
+  },
+  
   mounted() {
-    this.query();
+    this.query(1);
   },
   methods: {
-    query() {
+    query(index,value) {
       var params = {
-        in_begin_date: this.date1[0],
-        in_end_date: this.date1[1],
         in_app_id: this.$store.state['common'].nowgame,
-        dataview: 'fn_report_new_user_retention_rate',
-        // dataview: this.$store.state.common.nowmenu.dataView[0],
         in_gamezone_id: this.$store.getters['Agent/selectedIdList'],
-        in_channel_id: this.$store.getters['RegChannel/selected3IdList'],
+        in_pay_money:this.value?this.value:this.startValue,
+        in_type_id:index,
+        dataview: this.$store.state.common.nowmenu.dataView[0],
+      }
+      if (this.isShowSelect==2) {
+        params.in_begin_date = this.date2
+        params.in_end_date = this.date2
+      }else{
+        params.in_begin_date = this.date1[0]
+        params.in_end_date = this.date1[1]
       }
       api.user.getQuery(params).then((data) => {
         if (data.code == 401) {
-          this.detailData = data.state[0]
-					this.tableData = [...data.state[0]].reverse()
-          var xAxis = [];
-          var chartData = [];
-          // 获取data
-          Object.keys(this.tableData[0]).forEach((key, index) => {
-            switch (index) {
-              case 1:
-                chartData.push({ name: '次日留存率', data: [] })
-                break;
-              case 7:
-                chartData.push({ name: '7日留存率', data: [] })
-                break;
-              case 9:
-                chartData.push({ name: '30日留存率', data: [] })
-                break;
-              default:
-                break;
-            }
-          })
-          // 获取x轴横坐标
-          for (let index = 0; index < this.tableData.length; index++) {
-            Object.keys(this.tableData[index]).forEach((key, msg) => {
-              switch (msg) {
-                case 0:
-                  xAxis.push(this.tableData[index][key])
-                  break;
-                case 1:
-                  chartData[0].data.push(+this.tableData[index][key])
-                  break;
-                case 7:
-                  chartData[1].data.push(+this.tableData[index][key])
-                  break;
-                case 9:
-                  chartData[2].data.push(+this.tableData[index][key])
-                  break;
-                default:
-                  break;
-              }
-            })
+          for (let index = 0; index < data.state[0].length; index++) {
+           Object.keys(data.state[0][index]).forEach((key, flag) => {
+             if (flag==4 || flag==5) {
+                data.state[0][index][key] = +data.state[0][index][key];
+             }
+           })
           }
-          this.drawChart(xAxis, chartData)
+          this.tableData = data.state[0]
         } else {
           Utils.Notification.error({ message: data.message });
           console.error(data.message);
         }
       })
     },
-    drawChart(xAxis, data) {
-      var chart = Highcharts.chart('hourChart', {
-        chart: {
-          type: 'spline',
-        },
-				colors: ['#7cb5ec', '#C106EB', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'], 
-        legend: {
-          align: 'center', //水平方向位置
-          // layout: 'vertical',
-          verticalAlign: 'top', //垂直方向位置
-          x: 0, //距离x轴的距离
-          y: 20 //距离Y轴的距离
-        },
-        title: {
-          text: '',
-        },
-        subtitle: {
-          text: ''
-        },
-        xAxis: {
-          categories: xAxis,
-          crosshair: {
-            width: 1,
-            color: '#747474'
-          }
-        },
-        yAxis: {
-          title: {
-            text: ''
-          },
-          labels: {
-            // 
-            formatter: function (index) {
-              // if (+localStorage.getItem("percent")>=3) {
-              //   return this.value + '%';//y轴加上%
-              // }else{
-              return this.value
-              // }
-            }
-
-          },
-          crosshair: {
-            width: 1,
-            color: '#747474'
-          }
-        },
-        tooltip: {
-          shared: true,
-        },
-        plotOptions: {
-          line: {
-            dataLabels: {
-              // 开启数据标签
-              enabled: false
-            },
-            // 关闭鼠标跟踪，对应的提示框、点击事件会失效
-            enableMouseTracking: true
-          },
-          series: {
-            // 隐藏拐点
-            marker: {
-              enabled: false
-            },
-            events: {
-              // legendItemClick: function () {
-              //   // return false 即可禁止图例点击响应
-              //   return false;
-              // }
-            }
-          }
-        },
-        credits: {
-          enabled: false　　　　　　//去除highcharts的链接
-        },
-        series: data,
-        navigation: {
-          buttonOptions: {
-            enabled: true
-          }
-        }
-      });
-    },
     exportData() {
       var params = {
-        in_begin_date: this.date1[0],
+        in_begin_date: this.isShowSelect==2?this.date1[1]:this.date1[0],
         in_end_date: this.date1[1],
         in_app_id: this.$store.state['common'].nowgame,
-        dataview: 'fn_report_new_user_retention_rate',
-        // dataview: this.$store.state.common.nowmenu.dataView[0],
         in_gamezone_id: this.$store.getters['Agent/selectedIdList'],
-        in_channel_id: this.$store.getters['RegChannel/selected3IdList'],
+        in_pay_money:this.value?this.value:this.startValue,
+        in_type_id:this.isShowSelect==2?2:1,
+        dataview: this.$store.state.common.nowmenu.dataView[0],
       }
       api.user.exportData(params)
     },
+    changeMoney(data){
+      this.value = data;
+      this.isShowSelect==1 ? this.query(1) : this.query(2)
+    },
+    changeRadioData(data){
+      this.value = null;
+      if(data==='区间新增大R'){
+          this.startValue = 100;
+          this.isShowSelect = 1;
+          this.query(1);
+      }else{
+          this.startValue = 2000;
+          this.isShowSelect = 2;
+          this.query(2);        
+      }
+    }
   }
 }
 

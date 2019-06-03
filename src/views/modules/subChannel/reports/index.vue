@@ -81,19 +81,16 @@
     <my-row>
       <tsdp :data="tsdp" v-if="tsdp.isShow" :auto-confirm="true"></tsdp>
     </my-row>
-
-    <my-row class="back-row">
-      <div class="back" v-if="tableOptions.siteId">
-        <el-tag>
-          子渠道： {{this.tableOptions.siteId}}
-        </el-tag>
-        <el-button class="back-btn" @click="tableOptions.siteId=null" size="small">
-          点击返回
-        </el-button>
-      </div>
-    </my-row>
+    
+      <pagination
+        v-if="$$subChannelData.length"
+        :total="$$subChannelData.length"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.limit"
+        @pagination="cahngePage" 
+      />
     <div class="table" v-if="__data" style="margin: 16px 0 0 0;">
-      <el-table :data="__data.list" :cell-class-name="cellClassName" @cell-click="cellClick" :width="'2000px'" :cell-style="addStyle">
+      <el-table :data="subChannelDatas" :cell-class-name="cellClassName"   :width="'2000px'" :cell-style="addStyle">
         <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key"  
          :label="item.key" :formatter="formatter" :width="item.width" :min-width="item['min-width']" :sortable="item.sortable" v-if="!item.hide"
          :fixed="i<=2?true:false"></el-table-column>
@@ -111,12 +108,15 @@
 
 <script>
 import tsdp from "src/component/widget/tree-degree-select-box/index.vue";
-import totalFloat from "src/component/widget/total-float/index.vue"
+import totalFloat from "src/component/widget/total-float/index.vue";
+import Pagination from 'src/components/Pagination/index.vue'
 import { valid } from 'semver';
+import api from 'src/services/api'
+import { log } from 'util';
 export default {
   name: 'sub-channel-reports',
   components: {
-    tsdp, totalFloat
+    tsdp, totalFloat,Pagination
   },
   data() {
     return {
@@ -285,13 +285,27 @@ export default {
       channelOptions: {
         channel: null,
         list: []
-      }
+      },
+
+      subChannelDatas:[],
+      listQuery: {
+        page: 1,
+        limit: 10
+      },
 
     }
   },
   computed: {
     _state() {
       return this.$store.state[this.SMN];
+    },
+    $$subChannelData(){
+      if (this.$store.state[this.SMN].subChannelData) {
+        this.subChannelDatas = this.$store.state[this.SMN].subChannelData.slice(0,this.listQuery.limit)
+        return this.$store.state[this.SMN].subChannelData
+      }else{
+        return []        
+      }
     },
     __data() {
       this.updateHook += 1
@@ -330,16 +344,30 @@ export default {
     
   },
   methods: {
+    cahngePage(data){
+        this.subChannelDatas = this.$$subChannelData.slice((data.page-1)*this.listQuery.limit,this.listQuery.limit*data.page)
+    },
     excel() {
-      var thead = document.querySelector('.el-table__header thead').innerHTML
-      var tbody = document.querySelector('.el-table__body tbody').innerHTML
-      var table = document.createElement('table')
-      table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
-      Utils.tableToExcel(
-        table,
-        false,
-        new Date().getTime() + '.xls'
-      )
+      // var thead = document.querySelector('.el-table__header thead').innerHTML
+      // var tbody = document.querySelector('.el-table__body tbody').innerHTML
+      // var table = document.createElement('table')
+      // table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
+      // Utils.tableToExcel(
+      //   table,
+      //   false,
+      //   new Date().getTime() + '.xls'
+      // )
+      var params = {
+        in_install_date1:this._state.date[0],
+        in_install_date2:this._state.date[1],
+        in_pay_date1: this._state.payDate[0],
+        in_pay_date2: this._state.payDate[1],
+        in_os: this._state.os,
+        in_area_app_ids: this._state.gameArr[0],
+        in_media_source: this._state.channel,
+        dataview: 'fn_report_media_source_site',
+      }
+      api.user.exportData(params)
     },
     cellClassName({ row, column, rowIndex, columnIndex }) {
       if (!columnIndex) {
@@ -489,8 +517,10 @@ export default {
         in_area_app_ids: this._state.gameArr[0],
         in_media_source: this._state.channel,
       }
-      console.log(param)
-      this.$store.dispatch(this.SMN + '/subChannelData', param).then(data => { })
+      this.$store.dispatch(this.SMN + '/subChannelData', param).then(data => { 
+        console.log(data);
+        
+      })
     },
     getWidth(str) {
       var len = str ? str.length:0;
@@ -697,11 +727,11 @@ export default {
     }
   }
   .sub-channel {
-    cursor: pointer;
-    &:hover {
-      background: #5b5691 !important;
-      color: #fff;
-    }
+    // cursor: pointer;
+    // &:hover {
+    //   background: #5b5691 !important;
+    //   color: #fff;
+    // }
   }
   .time-picker,
   .system-sel,

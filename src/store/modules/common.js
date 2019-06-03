@@ -7,6 +7,7 @@ const state = {
   menus: [],
   nowmenu: null,
   curLanguage: 'CHS',
+  dataBoolean:true,
   languages: {
     // CHS: require('src/components/system/language/packs/chs.js'), Tradition:
     // require('src/components/system/language/packs/tradition.js'), EN:
@@ -53,8 +54,8 @@ const mutations = {
   },
   selectMenu: (state, newMenu) => {
     state.nowmenu = newMenu
-    if (newMenu && (newMenu.menuId == 218 || newMenu.menuId == 219)) {
-      // 菜单为汇总模块或者游戏概况时隐藏aside
+    if (newMenu && (newMenu.menuId == 219)) {
+      // 菜单为汇总模块(218)或者游戏概况时隐藏aside
       state.hideAside = true
     } else {
       state.hideAside = false

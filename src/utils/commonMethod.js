@@ -65,10 +65,12 @@ const changeGame = () => {
     gameId: store.state.common.nowgame
   }).then(data => {
     if (data.code == 303) {
+      console.log(store.state.common);
+      
       Promise.all([
         // 
         new Promise((resolve, reject) => {
-          if (store.state.common.systems.systemId == 4 || store.state.common.systems.systemId == 5) {
+          if (store.state.common.systems.systemId == 4 || store.state.common.systems.systemId == 5 || store.state.common.nowgame===70001) {
             resolve();
           } else {
             store.dispatch('Agent/data').then(() => {
@@ -80,7 +82,7 @@ const changeGame = () => {
         }),
         // 注册渠道
         new Promise((resolve, reject) => {
-          if (store.state.common.systems.systemId == 4 || store.state.common.systems.systemId == 5) {
+          if (store.state.common.systems.systemId == 4 || store.state.common.systems.systemId == 5 || store.state.common.nowgame===70001) {
             resolve();
           } else {
             store.dispatch('RegChannel/data').then(() => {

@@ -42,6 +42,13 @@ if (IS_DEV) {
           'src/views/modules/operationMonitoring/big-R-user'
         ],resolve)
     },
+    107:{
+      name:'plate-board',
+      component:resolve =>
+        require([
+          'src/views/modules/operationMonitoring/plate-board'
+        ],resolve)
+    },
     201: {
       name: 'five-force',
       component: resolve =>

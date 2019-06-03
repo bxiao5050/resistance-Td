@@ -18,6 +18,11 @@ export default {
   },
   methods: {
     gameSelect(item, index) {
+      if (item.id===70001) {
+        this.$store.state.common.dataBoolean = false;
+      }else{
+        this.$store.state.common.dataBoolean = true;
+      }
       if (item.id != this.nowgame) {
         this.$store.commit('selectGame', item.id)
         commonMethod.changeGame()
@@ -72,6 +77,7 @@ export default {
         width: $sidebarHeight - 31;
         height: $sidebarHeight - 31;
         padding: 5px;
+        border-radius: 15px;
       }
       span {
         width: 100%;

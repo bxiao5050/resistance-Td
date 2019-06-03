@@ -62,7 +62,7 @@ export default {
   },
   beforeRouteUpdate (to, from, next) {
   // just use `this`
-    var arr = ['/five-min-view','/online-data','/five-force-model','/new-server-monitor','/new-user-payout-ratio','/big-R-user','/overall_status','/service_status','/channel_status'];
+    var arr = ['/plate-board','/data-overview','/five-min-view','/online-data','/five-force-model','/new-server-monitor','/new-user-payout-ratio','/big-R-user','/overall_status','/service_status','/channel_status'];
     this.OverseasIssueClass = arr.includes(to.path) ? true : false;
     next()
   },
@@ -199,7 +199,7 @@ export default {
         font-size: 13px;
         color: #000;
         .content-header {
-          margin-bottom: 20px;
+          // margin-bottom: 20px;
           background-color: #fff;
           .switchs {
             margin-top: 5px;

@@ -13,7 +13,7 @@
       <i class="icon-toggle-game-list" @click="$store.commit('AsideToggleShow', 0)" v-if="games&&games.length>9">
         <span noselect>{{$t('aside.more')}}</span>
       </i>
-      <div class="agent-options btn btn-info" @click="$store.commit('AsideToggleShow', 1)" v-if="agents">
+      <div  class="agent-options btn btn-info" @click="$store.commit('AsideToggleShow', 1)" v-if="agents&&integratedData">
         <i class="icon-users"></i>
         <span :title="selectedConfirmList_filter">{{selectedConfirmList_filter||'无代理商权限'}}</span>
         <i class="el-icon-caret-bottom"></i>
@@ -49,6 +49,7 @@ import channelRegister from "modules/channel/register";
 import channelPayment from "modules/channel/payment";
 import commonMethod from "src/utils/commonMethod.js";
 import gameIconConfig from "src/config/gameIconConfig";
+import { log } from 'util';
 export default {
   components: {
     gameList,
@@ -89,7 +90,10 @@ export default {
     },
     //判断是否需要代理商模块
     agents() {
-      return this.$store.state.common.systems.systemId != 3;
+        return this.$store.state.common.systems.systemId != 3;
+    },
+    integratedData(){
+      return this.$store.state.common.dataBoolean
     },
     selectedConfirmList() {
       return this.$store.getters["Agent/selectedConfirmList"];
@@ -111,6 +115,11 @@ export default {
       }
     },
     gameSelect(item) {
+      if (item.id===70001) {
+        this.$store.state.common.dataBoolean = false;
+      }else{
+        this.$store.state.common.dataBoolean = true;
+      }
       if (item.id != this.nowgame) {
         this.$store.commit("selectGame", item.id);
         commonMethod.changeGame();
@@ -218,6 +227,7 @@ export default {
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
+            text-align: center;
           }
         }
         &.active {

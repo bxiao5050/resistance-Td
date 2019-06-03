@@ -380,22 +380,22 @@ export default {
     },
     excel() {
       var timestamp = Date.now()
-      if (this.main === "comprehensive") {
-        var data = this.$store.getters["h5_delivery_report/getComprehensive"];
-        var len = data.category.length
-        for (var i = 0; i < len; i++) {
-          var thead = document.querySelectorAll('.el-table__header thead')[i].innerHTML
-          var tbody = document.querySelectorAll('.el-table__header-wrapper+.el-table__body-wrapper>table:first-child')[i].innerHTML
-          var table = document.createElement('table')
-          table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
+      // if (this.main === "comprehensive") {
+      //   var data = this.$store.getters["h5_delivery_report/getComprehensive"];
+      //   var len = data.category.length
+      //   for (var i = 0; i < len; i++) {
+          // var thead = document.querySelectorAll('.el-table__header thead')[i].innerHTML
+          // var tbody = document.querySelectorAll('.el-table__header-wrapper+.el-table__body-wrapper>table:first-child')[i].innerHTML
+          // var table = document.createElement('table')
+          // table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
 
-          Utils.tableToExcel(
-            table,
-            false,
-            (timestamp + i) + '.xls'
-          )
-        }
-      } else {
+          // Utils.tableToExcel(
+          //   table,
+          //   false,
+          //   (timestamp + i) + '.xls'
+          // )
+        // }
+      // } else {
         var thead = document.querySelector('.el-table__header thead').innerHTML
         var tbody = document.querySelector('.el-table__body tbody').innerHTML
         var table = document.createElement('table')
@@ -405,7 +405,7 @@ export default {
           false,
           timestamp + '.xls'
         )
-      }
+      // }
     },
     checkMail() {
       if (this._state.mailUrl) {

@@ -96,15 +96,15 @@ export default {
         switch (newValue) {
             case 1:
                 this.in_date_type = 'day';
-                this.date1 = moment().add(-7, "day").format("YYYY-MM-DD");
+                this.date1 = moment().add(-1, "day").format("YYYY-MM-DD");
                 break;
             case 2:
                 this.in_date_type = 'week';
-                this.date1 = moment().add(-7, "week").format("YYYY-MM-DD");
+                this.date1 = moment().subtract(1, 'isoWeek').startOf('isoWeek').format("YYYY-MM-DD");
                 break;
             case 3:
                 this.in_date_type = 'month';
-                this.date1 = moment().add(-7, "month").format("YYYY-MM-DD");
+                this.date1 = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD');
                 break;	
             default:
                 break;

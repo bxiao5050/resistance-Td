@@ -179,7 +179,8 @@ exports.default = {
         3: {
           isShowRegChannel: true,
           isShowPayChannel: true
-        }
+        },
+       
       }
     };
   },

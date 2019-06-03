@@ -116,6 +116,10 @@ export default {
         4: {
           isShowRegChannel: true,
           isShowPayChannel: true
+        },
+         5: {
+          isShowRegChannel: true,
+          isShowPayChannel: true
         }
       }
     }
@@ -240,7 +244,8 @@ export default {
               }
             })
           }
-          this.drawChart(xAxis,chartData)
+          var arr = chartData.reverse()
+          this.drawChart(xAxis,arr)
         } else {
           Utils.Notification.error({
             message: data.message
@@ -257,7 +262,8 @@ export default {
           chart: {
             type: 'spline',
           },
-  				colors: ['#7cb5ec', '#C106EB', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'], 
+          colors:"#f7a35c,#7cb5ec,#f15c80,#90ed7d,#8085e9,#e4d354,#2b908f,#f45b5b,#91e8e1".split(","),
+  				// colors: [ '#f15c80', '#7cb5ec', '#90ed7d', '#C106EB', '#f7a35c', '#8085e9', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'], 
           legend: {
             align: 'center', //水平方向位置
             // layout: 'vertical',
