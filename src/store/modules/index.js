@@ -20,6 +20,8 @@ import {
 import {
   NewServerMonitor
 } from './OperationMonitoring'
+import fn_report_plate from './OperationMonitoring/fn_report_plate/index'
+
 import {
   ChargeHotList,
   BigCustomerTrend
@@ -77,6 +79,7 @@ export default {
   FiveForceModel,
   // OperationMonitoring
   NewServerMonitor,
+  fn_report_plate,
   // MarketingAnalysis
   ChargeHotList,
   BigCustomerTrend,

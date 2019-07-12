@@ -143,10 +143,15 @@ if (IS_DEV) {
       component: resolve =>
         require(['src/views/modules/overview/game-overview'], resolve)
     },
+    // 301: {
+    //   name: 'area-analysis',
+    //   component: resolve =>
+    //     require(['src/views/modules/userBehaviorAnalysis/areaAnalysis'], resolve)
+    // },
     301: {
-      name: 'area-analysis',
+      name: 'fn_report_plate',
       component: resolve =>
-        require(['src/views/modules/userBehaviorAnalysis/areaAnalysis'], resolve)
+        require(['src/views/modules/operationMonitoring/fn_report_plate'], resolve)
     },
     302: {
       name: 'recharge-mode',
@@ -269,15 +274,15 @@ if (IS_DEV) {
     },
     1201: {
       name: "overall_status",
-      component: resolve => require(['src/views/modules/roi/overall_status'], resolve)
+      component: resolve => require(['src/views/modules/operationMonitoring/roi/overall_status'], resolve)
     },
     1202:{
       name: "service_status",
-      component: resolve => require(['src/views/modules/roi/service_status'], resolve)
+      component: resolve => require(['src/views/modules/operationMonitoring/roi/service_status'], resolve)
     },
     1203:{
       name:"channel_status",
-      component: resolve => require(['src/views/modules/roi/channel_status'], resolve)
+      component: resolve => require(['src/views/modules/operationMonitoring/roi/channel_status'], resolve)
     },
     1204: {
       name: "budget-complement",

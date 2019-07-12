@@ -34,7 +34,8 @@ for (let i in menuConfig) {
     .push({
       path: menuConfig[i].name,
       beforeEnter: Authentication.bind(i),
-      component: menuConfig[i].component
+      component: menuConfig[i].component,
+      children:menuConfig[i].children
     })
 }
 

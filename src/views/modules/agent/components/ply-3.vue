@@ -17,10 +17,10 @@
               <label>全选</label>
             </Checkbox>
           </div>
-          <Search class="search"></Search>
+          <Search class="search" @newNodeEvent=searchArea></Search>
         </Row>
         <div class="box box-fixed">
-          <li class="btn" :key="i" :class="{'box-item':curParentid===e.parentid,'btn-secondary':curParentid!=e.parentid}" v-for="(e, i) in data[curGrandid]" @click="data[curGrandid].default=e.parentid" v-if="typeof(e)==='object'">
+          <li class="btn" :key="i" :class="{'box-item':curParentid===e.parentid,'btn-secondary':curParentid!=e.parentid}" v-for="(e, i) in ( Object.keys(searchAreaData).length?searchAreaData:data[curGrandid])" @click="data[curGrandid].default=e.parentid" v-if="typeof(e)==='object'">
             <div @click="toggle(data[e.grandid][e.parentid])">
               <Checkbox :state="data[e.grandid][e.parentid].select"></Checkbox>
             </div>
@@ -35,10 +35,10 @@
               <label>全选</label>
             </Checkbox>
           </div>
-          <Search class="search"></Search>
+          <Search class="search" @newNodeEvent=searchServer></Search>
         </Row>
         <div class="box box-fixed">
-          <li class="btn" :class="{'box-item':curId===e.id,'btn-secondary':curId!=e.id}" :key="i" v-for="(e, i) in data[curGrandid][curParentid]" @click="curId=e.id" v-if="typeof(e)==='object'">
+          <li class="btn" :class="{'box-item':curId===e.id,'btn-secondary':curId!=e.id}" :key="i" v-for="(e, i) in ( Object.keys(searchServerData).length?searchServerData:data[curGrandid][curParentid])" @click="curId=e.id" v-if="typeof(e)==='object'">
             <div @click="toggle(e)">
               <Checkbox :state="e.select"></Checkbox>
             </div>
@@ -70,6 +70,14 @@ import Checkbox from 'src/components/form/checkbox/normal'
 import Navi from 'src/components/ui/nav';
 import OSGroup from 'src/views/modules/OS'
 export default {
+  data: function () {
+    return {
+      curId: null,
+      searchTxt: '',
+      searchServerData:{},
+      searchAreaData:{}
+    }
+  },
   components: {
     Card,
     Row,
@@ -95,12 +103,7 @@ export default {
       return this.$store.getters['Agent/selectedList']
     }
   },
-  data: function () {
-    return {
-      curId: null,
-      searchTxt: ''
-    }
-  },
+  
   methods: {
     naviClick(e, i) {
       let store = this.$store,
@@ -129,6 +132,37 @@ export default {
     toggle(e) {
       this.$store.commit('Agent/toggle', { e })
     },
+    // 筛选分服
+    searchArea(data){
+      var obj = this.data[this.curGrandid];
+      var countries = {}
+      if (!data) {
+        this.searchAreaData = {};
+        return 
+      }
+       Object.keys(obj).filter(function(key,item) {
+          if (obj[key].parentname && obj[key].parentname.indexOf(data)>=0) {
+            countries[key] = obj[key]
+          }
+      });
+      this.searchAreaData = countries;
+    },
+    // 筛选区服
+    searchServer(data){
+      var obj = this.data[this.curGrandid][this.curParentid];
+      var countries = {}
+      if (!data) {
+        this.searchServerData = {};
+        return 
+      }
+       Object.keys(obj).filter(function(key,item) {
+          if (obj[key].name && obj[key].name.indexOf(data)>=0) {
+            countries[key] = obj[key]
+          }
+      });
+      
+      this.searchServerData = countries;
+    }
   }
 }
 

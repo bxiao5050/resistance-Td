@@ -95,11 +95,11 @@ export default {
 					break;
 				case 2:
 					this.in_date_type = 'week';
-					this.date1 = [moment().subtract(7, 'isoWeek').startOf('isoWeek').format("YYYY-MM-DD"), moment().subtract(1, 'isoWeek').startOf('isoWeek').format("YYYY-MM-DD")];
+					this.date1 = [moment().subtract(7, 'isoWeek').startOf('isoWeek').format("YYYY-MM-DD"), moment().subtract(0, 'isoWeek').startOf('isoWeek').format("YYYY-MM-DD")];
 					break;
 				case 3:
 					this.in_date_type = 'month';
-					this.date1 = [moment().subtract(7, 'months').startOf('month').format('YYYY-MM-DD'), moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD')];
+					this.date1 = [moment().subtract(7, 'months').startOf('month').format('YYYY-MM-DD'), moment().subtract(0, 'months').startOf('month').format('YYYY-MM-DD')];
 
 					break;	
 				default:

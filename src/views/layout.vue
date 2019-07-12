@@ -62,7 +62,7 @@ export default {
   },
   beforeRouteUpdate (to, from, next) {
   // just use `this`
-    var arr = ['/plate-board','/data-overview','/five-min-view','/online-data','/five-force-model','/new-server-monitor','/new-user-payout-ratio','/big-R-user','/overall_status','/service_status','/channel_status'];
+    var arr = ['/fn_report_plate','/plate-board','/data-overview','/five-min-view','/online-data','/five-force-model','/new-server-monitor','/new-user-payout-ratio','/big-R-user','/overall_status','/service_status','/channel_status'];
     this.OverseasIssueClass = arr.includes(to.path) ? true : false;
     next()
   },

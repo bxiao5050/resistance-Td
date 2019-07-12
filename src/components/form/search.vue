@@ -1,7 +1,8 @@
 <template>
   <div class="search">
     <input type="text" class="form-control" placeholder="search" v-model="value">
-    <button class="btn btn-outline-primary" @click="params.click(value.toLowerCase())">
+    <!-- <button class="btn btn-outline-primary" @click="params.click(value.toLowerCase())"> -->
+    <button class="btn btn-outline-primary" @click="searchServer(value)">
       <i class="icon-search"></i>
     </button>
   </div>
@@ -15,7 +16,12 @@
     },
     props: [
       'params'
-    ]
+    ],
+    methods: {
+      searchServer(data){
+        this.$emit('newNodeEvent', data)
+      }
+    },
   }
 </script>
 <style lang="scss" scoped>

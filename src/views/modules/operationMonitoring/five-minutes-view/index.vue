@@ -175,6 +175,11 @@ export default {
       this.query()
     }, 300000)
     this.query()
+    Highcharts.setOptions({
+      lang: {
+        thousandsSep: ','
+      }
+    });
   },
   beforeDestroy() {
     clearInterval(window.fiveMinInterval)

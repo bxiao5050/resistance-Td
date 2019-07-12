@@ -472,6 +472,12 @@ $daterangepicker-ranges-active-border-radius: $daterangepicker-border-radius !de
               align-items: center;
               justify-content: center;
               min-height: 32px;
+              background: url("./icomoon/next.png")no-repeat;
+              background-size: contain;
+            }
+            .prev.available{
+              background: url("./icomoon/prev.png")no-repeat;
+              background-size: contain;
             }
           }
         }

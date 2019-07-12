@@ -1,6 +1,7 @@
 
 <template >
   <div>
+    <p>{{$store.state.Agent.ply}}</p>
     <plyone v-if="$store.state.Agent.ply===1"></plyone>
     <plythree v-if="$store.state.Agent.ply===3"></plythree>
   </div>

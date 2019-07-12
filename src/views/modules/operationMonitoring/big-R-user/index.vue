@@ -21,23 +21,23 @@
             <!-- <normalTable :tableData="tableData"></normalTable> -->
           <!-- </div> -->
           <!-- 表格 -->
-    <div class="table-item ">
-      <el-table
-        border
-        max-height="850"
-        :header-cell-style="{background:'#f2f2f2',textAlign:'left'}"
-        :data="tableData"
-      >
-        <el-table-column
-          v-for="(item, i) in (Object.keys(tableData[0]?tableData[0]:{}))"
-          :key="i"
-          :sortable="i==4||i==5"
-          :prop="item"
-          :label="item"
-          :width="i==0 ? 300:(i==9?130:'')"
-        ></el-table-column>
-      </el-table>
-    </div>
+          <div class="table-item ">
+            <el-table
+              border
+              max-height="850"
+              :header-cell-style="{background:'#f2f2f2',textAlign:'left'}"
+              :data="tableData"
+            >
+              <el-table-column
+                v-for="(item, i) in (Object.keys(tableData[0]?tableData[0]:{}))"
+                :key="i"
+                :sortable="i==4||i==5"
+                :prop="item"
+                :label="item"
+                :width="i==0 ? 300:(i==9?130:'')"
+              ></el-table-column>
+            </el-table>
+          </div>
         </div>
       </card>
     </div>
