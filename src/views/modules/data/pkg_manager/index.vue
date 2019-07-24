@@ -118,7 +118,7 @@ export default {
           in_app_id: this.game.id,
           in_app_name: this.game.name,
           in_package_name: this.pkg_name,
-          in_os: this.os
+          in_os: +this.os
         })
         .then(() => {
           this.$notify({
