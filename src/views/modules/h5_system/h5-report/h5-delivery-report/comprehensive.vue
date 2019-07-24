@@ -133,11 +133,13 @@ export default {
         } else {
           sums[index] = 'N/A';
         }
-        if (column.property == '注册率') {
-          sums[index] = (sums[3] / sums[2] * 100).format(2) + '%';
-        }
+        // if (column.property == '注册率') {
+        //   sums[index] = (sums[2] / sums[2] * 100).format(2) + '%';
+        // }
         if (column.property == '创角率') {
-          sums[index] = (sums[4] / sums[2] * 100).format(2) + '%';
+          sums[index] = (sums[3] / sums[2] * 100).format(2) + '%';
+          console.log(11111,sums[index]);
+          
         }
       });
       sums[7] = (sums[10] / sums[2]).format(2); //激活成本

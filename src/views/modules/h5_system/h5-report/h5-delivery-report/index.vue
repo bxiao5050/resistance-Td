@@ -589,8 +589,44 @@ export default {
   }
 };
 </script>
-
+<style lang="scss" >
+  .el-table__row.total {
+  font-weight: 700;
+}
+.el-tabs__nav-scroll {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.el-tabs__item {
+  user-select: none;
+  width: 150px;
+  text-align: center;
+  font-size: 16px;
+}
+.reports-market {
+  .chart-area,
+  .table-item {
+    background: rgba(208, 196, 214, 0.5);
+    margin: 12px;
+    padding: 15px;
+  }
+}
+</style>
 <style lang="scss" scoped>
+.el-picker-panel__shortcut {
+  line-height: 29px !important;
+  // font-weight: 700;
+  font-size: 1.02em;
+}
+.el-picker-panel__shortcut:hover {
+  color: #fff !important;
+  background: #409eff !important;
+}
+
+
+
 .os {
   width: 100px;
 }
@@ -642,6 +678,7 @@ export default {
   align-items: center;
   margin-left: 15px;
 }
+
 </style>
 
 
