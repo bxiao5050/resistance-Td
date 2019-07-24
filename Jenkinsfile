@@ -35,7 +35,7 @@ node () {
                 cd ..
             """
         } catch(err) {
-            sh 'package error'
+            sh 'echo "package error"'
             throw err
             sh 'exit 1'
         }
@@ -49,7 +49,7 @@ node () {
                 ansible-playbook -i ansible/hosts ansible/deploy.yml -v --extra-var "src_file=${src_file} dest_file=${dest_file} arch_file=oas-${dt}.zip project=oas"
             """      
         } catch(err) {
-            sh 'update error'
+            sh 'echo "update error"'
             throw err
             sh 'exit 1'
         }
