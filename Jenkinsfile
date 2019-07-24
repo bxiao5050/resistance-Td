@@ -16,10 +16,10 @@ node () {
     }
     stage ('build') {
         try {
-            sh """
+            sh '''
                 rm -rf dist
                 npm run build
-            """
+            '''
         } catch(err) {
             sh 'echo "npm run build error"'
             throw err
@@ -28,11 +28,11 @@ node () {
     }
     stage ('package') {
         try {
-            sh """
+            sh '''
                 filename=oas-$(date '+%Y%m%d%H%M%S').zip
                 cd dist && zip -qr ${filename} *
                 cd ..
-            """
+            '''
         } catch(err) {
             sh 'echo "package error"'
             throw err
@@ -41,12 +41,12 @@ node () {
     }
     stage ('update') {
         try {
-            sh """
+            sh '''
                 src_file=(ls -rht dist/oas-*.zip | head -n 1)
                 dest_file=/data/server_new/${src_file#dist/}
                 dt=$(date '+%Y%m%d%H%M%S')
                 ansible-playbook -i ansible/hosts ansible/deploy.yml -v --extra-var "src_file=${src_file} dest_file=${dest_file} arch_file=oas-${dt}.zip project=oas"
-            """
+            '''
         } catch(err) {
             sh 'echo "update error"'
             throw err
