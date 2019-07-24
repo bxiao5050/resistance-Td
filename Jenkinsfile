@@ -27,24 +27,31 @@ node () {
         }
     }
     stage ('package') {
-        sh """
-            dt=$(date '+%Y%m%d%H%M%S')
-            filename=oas-${dt}.zip
-            if [ -d dist ]; then
+        try {
+            sh """
+                dt=$(date '+%Y%m%d%H%M%S')
+                filename=oas-${dt}.zip
                 cd dist && zip -qr ${filename} *
                 cd ..
-            else
-                echo "not found dist"
-                exit 1
-            fi
-        """
+            """
+        } catch(err) {
+            sh 'package error'
+            throw err
+            sh 'exit 1'
+        }
     }
     stage ('update') {
-        sh """
-            src_file=(ls -rht dist/oas-*.zip | head -n 1)
-            dest_file=/data/server_new/${src_file#dist/}
-            dt=$(date '+%Y%m%d%H%M%S')
-            ansible-playbook -i ansible/hosts ansible/deploy.yml -v --extra-var "src_file=${src_file} dest_file=${dest_file} arch_file=oas-${dt}.zip project=oas"
-        """
+        try {
+            sh """
+                src_file=(ls -rht dist/oas-*.zip | head -n 1)
+                dest_file=/data/server_new/${src_file#dist/}
+                dt=$(date '+%Y%m%d%H%M%S')
+                ansible-playbook -i ansible/hosts ansible/deploy.yml -v --extra-var "src_file=${src_file} dest_file=${dest_file} arch_file=oas-${dt}.zip project=oas"
+            """      
+        } catch(err) {
+            sh 'update error'
+            throw err
+            sh 'exit 1'
+        }
     }
 }
