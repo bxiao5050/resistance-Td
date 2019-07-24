@@ -31,6 +31,7 @@ node () {
             sh '''
                 filename=oas-$(date '+%Y%m%d%H%M%S').zip
                 cd dist && zip -qr ${filename} *
+                cd ..
             '''
         } catch(err) {
             sh 'echo "package error"'
@@ -41,8 +42,7 @@ node () {
     stage ('update') {
         try {
             sh '''
-                cd ${workspace}
-                echo ${workspace}
+                echo pwd()
                 src_file=$(ls -rht dist/oas-*.zip | head -n 1)
                 dest_file=/data/server_new/${src_file#dist/}
                 dt=$(date '+%Y%m%d%H%M%S')
