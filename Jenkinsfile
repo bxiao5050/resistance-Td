@@ -42,7 +42,6 @@ node () {
     stage ('update') {
         try {
             sh '''
-                echo pwd()
                 src_file=$(ls -rht dist/oas-*.zip | head -n 1)
                 dest_file=/data/server_new/${src_file#dist/}
                 dt=$(date '+%Y%m%d%H%M%S')
