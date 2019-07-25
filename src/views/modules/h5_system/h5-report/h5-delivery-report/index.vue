@@ -425,7 +425,7 @@ export default {
         api.user
           .getMail({
             countDate: date,
-            gameIds: '19,33,34,36,38,41,46,47,48,57,58,59,60'
+            gameIds: '0000,10183'
           })
           .then(({ code, state }) => {
             if (code === 303) {
