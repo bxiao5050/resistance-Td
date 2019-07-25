@@ -23,6 +23,8 @@ export default {
       10143:require('src/assets/gameicon/game_icon_10143.png'), // 越南_全名主公2
       10153:require('src/assets/gameicon/game_icon_10153.png'), // 全球_3D超英
       10163:require('src/assets/gameicon/game_icon_10163.png'), // 新马_SNK大乱斗
+      10183:require('src/assets/gameicon/game_icon_10183.png'), // 火影忍者H5
+      
       70001:require('src/assets/gameicon/allData.png'), // 综合数据
     },
     3: {// efunfun分析系统
