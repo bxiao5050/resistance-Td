@@ -1,6 +1,5 @@
 node () {
     def workspace = pwd()
-    def content = "PROJECT: ${JOB_NAME}&BUILD: ${BUILD_NUMBER}&URL: http://jenkins.royale.com/blue/organizations/jenkins/${JOB_NAME}/detail/${JOB_NAME}/${BUILD_NUMBER}/pipeline/"
 
     stage ('checkout') {
         git branch: 'master', credentialsId: '99130ab1-7e3b-4305-8748-a342c064d9a8', url: 'http://gitsrv01.royale.com/front-end/system-oversea-new.git'
@@ -11,8 +10,7 @@ node () {
             sh 'npm install'
         } catch(err) {
             sh 'echo "npm install error"'
-            c="npm install error&"$content
-            sh 'bash ansible/notify.sh "$c"'
+            sh 'bash ansible/notify.sh "npm install error" "${JOB_NAME}" "${BUILD_NUMBER}"'
             throw err
             sh 'exit 1'
         }
@@ -25,8 +23,7 @@ node () {
             '''
         } catch(err) {
             sh 'echo "npm run build error"'
-            c="npm run build error&"$content
-            sh 'bash ansible/notify.sh "$c"'
+            sh 'bash ansible/notify.sh "npm run build error" "${JOB_NAME}" "${BUILD_NUMBER}"'
             throw err
             sh 'exit 1'
         }
@@ -40,8 +37,7 @@ node () {
             '''
         } catch(err) {
             sh 'echo "package error"'
-            c="package error&"$content
-            sh 'bash ansible/notify.sh "$c"'    
+            sh 'bash ansible/notify.sh "package error" "${JOB_NAME}" "${BUILD_NUMBER}"'    
             throw err
             sh 'exit 1'
         }
@@ -53,13 +49,11 @@ node () {
                 dest_file=/data/server_new/${src_file#dist/}
                 dt=$(date '+%Y%m%d%H%M%S')
                 ansible-playbook -i ansible/hosts ansible/deploy.yml -v --extra-var "src_file=$(pwd)/${src_file} dest_file=${dest_file} arch_file=oas-${dt}.zip project=oas"
-                c="success&"$content
-                sh 'bash ansible/notify.sh "$c"'            
+                sh 'bash ansible/notify.sh "success" "${JOB_NAME}" "${BUILD_NUMBER}"'              
             '''
         } catch(err) {
             sh 'echo "update error"'
-            c="update error&"$content
-            sh 'bash ansible/notify.sh "$c"'              
+            sh 'bash ansible/notify.sh "update error" "${JOB_NAME}" "${BUILD_NUMBER}"'                
             throw err
             sh 'exit 1'
         }
