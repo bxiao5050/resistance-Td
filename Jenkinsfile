@@ -1,6 +1,6 @@
 node () {
     def workspace = pwd()
-    def content = "PROJECT: ${PROJECT_NAME}&BUILD: ${BUILD_NUMBER}&Status: ${BUILD_STATUS}&URL: http://jenkins.royale.com/blue/organizations/jenkins/${PROJECT_NAME}/detail/${PROJECT_NAME}/${BUILD_NUMBER}/pipeline/"
+    def content = "PROJECT: ${JOB_NAME}&BUILD: ${BUILD_NUMBER}&URL: http://jenkins.royale.com/blue/organizations/jenkins/${JOB_NAME}/detail/${JOB_NAME}/${BUILD_NUMBER}/pipeline/"
 
     stage ('checkout') {
         git branch: 'master', credentialsId: '99130ab1-7e3b-4305-8748-a342c064d9a8', url: 'http://gitsrv01.royale.com/front-end/system-oversea-new.git'
