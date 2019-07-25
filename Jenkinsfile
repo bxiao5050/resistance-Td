@@ -37,7 +37,7 @@ node () {
             '''
         } catch(err) {
             sh 'echo "package error"'
-            sh 'bash ansible/notify.sh "package error" "${JOB_NAME}" "${BUILD_NUMBER}"'    
+            sh 'bash ansible/notify.sh "package error" "${JOB_NAME}" "${BUILD_NUMBER}"'
             throw err
             sh 'exit 1'
         }
@@ -49,11 +49,11 @@ node () {
                 dest_file=/data/server_new/${src_file#dist/}
                 dt=$(date '+%Y%m%d%H%M%S')
                 ansible-playbook -i ansible/hosts ansible/deploy.yml -v --extra-var "src_file=$(pwd)/${src_file} dest_file=${dest_file} arch_file=oas-${dt}.zip project=oas"
-                sh 'bash ansible/notify.sh "success" "${JOB_NAME}" "${BUILD_NUMBER}"'              
+                bash ansible/notify.sh "success" "${JOB_NAME}" "${BUILD_NUMBER}"
             '''
         } catch(err) {
             sh 'echo "update error"'
-            sh 'bash ansible/notify.sh "update error" "${JOB_NAME}" "${BUILD_NUMBER}"'                
+            sh 'bash ansible/notify.sh "update error" "${JOB_NAME}" "${BUILD_NUMBER}"'
             throw err
             sh 'exit 1'
         }

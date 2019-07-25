@@ -4,7 +4,7 @@
 # Version: 1.0
 
 url="http://172.16.3.205:10000/sender/wechat?"
-tos="kk,tao.wang"
+tos="tao.wang"
 
 #"PROJECT: ${JOB_NAME}&BUILD: ${BUILD_NUMBER}&URL: http://jenkins.royale.com/blue/organizations/jenkins/${JOB_NAME}/detail/${JOB_NAME}/${BUILD_NUMBER}/pipeline/"
 
