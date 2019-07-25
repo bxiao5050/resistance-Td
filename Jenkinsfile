@@ -1,7 +1,5 @@
 node () {
     def workspace = pwd()
-    def url = "http://172.16.3.205:10000/sender/wechat?"
-    def tos = "kk,tao.wang"
     def content = "PROJECT: ${PROJECT_NAME}&BUILD: ${BUILD_NUMBER}&Status: ${BUILD_STATUS}&URL: http://jenkins.royale.com/blue/organizations/jenkins/${PROJECT_NAME}/detail/${PROJECT_NAME}/${BUILD_NUMBER}/pipeline/"
 
     stage ('checkout') {
@@ -13,8 +11,8 @@ node () {
             sh 'npm install'
         } catch(err) {
             sh 'echo "npm install error"'
-            def content="npm install error&"$content
-            sh "curl -d \"tos=$tos&content=$(echo $content | xargs -d\'&\' -n 1 | sed \'$d\')\" $url"
+            def c = "npm install error&"$content
+            sh 'bash ansible/notify.sh "$c"'
             throw err
             sh 'exit 1'
         }
@@ -27,8 +25,8 @@ node () {
             '''
         } catch(err) {
             sh 'echo "npm run build error"'
-            def content="npm build error&"$content
-            sh "curl -d \"tos=$tos&content=$(echo $content | xargs -d\'&\' -n 1 | sed \'$d\')\" $url"   
+            def c = "npm run build error&"$content
+            sh 'bash ansible/notify.sh "$c"'
             throw err
             sh 'exit 1'
         }
@@ -42,8 +40,8 @@ node () {
             '''
         } catch(err) {
             sh 'echo "package error"'
-            def content="package error&"$content
-            sh "curl -d \"tos=$tos&content=$(echo $content | xargs -d\'&\' -n 1 | sed \'$d\')\" $url"       
+            def c = "package error&"$content
+            sh 'bash ansible/notify.sh "$c"'    
             throw err
             sh 'exit 1'
         }
@@ -55,13 +53,13 @@ node () {
                 dest_file=/data/server_new/${src_file#dist/}
                 dt=$(date '+%Y%m%d%H%M%S')
                 ansible-playbook -i ansible/hosts ansible/deploy.yml -v --extra-var "src_file=$(pwd)/${src_file} dest_file=${dest_file} arch_file=oas-${dt}.zip project=oas"
-                def content="success&"$content
-                sh "curl -d \"tos=$tos&content=$(echo $content | xargs -d\'&\' -n 1 | sed \'$d\')\" $url"            
+                def c = "success&"$content
+                sh 'bash ansible/notify.sh "$c"'            
             '''
         } catch(err) {
             sh 'echo "update error"'
-            def content="update error&"$content
-            sh "curl -d \"tos=$tos&content=$(echo $content | xargs -d\'&\' -n 1 | sed \'$d\')\" $url"             
+            def c = "update error&"$content
+            sh 'bash ansible/notify.sh "$c"'              
             throw err
             sh 'exit 1'
         }
