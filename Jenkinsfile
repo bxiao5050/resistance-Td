@@ -11,7 +11,7 @@ node () {
             sh 'npm install'
         } catch(err) {
             sh 'echo "npm install error"'
-            def c = "npm install error&"$content
+            c="npm install error&"$content
             sh 'bash ansible/notify.sh "$c"'
             throw err
             sh 'exit 1'
@@ -25,7 +25,7 @@ node () {
             '''
         } catch(err) {
             sh 'echo "npm run build error"'
-            def c = "npm run build error&"$content
+            c="npm run build error&"$content
             sh 'bash ansible/notify.sh "$c"'
             throw err
             sh 'exit 1'
@@ -40,7 +40,7 @@ node () {
             '''
         } catch(err) {
             sh 'echo "package error"'
-            def c = "package error&"$content
+            c="package error&"$content
             sh 'bash ansible/notify.sh "$c"'    
             throw err
             sh 'exit 1'
@@ -53,12 +53,12 @@ node () {
                 dest_file=/data/server_new/${src_file#dist/}
                 dt=$(date '+%Y%m%d%H%M%S')
                 ansible-playbook -i ansible/hosts ansible/deploy.yml -v --extra-var "src_file=$(pwd)/${src_file} dest_file=${dest_file} arch_file=oas-${dt}.zip project=oas"
-                def c = "success&"$content
+                c="success&"$content
                 sh 'bash ansible/notify.sh "$c"'            
             '''
         } catch(err) {
             sh 'echo "update error"'
-            def c = "update error&"$content
+            c="update error&"$content
             sh 'bash ansible/notify.sh "$c"'              
             throw err
             sh 'exit 1'
