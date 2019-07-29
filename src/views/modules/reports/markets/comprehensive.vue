@@ -177,7 +177,12 @@ export default {
   }
 }
 </script>
-
+<style lang="scss">
+.el-table, .el-table__append-wrapper {
+  overflow: visible;
+  
+}
+</style>
 <style lang="scss">
 .el-table {
   tr:first-child {
