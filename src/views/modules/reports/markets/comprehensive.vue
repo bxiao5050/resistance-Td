@@ -61,6 +61,8 @@ export default {
       this._config.tableKey.forEach(item => {
         if (!item.hide) width += item.width
       })
+      console.log("width",width);
+      
       return width + 'px'
     },
     renderHeader(region, h, { column, $index }) {

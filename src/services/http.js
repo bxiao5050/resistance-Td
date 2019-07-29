@@ -15,6 +15,8 @@ port = ''
 
 // requrl = "http://172.16.10.132"
 // port = 80
+
+
 // 内网
 // var baseUrl = requrl + ':' + port + '/api/v1.0'
 // 外网
@@ -99,3 +101,6 @@ export default {
     window.open(baseUrl + url + '?' + $.param(data))
   }
 }
+
+
+

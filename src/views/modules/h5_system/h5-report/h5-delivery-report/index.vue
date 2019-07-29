@@ -589,7 +589,7 @@ export default {
   }
 };
 </script>
-<style lang="scss" >
+<style lang="scss">
   .el-table__row.total {
   font-weight: 700;
 }
@@ -605,14 +605,7 @@ export default {
   text-align: center;
   font-size: 16px;
 }
-.reports-market {
-  .chart-area,
-  .table-item {
-    background: rgba(208, 196, 214, 0.5);
-    margin: 12px;
-    padding: 15px;
-  }
-}
+
 </style>
 <style lang="scss" scoped>
 .el-picker-panel__shortcut {
