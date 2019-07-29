@@ -26,7 +26,7 @@ pipeline {
                     try {
                         sh '''
                             filename=oas-$(date '+%Y%m%d%H%M%S').zip
-                            cd dist && rm -f *.zip && zip -qr ${filename} *
+                            cd dist && zip -qr ${filename} *
                             cd ..
                         '''
                     } catch(err) {
