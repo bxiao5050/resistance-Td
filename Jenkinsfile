@@ -1,11 +1,10 @@
 pipeline {
-    agent any
+    agent { docker {
+        image 'reg.royale.com/ops/xynode:6-alpine'
+        args '-v :/data/app'
+    }}
     stages {
         stage('BUILD') {
-            agent { docker {
-                image 'reg.royale.com/ops/xynode:6-alpine'
-                args '-v :/data/app'
-            }}
             steps {
                 script {
                     try {
