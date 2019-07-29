@@ -12,7 +12,7 @@ pipeline {
                         sh 'rm -rf node_modules dist'
                         sh 'npm install'
                         sh 'npm run build'
-                        sh 'cp -rf dist /data/app/'
+                        sh 'rm -rf /data/app/dist ; cp -rf dist /data/app/'
                     } catch(err) {
                         echo 'npm build error'
                         sh '/bin/sh ansible/notify.sh "npm install error" "${JOB_NAME}" "${BUILD_NUMBER}"'
