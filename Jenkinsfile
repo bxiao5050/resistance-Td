@@ -11,7 +11,6 @@ pipeline {
                     try {
                         sh 'npm install'
                         sh 'rm -rf dist'
-                        sh 'rm -rf /data/app/dist'
                         sh 'npm run build'
                     } catch(err) {
                         echo 'npm build error'
@@ -28,7 +27,7 @@ pipeline {
                     try {
                         sh '''
                             filename=oas-$(date '+%Y%m%d%H%M%S').zip
-                            cd dist && zip -qr ${filename} *
+                            cd dist && rm -f *.zip && zip -qr ${filename} *
                             cd ..
                         '''
                     } catch(err) {
