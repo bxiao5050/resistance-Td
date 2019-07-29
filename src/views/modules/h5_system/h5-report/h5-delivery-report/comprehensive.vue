@@ -100,6 +100,8 @@ export default {
       var activeData = []; 
       var constData = [];
       columns.forEach((column, index) => {
+        var LTVINDEX = 11;//ltv下标
+        var REGISTERINDEX = 2; //注册下标
         if (index === 0) {
           sums[index] = '全部';
           return;
@@ -109,11 +111,11 @@ export default {
           return;
         }
         var values = data.map((item) => Number(item[column.property]));
-        if (index === 2) {
+        if (index === REGISTERINDEX) {
           activeData = values
         }
 
-        if(index > 12){
+        if(index > LTVINDEX){
           var arr = [];
           for (let index = 0; index < values.length; index++) {
             arr.push(values[index]*(activeData[index]))
@@ -154,14 +156,6 @@ export default {
       sums[15] = ((sums[15] / sums[2])).format(2)+'%'; //次日留存
       sums[16] = ((sums[16] / sums[2])).format(2)+'%'; //3日留存
       sums[17] = ((sums[17] / sums[2])).format(2)+'%'; //7日留存
-      // sums[12] = ((sums[11] / sums[10])*100).format(2) + '%'; //ROI
-      // sums[14] = ((sums[13] / sums[10])*100).format(2) + '%'; //分成ROI
-      // sums[15] = ((sums[15] / sums[2])).format(2); //7日LTV
-      // sums[16] = ((sums[16] / sums[2])).format(2); //14日LTV
-      // sums[17] = ((sums[17] / sums[2])).format(2); //30日LTV
-      // sums[18] = ((sums[18] / sums[2])).format(2) + '%';
-      // sums[19] = ((sums[19] / sums[2])).format(2) + '%';
-      // sums[20] = ((sums[20] / sums[2])).format(2) + '%';
       return sums;
     },
     addStyle({ row, column, rowIndex, columnIndex }) {

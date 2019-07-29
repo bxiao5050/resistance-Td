@@ -72,7 +72,8 @@ export default {
         || label == '7日LTV'
         || label == '14日LTV'
         || label == '30日LTV'
-        || label == '充值') {
+        || label == '充值'
+        || label == '分成充值') {
         value = +value ? value.format(2) : value.format(0);
 
       }
@@ -107,11 +108,13 @@ export default {
           return;
         }
         var values = data.map((item) => Number(item[column.property]));
-        if (index === 2) {
+        var REGISTERINDEX = 1; //注册下标
+        var LTVINDEX = 10;//ltv下标
+        if (index === REGISTERINDEX) {
           activeData = values
         }
 
-        if (index > 13) {
+        if (index > LTVINDEX) {
           var arr = [];
           for (let index = 0; index < values.length; index++) {
             arr.push(values[index] * (activeData[index]))
@@ -139,17 +142,28 @@ export default {
           sums[index] = (sums[4] / sums[2] * 100).format(2) + '%';
         }
       });
-      sums[7] = (sums[10] / sums[2]).format(2); //激活成本
-      sums[8] = (sums[10] / sums[3]).format(2); //注册成本
-      sums[9] = (sums[10] / sums[4]).format(2); //创角成本
-      sums[12] = ((sums[11] / sums[10]) * 100).format(2) + '%'; //ROI
-      sums[14] = ((sums[13] / sums[10]) * 100).format(2) + '%'; //分成ROI
-      sums[15] = ((sums[15] / sums[2])).format(2); //7日LTV
-      sums[16] = ((sums[16] / sums[2])).format(2); //14日LTV
-      sums[17] = ((sums[17] / sums[2])).format(2); //30日LTV
-      sums[18] = ((sums[18] / sums[2])).format(2) + '%';
-      sums[19] = ((sums[19] / sums[2])).format(2) + '%';
-      sums[20] = ((sums[20] / sums[2])).format(2) + '%';
+      // sums[7] = (sums[10] / sums[2]).format(2); //激活成本
+      // sums[8] = (sums[10] / sums[3]).format(2); //注册成本
+      // sums[9] = (sums[10] / sums[4]).format(2); //创角成本
+      // sums[12] = ((sums[11] / sums[10]) * 100).format(2) + '%'; //ROI
+      // sums[14] = ((sums[13] / sums[10]) * 100).format(2) + '%'; //分成ROI
+      // sums[15] = ((sums[15] / sums[2])).format(2); //7日LTV
+      // sums[16] = ((sums[16] / sums[2])).format(2); //14日LTV
+      // sums[17] = ((sums[17] / sums[2])).format(2); //30日LTV
+      // sums[18] = ((sums[18] / sums[2])).format(2) + '%';
+      // sums[19] = ((sums[19] / sums[2])).format(2) + '%';
+      // sums[20] = ((sums[20] / sums[2])).format(2) + '%';
+      sums[6] = (+sums[6]).format(2); //花费
+      sums[7] = (+sums[7]).format(2); //充值
+      sums[8] = (sums[7] / sums[6]).format(2)+'%'; //ROI(充值/花费)
+      sums[9] = (+sums[9]).format(2); //分成充值
+      sums[10] = (sums[9] / sums[6]).format(2)+'%'; //分成ROI(分成充值/花费)
+      sums[11] = ((sums[11] / sums[1])).format(2); //7日LTV
+      sums[12] = ((sums[12] / sums[1])).format(2); //14日LTV
+      sums[13] = ((sums[13] / sums[1])).format(2); //30日LTV
+      sums[14] = ((sums[14] / sums[1])).format(2)+'%'; //次日留存
+      sums[15] = ((sums[15] / sums[1])).format(2)+'%'; //3日留存
+      sums[16] = ((sums[16] / sums[1])).format(2)+'%'; //7日留存
       return sums;
     },
     addStyle({ row, column, rowIndex, columnIndex }) {
