@@ -3,14 +3,14 @@ pipeline {
     stages {
         stage('BUILD') {
             agent { docker {
-                image 'reg.royale.com/ops/xynode:10-alpine'
+                image 'reg.royale.com/ops/xynode:6-alpine'
                 args '-v :/data/app'
             }}
             steps {
                 script {
                     try {
+                        sh 'rm -rf node_modules dist'
                         sh 'npm install'
-                        sh 'rm -rf dist'
                         sh 'npm run build'
                     } catch(err) {
                         echo 'npm build error'
