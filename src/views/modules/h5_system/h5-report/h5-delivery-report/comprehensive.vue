@@ -147,9 +147,9 @@ export default {
       });
       sums[7] = (+sums[7]).format(2); //花费
       sums[8] = (+sums[8]).format(2); //充值
-      sums[9] = (sums[8] / sums[7]).format(2)+'%'; //ROI(充值/花费)
+      sums[9] = ((sums[8] / sums[7])*100).format(2)+'%'; //ROI(充值/花费)
       sums[10] = (+sums[10]).format(2); //分成充值
-      sums[11] = (sums[10] / sums[7]).format(2)+'%'; //分成ROI(分成充值/花费)
+      sums[11] = ((sums[10] / sums[7])*100).format(2)+'%'; //分成ROI(分成充值/花费)
       sums[12] = ((sums[12] / sums[2])).format(2); //7日LTV
       sums[13] = ((sums[13] / sums[2])).format(2); //14日LTV
       sums[14] = ((sums[14] / sums[2])).format(2); //30日LTV

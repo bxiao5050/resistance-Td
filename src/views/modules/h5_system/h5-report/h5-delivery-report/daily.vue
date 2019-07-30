@@ -155,9 +155,9 @@ export default {
       // sums[20] = ((sums[20] / sums[2])).format(2) + '%';
       sums[6] = (+sums[6]).format(2); //花费
       sums[7] = (+sums[7]).format(2); //充值
-      sums[8] = (sums[7] / sums[6]).format(2)+'%'; //ROI(充值/花费)
+      sums[8] = ((sums[7] / sums[6])*100).format(2)+'%'; //ROI(充值/花费)
       sums[9] = (+sums[9]).format(2); //分成充值
-      sums[10] = (sums[9] / sums[6]).format(2)+'%'; //分成ROI(分成充值/花费)
+      sums[10] = ((sums[9] / sums[6])*100).format(2)+'%'; //分成ROI(分成充值/花费)
       sums[11] = ((sums[11] / sums[1])).format(2); //7日LTV
       sums[12] = ((sums[12] / sums[1])).format(2); //14日LTV
       sums[13] = ((sums[13] / sums[1])).format(2); //30日LTV
