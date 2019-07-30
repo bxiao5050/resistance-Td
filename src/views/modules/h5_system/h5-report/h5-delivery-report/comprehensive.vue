@@ -210,6 +210,14 @@ export default {
 </script>
 
 <style lang="scss">
+.reports-market {
+  .chart-area,
+  .table-item {
+    background: rgba(208, 196, 214, 0.5);
+    margin: 12px;
+    padding: 15px;
+  }
+}
 .el-table {
   tr:first-child {
     th {

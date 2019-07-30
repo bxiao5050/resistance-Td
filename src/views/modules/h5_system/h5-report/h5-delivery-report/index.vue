@@ -442,7 +442,7 @@ export default {
     tagClick() {
         this.main = this.taging
         if (this.main === "comprehensive") {
-          this.in_app_ids = this._state.in_app_ids;
+          this.in_app_ids = this.in_app_ids;
           this.in_media_source = '';
           this.in_rpt_type = 2;
           this.in_country = '';
@@ -450,7 +450,7 @@ export default {
           this.in_view_type = 0,               
           this.getData('comprehensive')
         }else{
-          this.in_app_ids = this._state.in_app_ids;
+          this.in_app_ids = this.in_app_ids;
           this.in_media_source = '';
           this.in_rpt_type = 3;
           this.in_country = '';
@@ -473,15 +473,14 @@ export default {
      
     },
     queryClick(){
-      console.log(this.main );
       var tagArr = ['games','comprehensive','daily','channel']
       if (this.games_value) {
           this.main = 'channel';
           this.isSingle = false;
       }else{
           this.main = 'comprehensive';
+          this.isSingle = true;
       }
-      console.log(tagArr.indexOf(this.main )+1);
       var index = tagArr.indexOf(this.main )+1
       switch (index) {
         case 2://综合报表
@@ -509,8 +508,6 @@ export default {
           this.in_rpt_type = 4;
           this.in_chart_type = 1;
           this.in_view_type = 1;
-          console.log(this.main);
-          
           this.getData(this.main )
           break;
         default:
