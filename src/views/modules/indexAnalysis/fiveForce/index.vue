@@ -28,8 +28,8 @@
 import moduleHeader from 'src/views/modules/module-header'
 import card from 'src/components/card.vue'
 import normalTable from 'src/components/table/element-table.vue'
-import Chart_normal from './components/Chart_normal'
-import Chart_e8 from './components/Chart_e8'
+import Chart_normal from './components/chart_normal'
+import Chart_e8 from './components/chart_e8'
 import Chart_oversea from './components/chart_oversea'
 import api from 'src/services/api'
 
