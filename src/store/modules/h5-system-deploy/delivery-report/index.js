@@ -1053,6 +1053,7 @@ export default {
             }
           // console.log('_________________________第'+index+'日的数据', arr.filter(todo => todo.install_date == xList[index]))
         }
+        
         // console.log('everyDate',everyDate)____________________________________________________
         for (let evr = 0; evr < everyDataTotal.length; evr++) {
           everyDataTotal[evr][2] = ((everyDataTotal[evr][1]/everyDataTotal[evr][0])*100).format(2)//注册率
