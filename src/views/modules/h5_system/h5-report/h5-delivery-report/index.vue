@@ -587,7 +587,7 @@ export default {
 };
 </script>
 <style lang="scss">
-  .el-table__row.total {
+.el-table__row.total {
   font-weight: 700;
 }
 .el-tabs__nav-scroll {

@@ -1047,9 +1047,9 @@ export default {
         for (let evr = 0; evr < everyDataTotal.length; evr++) {
           everyDataTotal[evr][3] = ((everyDataTotal[evr][1]/everyDataTotal[evr][0])*100).format(2)
           everyDataTotal[evr][4] = ((everyDataTotal[evr][2]/everyDataTotal[evr][0])*100).format(2)
-          everyDataTotal[evr][5] = ((everyDataTotal[evr][8]/everyDataTotal[evr][0])*100).format(2)
-          everyDataTotal[evr][6] = ((everyDataTotal[evr][8]/everyDataTotal[evr][1])*100).format(2)
-          everyDataTotal[evr][7] = ((everyDataTotal[evr][8]/everyDataTotal[evr][2])*100).format(2)         
+          everyDataTotal[evr][5] = ((everyDataTotal[evr][8]/everyDataTotal[evr][0])).format(2)
+          everyDataTotal[evr][6] = ((everyDataTotal[evr][8]/everyDataTotal[evr][1])).format(2)
+          everyDataTotal[evr][7] = ((everyDataTotal[evr][8]/everyDataTotal[evr][2])).format(2)         
         }
         // console.log('everyDataTotal',everyDataTotal)
         // 获取渠道列表
