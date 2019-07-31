@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('BUILD') {
             agent { docker {
-                image 'reg.royale.com/ops/xynode:6-alpine'
+                image 'reg.royale.com/ops/xynode:8-alpine'
                 args '-v /data/jenkins/data/workspace/prod-build-frontend-oas:/data/app'
             }}
             steps {
