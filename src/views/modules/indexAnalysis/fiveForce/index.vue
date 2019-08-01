@@ -32,7 +32,6 @@ import Chart_normal from './components/chart_normal'
 import Chart_e8 from './components/chart_e8'
 import Chart_oversea from './components/chart_oversea'
 import api from 'src/services/api'
-
 export default {
   name: 'five-force',
   components: {
