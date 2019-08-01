@@ -4,7 +4,7 @@
   remote_user: chadmin
   gather_facts: False
   vars:
-      program_path: "/data/web/sites/oas"
+      program_path: "/data/web/sites/oas/test"
       backup_root_path: /data/server_bak/web/sites
       archive_path: /data/server_bak/archive_file/{{ project }}
       archive_file: "{{ archive_path }}/{{ arch_file }}"
