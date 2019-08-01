@@ -15,4 +15,4 @@ build=$3
 
 content="STATUS: $status&PROJECT: ${job}&BUILD: ${build}&URL: http://jenkins.royale.com/blue/organizations/jenkins/${job}/detail/${job}/${build}/pipeline/"
 
-curl -d "tos=$tos&content=$(echo $content | xargs -d'&' -n 1 | sed '$d')" $url 2>/dev/null
+curl -d "tos=$tos&content=$(echo $content | sed 's/&/\n/g')" $url 2>/dev/null
