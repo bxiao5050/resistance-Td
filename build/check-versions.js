@@ -1,5 +1,6 @@
 var chalk = require('chalk')
-var semver = require('semver')
+// var semver = require('semver')
+const semver = require('semver')
 var packageConfig = require('../package.json')
 var shell = require('shelljs')
 function exec (cmd) {
