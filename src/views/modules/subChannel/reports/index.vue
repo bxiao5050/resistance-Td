@@ -110,7 +110,7 @@
 import tsdp from "src/component/widget/tree-degree-select-box/index.vue";
 import totalFloat from "src/component/widget/total-float/index.vue";
 import Pagination from 'src/components/Pagination/index.vue'
-import { valid } from 'semver';
+// import { valid } from 'semver';
 import api from 'src/services/api'
 import { log } from 'util';
 export default {
