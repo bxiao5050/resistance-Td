@@ -1,38 +1,36 @@
 <template>
+
   <div class="sub-channel-reports">
-    <p>test</p>
-    <!-- 查询条件 -->
-    <!-- <my-row class="selection-box">
+    <my-row class="selection-box">
       <section class="dateTime">
         <div class="time-picker">
           激活时间
-          <el-date-picker
-            @change="dateChange"
-            size="medium"
-            :picker-options="pickerOptions"
-            ref="picker"
-            v-model="pickerOptionsDate"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            top="100"
-          ></el-date-picker>
+          <el-date-picker 
+            @change="dateChange" 
+            size="medium" 
+            :picker-options="pickerOptions" 
+            ref="picker" 
+            v-model="pickerOptionsDate" 
+            type="daterange" 
+            range-separator="至" 
+            start-placeholder="开始日期" 
+            end-placeholder="结束日期" 
+            top="100">
+          </el-date-picker>
         </div>
         <div class="time-picker" style="margin-left:8px">
           充值时间
-          <el-date-picker
-            @change="payDateChange"
-            size="medium"
-            :picker-options="pickerOptions2"
-            ref="picker2"
-            v-model="pickerOptions2Date"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            top="100"
-          ></el-date-picker>
+          <el-date-picker 
+          @change="payDateChange" 
+          size="medium" 
+          :picker-options="pickerOptions2" 
+          ref="picker2" 
+          v-model="pickerOptions2Date" 
+          type="daterange" 
+          range-separator="至" 
+          start-placeholder="开始日期" 
+          end-placeholder="结束日期" top="100">
+          </el-date-picker>
         </div>
       </section>
       <div class="system-sel" style="padding-left:200px">
@@ -40,19 +38,8 @@
           <el-button size="medium">
             <span>系统</span>
           </el-button>
-          <el-select
-            @change="osChange"
-            class="os"
-            v-model="osOptions.os"
-            size="medium"
-            style="width: 100px;"
-          >
-            <el-option
-              v-for="item in osOptions.list"
-              :key="item.os"
-              :label="item.txt"
-              :value="item.os"
-            ></el-option>
+          <el-select @change="osChange" class="os" v-model="osOptions.os" size="medium" style="width: 100px;">
+            <el-option v-for="item in osOptions.list" :key="item.os" :label="item.txt" :value="item.os"></el-option>
           </el-select>
         </el-button-group>
       </div>
@@ -74,70 +61,48 @@
           <el-button size="medium">
             <span>渠道</span>
           </el-button>
-          <el-select
-            class="channel"
-            filterable
-            v-model="channelOptions.channel"
-            size="medium"
-            @change="channelChange"
-          >
-            <el-option
-              v-for="item in channelOptions.list"
-              :key="item.media_source"
-              :label="item.media_source"
-              :value="item.media_source"
-            ></el-option>
+          <el-select class="channel" filterable v-model="channelOptions.channel" size="medium" @change="channelChange">
+            <el-option v-for="item in channelOptions.list" :key="item.media_source" :label="item.media_source" :value="item.media_source"></el-option>
           </el-select>
         </el-button-group>
       </div>
       <div class="query" style="padding-left:50px">
-        <el-button type="info" @click="ckeck() && query()">查询</el-button>
+        <el-button type="info" @click="ckeck() && query()">
+          查询
+        </el-button>
       </div>
-      <div class="excel">
-        <el-button type="info" @click="ckeck() && excel()">导出表格</el-button>
+       <div class="excel">
+        <el-button type="info" @click="ckeck() && excel()">
+          导出表格
+        </el-button>
       </div>
+       
     </my-row>
     <my-row>
       <tsdp :data="tsdp" v-if="tsdp.isShow" :auto-confirm="true"></tsdp>
-    </my-row> -->
-    <!-- 分页 -->
-    <!-- <pagination
-      v-if="$$subChannelData.length"
-      :total="$$subChannelData.length"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      @pagination="cahngePage"
-    /> -->
-    <!-- <div class="table" v-if="__data" style="margin: 16px 0 0 0;">
-      <el-table
-        :data="subChannelDatas"
-        :cell-class-name="cellClassName"
-        :width="'2000px'"
-        :cell-style="addStyle"
-      >
-        <el-table-column
-          v-for="(item, i) in _config.tableKey"
-          :key="i"
-          :prop="item.key"
-          :label="item.key"
-          :formatter="formatter"
-          :width="item.width"
-          :min-width="item['min-width']"
-          :sortable="item.sortable"
-          v-if="!item.hide"
-          :fixed="i<=2?true:false"
-        ></el-table-column>
+    </my-row>
+    
+      <pagination
+        v-if="$$subChannelData.length"
+        :total="$$subChannelData.length"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.limit"
+        @pagination="cahngePage" 
+      />
+    <div class="table" v-if="__data" style="margin: 16px 0 0 0;">
+      <el-table :data="subChannelDatas" :cell-class-name="cellClassName"   :width="'2000px'" :cell-style="addStyle">
+        <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key"  
+         :label="item.key" :formatter="formatter" :width="item.width" :min-width="item['min-width']" :sortable="item.sortable" v-if="!item.hide"
+         :fixed="i<=2?true:false"></el-table-column>
         <div slot="append">
-          <totalFloat
-            :updateHook="updateHook"
-            :params="{
+          <totalFloat :updateHook="updateHook" :params="{
             total: __data.total,
             tableKey: _config.tableKey
-            }"
-          />
+            }" />
         </div>
       </el-table>
-    </div> -->
+    </div>
+
   </div>
 </template>
 
@@ -151,7 +116,7 @@ import { log } from 'util';
 export default {
   name: 'sub-channel-reports',
   components: {
-    tsdp, totalFloat, Pagination
+    tsdp, totalFloat,Pagination
   },
   data() {
     return {
@@ -162,8 +127,8 @@ export default {
         siteId: null
 
       },
-      pickerOptionsDate: null,
-      pickerOptions2Date: null,
+      pickerOptionsDate:null,
+      pickerOptions2Date:null,
       // 日期选择
       pickerOptions: {
         onPick({ minDate, maxDate }) {
@@ -173,60 +138,60 @@ export default {
             ).format("YYYY-MM-DD");
           }
         },
-        shortcuts: [{
-          text: '今天',
-          onClick(picker) {
-            picker.dateShortcuts('今天', picker)
-          }
-        }, {
-          text: '昨天',
-          onClick(picker) {
-            picker.dateShortcuts('昨天', picker)
-          }
-        }, {
-          text: '近7天',
-          onClick(picker) {
-            picker.dateShortcuts('近7天', picker)
-          }
-        }, {
-          text: '近15天',
-          onClick(picker) {
-            picker.dateShortcuts('近15天', picker)
-          }
-        }, {
-          text: '近30天',
-          onClick(picker) {
-            picker.dateShortcuts('近30天', picker)
-          }
-        }, {
-          text: '近30-60天',
-          onClick(picker) {
-            picker.dateShortcuts('近30-60天', picker)
-          }
-        }, {
-          text: '本月',
-          onClick(picker) {
-            picker.dateShortcuts('本月', picker)
-          }
-        }, {
-          text: '上月',
-          onClick(picker) {
-            picker.dateShortcuts('上月', picker)
-          }
-        }, {
-          text: '今年',
-          onClick(picker) {
-            picker.dateShortcuts('今年', picker)
-          }
-        }, {
-          text: '去年',
-          onClick(picker) {
-            picker.dateShortcuts('去年', picker)
-          }
-        }],
+         shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.dateShortcuts('今天', picker)
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              picker.dateShortcuts('昨天', picker)
+            }
+          }, {
+            text: '近7天',
+            onClick(picker) {
+              picker.dateShortcuts('近7天', picker)
+            }
+          }, {
+            text: '近15天',
+            onClick(picker) {
+              picker.dateShortcuts('近15天', picker)
+            }
+          }, {
+            text: '近30天',
+            onClick(picker) {
+              picker.dateShortcuts('近30天', picker)
+            }
+          }, {
+            text: '近30-60天',
+            onClick(picker) {
+              picker.dateShortcuts('近30-60天', picker)
+            }
+          }, {
+            text: '本月',
+            onClick(picker) {
+              picker.dateShortcuts('本月', picker)
+            }
+          }, {
+            text: '上月',
+            onClick(picker) {
+              picker.dateShortcuts('上月', picker)
+            }
+          }, {
+            text: '今年',
+            onClick(picker) {
+              picker.dateShortcuts('今年', picker)
+            }
+          }, {
+            text: '去年',
+            onClick(picker) {
+              picker.dateShortcuts('去年', picker)
+            }
+          }],
         date: null
       },
-      // 日期选择
+       // 日期选择
       pickerOptions2: {
         onPick({ minDate, maxDate }) {
           if (!maxDate) {
@@ -235,57 +200,57 @@ export default {
             ).format("YYYY-MM-DD");
           }
         },
-        shortcuts: [{
-          text: '今天',
-          onClick(picker) {
-            picker.dateShortcuts('今天', picker)
-          }
-        }, {
-          text: '昨天',
-          onClick(picker) {
-            picker.dateShortcuts('昨天', picker)
-          }
-        }, {
-          text: '近7天',
-          onClick(picker) {
-            picker.dateShortcuts('近7天', picker)
-          }
-        }, {
-          text: '近15天',
-          onClick(picker) {
-            picker.dateShortcuts('近15天', picker)
-          }
-        }, {
-          text: '近30天',
-          onClick(picker) {
-            picker.dateShortcuts('近30天', picker)
-          }
-        }, {
-          text: '近30-60天',
-          onClick(picker) {
-            picker.dateShortcuts('近30-60天', picker)
-          }
-        }, {
-          text: '本月',
-          onClick(picker) {
-            picker.dateShortcuts('本月', picker)
-          }
-        }, {
-          text: '上月',
-          onClick(picker) {
-            picker.dateShortcuts('上月', picker)
-          }
-        }, {
-          text: '今年',
-          onClick(picker) {
-            picker.dateShortcuts('今年', picker)
-          }
-        }, {
-          text: '去年',
-          onClick(picker) {
-            picker.dateShortcuts('去年', picker)
-          }
-        }],
+         shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.dateShortcuts('今天', picker)
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              picker.dateShortcuts('昨天', picker)
+            }
+          }, {
+            text: '近7天',
+            onClick(picker) {
+              picker.dateShortcuts('近7天', picker)
+            }
+          }, {
+            text: '近15天',
+            onClick(picker) {
+              picker.dateShortcuts('近15天', picker)
+            }
+          }, {
+            text: '近30天',
+            onClick(picker) {
+              picker.dateShortcuts('近30天', picker)
+            }
+          }, {
+            text: '近30-60天',
+            onClick(picker) {
+              picker.dateShortcuts('近30-60天', picker)
+            }
+          }, {
+            text: '本月',
+            onClick(picker) {
+              picker.dateShortcuts('本月', picker)
+            }
+          }, {
+            text: '上月',
+            onClick(picker) {
+              picker.dateShortcuts('上月', picker)
+            }
+          }, {
+            text: '今年',
+            onClick(picker) {
+              picker.dateShortcuts('今年', picker)
+            }
+          }, {
+            text: '去年',
+            onClick(picker) {
+              picker.dateShortcuts('去年', picker)
+            }
+          }],
         date: null
       },
 
@@ -322,7 +287,7 @@ export default {
         list: []
       },
 
-      subChannelDatas: [],
+      subChannelDatas:[],
       listQuery: {
         page: 1,
         limit: 10
@@ -334,12 +299,12 @@ export default {
     _state() {
       return this.$store.state[this.SMN];
     },
-    $$subChannelData() {
+    $$subChannelData(){
       if (this.$store.state[this.SMN].subChannelData) {
-        this.subChannelDatas = this.$store.state[this.SMN].subChannelData.slice(0, this.listQuery.limit)
+        this.subChannelDatas = this.$store.state[this.SMN].subChannelData.slice(0,this.listQuery.limit)
         return this.$store.state[this.SMN].subChannelData
-      } else {
-        return []
+      }else{
+        return []        
       }
     },
     __data() {
@@ -357,30 +322,30 @@ export default {
     },
   },
   watch: {
-    pickerOptionsDate(newValue, oldValue) {
+    pickerOptionsDate(newValue,oldValue){
       var date = newValue.map(item => moment(item).format("YYYY-MM-DD"));
-      if (new Date(date[0]).getTime() > new Date(this.pickerOptions2Date[1]).getTime()) {
+      if(new Date(date[0]).getTime()>new Date(this.pickerOptions2Date[1]).getTime()){
         this.pickerOptionsDate = oldValue;
         return Utils.Notification.error({ message: '激活开始时间大于充值结束时间,请重新选择' });
-      } else {
+      }else{
         this.$store.commit(this.SMN + '/setDate', date)
-        this.pickerOptions2Date = [date[0], this.pickerOptions2Date[1]]
+        this.pickerOptions2Date = [date[0],this.pickerOptions2Date[1]]
       }
     },
-    pickerOptions2Date(newValue, oldValue) {
-      var date = newValue.map(item => {
-        if (typeof item === 'string') {
+    pickerOptions2Date(newValue,oldValue){
+       var date = newValue.map(item => {
+        if(typeof item === 'string'){
           return item
         }
         return moment(item).format("YYYY-MM-DD")
       });
       this.$store.commit(this.SMN + '/setPayDate', date)
     },
-
+    
   },
   methods: {
-    cahngePage(data) {
-      this.subChannelDatas = this.$$subChannelData.slice((data.page - 1) * this.listQuery.limit, this.listQuery.limit * data.page)
+    cahngePage(data){
+        this.subChannelDatas = this.$$subChannelData.slice((data.page-1)*this.listQuery.limit,this.listQuery.limit*data.page)
     },
     excel() {
       // var thead = document.querySelector('.el-table__header thead').innerHTML
@@ -393,8 +358,8 @@ export default {
       //   new Date().getTime() + '.xls'
       // )
       var params = {
-        in_install_date1: this._state.date[0],
-        in_install_date2: this._state.date[1],
+        in_install_date1:this._state.date[0],
+        in_install_date2:this._state.date[1],
         in_pay_date1: this._state.payDate[0],
         in_pay_date2: this._state.payDate[1],
         in_os: this._state.os,
@@ -426,7 +391,7 @@ export default {
       // })
       // this.$store.commit(this.SMN + '/setDate', arr)
     },
-    payDateChange(value) {
+    payDateChange(value){
       // var arr = []
       // value.forEach(date => {
       //   arr.push(moment(date).format("YYYY-MM-DD"))
@@ -455,13 +420,13 @@ export default {
         label === keys[index.registerRateIndex]
         || label === keys[index.createRateIndex]
         || label === keys[index.roiIndex]
-        || label === keys[index.minuteIndex]
+        || label === keys[index.minuteIndex]   
         || label === keys[index.keep1Index]
         || label === keys[index.keep2Index]
-        || label === keys[index.keep3Index]
+        || label === keys[index.keep3Index]     
       ) {
         value += '%'
-      }
+      } 
       return value
     },
     cellClick(row, column, cell, event) {
@@ -544,21 +509,21 @@ export default {
     },
     query() {
       var param = {
-        in_install_date1: this._state.date[0],
-        in_install_date2: this._state.date[1],
+        in_install_date1:this._state.date[0],
+        in_install_date2:this._state.date[1],
         in_pay_date1: this._state.payDate[0],
         in_pay_date2: this._state.payDate[1],
         in_os: this._state.os,
         in_area_app_ids: this._state.gameArr[0],
         in_media_source: this._state.channel,
       }
-      this.$store.dispatch(this.SMN + '/subChannelData', param).then(data => {
+      this.$store.dispatch(this.SMN + '/subChannelData', param).then(data => { 
         console.log(data);
-
+        
       })
     },
     getWidth(str) {
-      var len = str ? str.length : 0;
+      var len = str ? str.length:0;
       if (len <= 2) {
         return 80
       }
@@ -785,9 +750,9 @@ export default {
       margin-left: -16px;
     }
   }
-  .selection-box {
+.selection-box {
     position: relative;
-    .dateTime {
+    .dateTime{
       position: absolute;
       top: -55px;
       left: 200px;
@@ -809,10 +774,10 @@ export default {
   }
 }
 .el-table {
-  th,
-  td {
+  th,td{
     padding-left: 0;
-    padding-right: 0;
+    padding-right: 0
+
   }
   tr:first-child {
     th {
