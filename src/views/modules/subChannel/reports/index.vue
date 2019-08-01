@@ -100,13 +100,13 @@
       <tsdp :data="tsdp" v-if="tsdp.isShow" :auto-confirm="true"></tsdp>
     </my-row>
     <!-- 分页 -->
-    <pagination
+    <!-- <pagination
       v-if="$$subChannelData.length"
       :total="$$subChannelData.length"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.limit"
       @pagination="cahngePage"
-    />
+    /> -->
     <!-- <div class="table" v-if="__data" style="margin: 16px 0 0 0;">
       <el-table
         :data="subChannelDatas"
