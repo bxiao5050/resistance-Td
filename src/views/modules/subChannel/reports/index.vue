@@ -1,7 +1,8 @@
 <template>
   <div class="sub-channel-reports">
+    <p>test</p>
     <!-- 查询条件 -->
-    <my-row class="selection-box">
+    <!-- <my-row class="selection-box">
       <section class="dateTime">
         <div class="time-picker">
           激活时间
@@ -98,7 +99,7 @@
     </my-row>
     <my-row>
       <tsdp :data="tsdp" v-if="tsdp.isShow" :auto-confirm="true"></tsdp>
-    </my-row>
+    </my-row> -->
     <!-- 分页 -->
     <!-- <pagination
       v-if="$$subChannelData.length"
