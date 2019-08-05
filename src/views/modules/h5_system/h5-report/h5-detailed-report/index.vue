@@ -501,6 +501,7 @@ export default {
         // sums[9] = (sums[10] / sums[4]).format(2); //创角成本
         // sums[12] = ((sums[11] / sums[10])*100).format(2) + '%'; //ROI
         // sums[14] = ((sums[13] / sums[10])*100).format(2) + '%'; //分成ROI
+        
         sums[6] = ((sums[6] / sums[2])).format(2); //7日LTV
         sums[7] = ((sums[7] / sums[2])).format(2); //14日LTV
         sums[8] = ((sums[8] / sums[2])).format(2); //30日LTV
