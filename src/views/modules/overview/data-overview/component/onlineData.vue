@@ -7,7 +7,7 @@
               <div class="desc-label-value">{{(index==0||index==2)?Number(item.value).toFixed(0):item.value}}</div>
             </div> -->
             <div class="desc-chart">
-              <inlineChart class="desc-trend" :datetype="{item:item,index:index}"  :chartId="'inline-chart'+index" :datas="item.list"></inlineChart>
+              <inlineChart class="desc-trend" :datetype="{item:item,index:index,type:datetype}"  :chartId="'inline-chart'+index" :datas="item.list"></inlineChart>
             </div>
           </div>
       </el-card>

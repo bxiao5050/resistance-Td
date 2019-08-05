@@ -41,7 +41,15 @@ export default {
     createChart() {
       var chart = Highcharts.chart(this.$refs.chart, {
         title: {
+<<<<<<< HEAD
           text: "当"+this.type[this.datetype.type-1] + this.title[this.datetype.index] + ' : ' + this.datetype.item.value
+=======
+<<<<<<< HEAD
+          text: "当"+this.type[this.datetype.type-1] + this.title[this.datetype.index] + ' : ' + this.datetype.item.value
+=======
+          text: "当日" + this.title[this.datetype.index] + ' : ' + this.datetype.item.value
+>>>>>>> 8eb4256ec6d958abc09dc02d24cd8be9dd49602e
+>>>>>>> 14852e7d52fe94c674985c0c87ba4c54165005a8
         },
         subtitle: {
           text: ''
@@ -96,7 +104,15 @@ export default {
     this.createChart(this.title[this.datetype])
   },
   watch: {
+<<<<<<< HEAD
     datas: {
+=======
+<<<<<<< HEAD
+    datas: {
+=======
+    data: {
+>>>>>>> 8eb4256ec6d958abc09dc02d24cd8be9dd49602e
+>>>>>>> 14852e7d52fe94c674985c0c87ba4c54165005a8
       deep: true,
       handler: function (v, ov) {
         if (v != ov) {
