@@ -22,6 +22,7 @@ export default {
     return {
       chareType: '图表',
       title: ["创角", "充值", "活跃"],
+      type:["日","周","月"]
     }
   },
   watch: {
@@ -40,7 +41,7 @@ export default {
     createChart() {
       var chart = Highcharts.chart(this.$refs.chart, {
         title: {
-          text: "当日" + this.title[this.datetype.index] + ' : ' + this.datetype.item.value
+          text: "当"+this.type[this.datetype.type-1] + this.title[this.datetype.index] + ' : ' + this.datetype.item.value
         },
         subtitle: {
           text: ''
@@ -95,7 +96,7 @@ export default {
     this.createChart(this.title[this.datetype])
   },
   watch: {
-    data: {
+    datas: {
       deep: true,
       handler: function (v, ov) {
         if (v != ov) {
