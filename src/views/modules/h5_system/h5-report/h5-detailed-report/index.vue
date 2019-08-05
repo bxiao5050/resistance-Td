@@ -456,17 +456,19 @@ export default {
         const sums = [];
         var activeData = []; 
         var constData = [];
+        var LTVINDEX = 6;//ltv下标
+        var REGISTERINDEX = 1; //注册下标
         columns.forEach((column, index) => {
             if (index === 0) {
             sums[index] = '全部';
             return;
             }
             var values = data.map((item) => Number(item[column.property]));
-            if (index === 2) {
+            if (index === REGISTERINDEX) {
             activeData = values
             }
 
-            if(index > 13){
+            if(index > LTVINDEX){
             var arr = [];
             for (let index = 0; index < values.length; index++) {
                 arr.push(values[index]*(activeData[index]))
@@ -487,24 +489,24 @@ export default {
             } else {
             sums[index] = 'N/A';
             }
-            if (column.property == '注册率') {
-            sums[index] = (sums[3] / sums[2] * 100).format(2) + '%';
-            }
+            // if (column.property == '注册率') {
+            // sums[index] = (sums[3] / sums[2] * 100).format(2) + '%';
+            // }
             if (column.property == '创角率') {
-            sums[index] = (sums[4] / sums[2] * 100).format(2) + '%';
+            sums[index] = ((sums[2] / sums[1]) * 100).format(2) + '%';
             }
         });
-        sums[7] = (sums[10] / sums[2]).format(2); //激活成本
-        sums[8] = (sums[10] / sums[3]).format(2); //注册成本
-        sums[9] = (sums[10] / sums[4]).format(2); //创角成本
-        sums[12] = ((sums[11] / sums[10])*100).format(2) + '%'; //ROI
-        sums[14] = ((sums[13] / sums[10])*100).format(2) + '%'; //分成ROI
-        sums[15] = ((sums[15] / sums[2])).format(2); //7日LTV
-        sums[16] = ((sums[16] / sums[2])).format(2); //14日LTV
-        sums[17] = ((sums[17] / sums[2])).format(2); //30日LTV
-        sums[18] = ((sums[18] / sums[2])).format(2) + '%';
-        sums[19] = ((sums[19] / sums[2])).format(2) + '%';
-        sums[20] = ((sums[20] / sums[2])).format(2) + '%';
+        // sums[7] = (sums[10] / sums[2]).format(2); //激活成本
+        // sums[8] = (sums[10] / sums[3]).format(2); //注册成本
+        // sums[9] = (sums[10] / sums[4]).format(2); //创角成本
+        // sums[12] = ((sums[11] / sums[10])*100).format(2) + '%'; //ROI
+        // sums[14] = ((sums[13] / sums[10])*100).format(2) + '%'; //分成ROI
+        sums[6] = ((sums[6] / sums[2])).format(2); //7日LTV
+        sums[7] = ((sums[7] / sums[2])).format(2); //14日LTV
+        sums[8] = ((sums[8] / sums[2])).format(2); //30日LTV
+        sums[9] = ((sums[9] / sums[2])).format(2) + '%';
+        sums[10] = ((sums[10] / sums[2])).format(2) + '%';
+        sums[11] = ((sums[11] / sums[2])).format(2) + '%';
         return sums;
       },
       addStyle({ row, column, rowIndex, columnIndex }) {
