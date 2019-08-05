@@ -160,9 +160,6 @@ export default {
       } else if (this.datetype == 2) {
         dateObj.date1 = moment().subtract(1, 'isoWeek').startOf('isoWeek').format("YYYY-MM-DD")
         dateObj.date2 = moment().subtract(0, 'isoWeek').startOf('isoWeek').format("YYYY-MM-DD")
-        console.log(23333,dateObj);
-        
-        
       } else if (this.datetype == 3) {
         dateObj.date1 =  moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
         dateObj.date2 = moment().subtract(0, 'months').startOf('month').format('YYYY-MM-DD')

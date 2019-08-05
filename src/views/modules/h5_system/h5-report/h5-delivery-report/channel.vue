@@ -656,13 +656,13 @@ export default {
     filterData() {
       if (this.$store.state.h5_delivery_report.tableIsVisible) {
         this.in_chart_type = 1
-        console.log('修改表格数据', )
+        // console.log('修改表格数据', )
          // 视图
         this.$store.commit("h5_delivery_report/setViewIndex", this.viewValue);
         this.$store.commit("h5_delivery_report/setChannelIndex", this.channelValue);
         this.$store.commit("h5_delivery_report/setAreaIndex", this.areaValue);
       } else {
-        console.log('获取图例数据')
+        // console.log('获取图例数据')
         this.in_chart_type = 2
       }
       var params = {
@@ -876,7 +876,7 @@ export default {
         } 
         for (let index = 0; index < newValue.length; index++) {
          if (newValue.includes("all")) {
-            console.log("渠道包含全部")
+            // console.log("渠道包含全部")
             // 地区
             let arr = [];
             let flag = []
@@ -894,7 +894,7 @@ export default {
             this.areaValue = arr;
             return
         }else{
-          console.log("渠道不包含全部")
+          // console.log("渠道不包含全部")
           // 地区
           let allArr = [];
           let arr = [];
