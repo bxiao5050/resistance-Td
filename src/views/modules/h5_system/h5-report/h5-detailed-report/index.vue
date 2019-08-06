@@ -493,8 +493,7 @@ export default {
             // sums[index] = (sums[3] / sums[2] * 100).format(2) + '%';
             // }
             if (column.property == '创角率') {
-              // sums[index] = ((sums[2] / sums[1]) * 100).format(2) + '%';
-              sums[index] = 888 + '%';
+              sums[index] = ((sums[2] / sums[1]) * 100).format(2) + '%';
               console.log(11111111,sums[index]);
               
             }
