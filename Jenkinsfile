@@ -4,7 +4,7 @@ pipeline {
         stage('BUILD') {
             agent { docker {
                 image 'reg.royale.com/ops/xynode:8-alpine'
-                args '-v /data/jenkins/data/workspace/test-frontend-oas:/data/app'
+                args '-v /data/jenkins/data/workspace/prod-build-frontend-oas:/data/app'
             }}
             steps {
                 script {
@@ -27,7 +27,7 @@ pipeline {
                 script {
                     try {
                         sh '''
-                            filename=oas-test-$(date '+%Y%m%d%H%M%S').zip
+                            filename=oas-$(date '+%Y%m%d%H%M%S').zip
                             cd dist && zip -qr ${filename} *
                             cd ..
                         '''
@@ -45,10 +45,10 @@ pipeline {
                 script {
                     try {
                         sh '''
-                            src_file=$(ls -rht dist/oas-test-*.zip | head -n 1)
+                            src_file=$(ls -rht dist/oas-*.zip | head -n 1)
                             dest_file=/data/server_new/${src_file#dist/}
                             dt=$(date '+%Y%m%d%H%M%S')
-                            ansible-playbook -i ansible/hosts ansible/deploy.yml -v --extra-var "src_file=$(pwd)/${src_file} dest_file=${dest_file} arch_file=oas-test-${dt}.zip"
+                            ansible-playbook -i ansible/hosts ansible/deploy.yml -v --extra-var "src_file=$(pwd)/${src_file} dest_file=${dest_file} arch_file=oas-${dt}.zip"
                             /bin/sh ansible/notify.sh "deploy success" "${JOB_NAME}" "${BUILD_NUMBER}"
                         '''           
                     } catch(err) {
@@ -64,10 +64,10 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        if curl -I http://oas-test.pocketgamesol.com 2>&1 | grep -q 200 ; then
+                        if curl -I http://oas.pocketgamesol.com 2>&1 | grep -q 200 ; then
                             /bin/sh ansible/notify.sh "check success" "${JOB_NAME}" "${BUILD_NUMBER}"
                         else
-                            /bin/sh ansible/notify.sh "http://oas-test.pocketgamesol.com cannot access" "${JOB_NAME}" "${BUILD_NUMBER}"
+                            /bin/sh ansible/notify.sh "http://oas.pocketgamesol.com cannot access" "${JOB_NAME}" "${BUILD_NUMBER}"
                         fi
                     '''
                 }
