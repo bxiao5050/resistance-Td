@@ -74,7 +74,7 @@
         <el-button type="info" size="medium" @click="filterData">筛选</el-button>
     </div>
     <!-- 表格 -->
-    <!-- <div class="table-item">
+    <div class="table-item">
         <el-table
             :data="_state.tableData"
             :cell-style="addStyle"
@@ -92,7 +92,7 @@
             >
             </el-table-column>
         </el-table>
-    </div> -->
+    </div>
 </div>
   
   
