@@ -1,2 +1,0 @@
-[cn-public-analysisdb]
-cn-public-analysisdb-0001 hostname=cn-public-analysisdb-0001 idc=qymm region=cn ansible_ssh_host=113.107.160.59 ansible_ssh_port=16888
