@@ -18,3 +18,4 @@ esdoc/
 manual/
 /*.lock
 /package-lock.json
+/ansible
