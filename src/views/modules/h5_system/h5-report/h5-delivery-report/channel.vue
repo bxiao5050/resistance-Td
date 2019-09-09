@@ -163,7 +163,7 @@
             :formatter="formatter"
             :fixed="i<=2?true:false"
             :width="getWidth(item)"
-            :sortable="i>0"
+            sortable
           ></el-table-column>
         </el-table>
       </div>
@@ -360,25 +360,13 @@ export default {
         } else {
           sums[index] = 'N/A';
         }
-        // if (column.property == '注册率') {
-        //   sums[index] = (sums[3] / sums[2] * 100).format(2) + '%';
-        // }
         if (column.property == '创角率') {
           sums[index] = (sums[2] / sums[1] * 100).format(2) + '%';
         }
       });
-      // sums[7] = (sums[10] / sums[2]).format(2); //激活成本
-      // sums[8] = (sums[10] / sums[3]).format(2); //注册成本
-      // sums[9] = (sums[10] / sums[4]).format(2); //创角成本
-      // sums[12] = ((sums[11] / sums[10])*100).format(2) + '%'; //ROI
-      // sums[14] = ((sums[13] / sums[10])*100).format(2) + '%'; //分成ROI
-      // sums[15] = ((sums[15] / sums[2])).format(2); //7日LTV
-      // sums[16] = ((sums[16] / sums[2])).format(2); //14日LTV
-      // sums[17] = ((sums[17] / sums[2])).format(2); //30日LTV
-      // sums[18] = ((sums[18] / sums[2])).format(2) + '%';
-      // sums[19] = ((sums[19] / sums[2])).format(2) + '%';
-      // sums[20] = ((sums[20] / sums[2])).format(2) + '%';
       sums[6] = (+sums[6]).format(2); //花费
+      sums[4] = (+sums[6]/sums[1]).format(2); //注册成本
+      sums[5] = (+sums[6]/sums[2]).format(2); //创角成本
       sums[7] = (+sums[7]).format(2); //充值
       sums[8] = ((sums[7] / sums[6])*100).format(2)+'%'; //ROI(充值/花费)
       sums[9] = (+sums[9]).format(2); //分成充值
