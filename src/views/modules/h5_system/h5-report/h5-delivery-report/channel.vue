@@ -365,6 +365,7 @@ export default {
         }
       });
       sums[6] = (+sums[6]).format(2); //花费
+      
       sums[4] = (+sums[6]/sums[1]).format(2); //注册成本
       sums[5] = (+sums[6]/sums[2]).format(2); //创角成本
       sums[7] = (+sums[7]).format(2); //充值
