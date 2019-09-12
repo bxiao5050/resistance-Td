@@ -81,7 +81,7 @@ export default {
           label: this.$t('common.Date'),
           startDate: this.date1[0],
           endDate: this.date1[1],
-          change: (newDate) => { this.date1[0] = newDate.startDate; this.date1[1] = newDate.endDate; this.query(1) }
+          change: (newDate) => { this.date1[0] = newDate.startDate; this.date1[1] = newDate.endDate; this.query() }
         }]
     },
     dateList2() {
@@ -105,7 +105,7 @@ export default {
     this.query();
   },
   methods: {
-    query(value) {
+    query() {
       var params = {
         in_app_id: this.$store.state['common'].nowgame,
         in_gamezone_id: this.$store.getters['Agent/selectedIdList'],
