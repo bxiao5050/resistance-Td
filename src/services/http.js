@@ -54,6 +54,7 @@ export default {
               path: 'login'
             })
           }, 1000)
+          
         };
         !close && Loader.loadend();
       }
