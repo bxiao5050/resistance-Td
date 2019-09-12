@@ -94,7 +94,7 @@ export default {
           endDate: '',
           change: newDate => {
             this.date2 = newDate.startDate
-            this.query(2)
+            this.query()
           }
         }]
     }
@@ -102,23 +102,24 @@ export default {
   },
   
   mounted() {
-    this.query(1);
+    this.query();
   },
   methods: {
-    query(index,value) {
+    query(value) {
       var params = {
         in_app_id: this.$store.state['common'].nowgame,
         in_gamezone_id: this.$store.getters['Agent/selectedIdList'],
         in_pay_money:this.value?this.value:this.startValue,
-        in_type_id:index,
         dataview: this.$store.state.common.nowmenu.dataView[0],
       }
       if (this.isShowSelect==2) {
-        params.in_begin_date = this.date2
-        params.in_end_date = this.date2
+        params.in_begin_date = this.date2;
+        params.in_end_date = this.date2;
+        params.in_type_id=2;
       }else{
-        params.in_begin_date = this.date1[0]
-        params.in_end_date = this.date1[1]
+        params.in_begin_date = this.date1[0];
+        params.in_end_date = this.date1[1];
+        params.in_type_id=1;
       }
       api.user.getQuery(params).then((data) => {
         if (data.code == 401) {
@@ -150,19 +151,18 @@ export default {
     },
     changeMoney(data){
       this.value = data;
-      this.isShowSelect==1 ? this.query(1) : this.query(2)
+      this.query();
     },
     changeRadioData(data){
       this.value = null;
       if(data==='区间新增大R'){
           this.startValue = 100;
           this.isShowSelect = 1;
-          this.query(1);
       }else{
           this.startValue = 2000;
           this.isShowSelect = 2;
-          this.query(2);        
       }
+      this.query();        
     }
   }
 }
