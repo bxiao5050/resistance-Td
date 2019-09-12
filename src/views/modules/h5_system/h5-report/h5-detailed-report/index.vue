@@ -493,7 +493,10 @@ export default {
             // sums[index] = (sums[3] / sums[2] * 100).format(2) + '%';
             // }
             if (column.property == '创角率') {
-            sums[index] = ((sums[2] / sums[1]) * 100).format(2) + '%';
+              sums[index] = ((sums[2] / sums[1]) * 100).format(2) + '%';
+              // sums[index] = 888 + '%';
+              console.log(11111111,sums[index]);
+              
             }
         });
         // sums[7] = (sums[10] / sums[2]).format(2); //激活成本
@@ -501,12 +504,14 @@ export default {
         // sums[9] = (sums[10] / sums[4]).format(2); //创角成本
         // sums[12] = ((sums[11] / sums[10])*100).format(2) + '%'; //ROI
         // sums[14] = ((sums[13] / sums[10])*100).format(2) + '%'; //分成ROI
+
         sums[6] = ((sums[6] / sums[2])).format(2); //7日LTV
         sums[7] = ((sums[7] / sums[2])).format(2); //14日LTV
         sums[8] = ((sums[8] / sums[2])).format(2); //30日LTV
         sums[9] = ((sums[9] / sums[2])).format(2) + '%';
         sums[10] = ((sums[10] / sums[2])).format(2) + '%';
         sums[11] = ((sums[11] / sums[2])).format(2) + '%';
+        
         return sums;
       },
       addStyle({ row, column, rowIndex, columnIndex }) {
