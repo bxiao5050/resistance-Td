@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent { label 'ansible' }
     environment {
         project = "oas"
         ppath = "/data/packages/test/frontend"
@@ -33,7 +33,6 @@ pipeline {
             }
         }
         stage('DEPLOY') {
-            agent { label 'ansible' }
             steps {
                 script {
                     try {
