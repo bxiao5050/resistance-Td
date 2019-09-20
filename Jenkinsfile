@@ -63,16 +63,16 @@ pipeline {
                 }
             }
         }
-        post {
-            success {
-                sh '''
-                    if curl -I http://oas-test.pocketgamesol.com 2>&1 | grep -q 200 ; then
-                        /bin/sh ansible/notify.sh "check success" "${JOB_NAME}" "${BUILD_NUMBER}"
-                    else
-                        /bin/sh ansible/notify.sh "http://oas-test.pocketgamesol.com cannot access" "${JOB_NAME}" "${BUILD_NUMBER}"
-                    fi
-                '''
-            }
+    }
+    post {
+        success {
+            sh '''
+                if curl -I http://oas-test.pocketgamesol.com 2>&1 | grep -q 200 ; then
+                    /bin/sh ansible/notify.sh "check success" "${JOB_NAME}" "${BUILD_NUMBER}"
+                else
+                    /bin/sh ansible/notify.sh "http://oas-test.pocketgamesol.com cannot access" "${JOB_NAME}" "${BUILD_NUMBER}"
+                fi
+            '''
         }
     }
 }
