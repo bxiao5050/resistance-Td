@@ -2,8 +2,8 @@ pipeline {
     agent { label 'ansible' }
     environment {
         project = "oas"
-        ppath = "/data/packages/test/frontend"
-        rpath = "/data/k8s/packages/test/frontend"
+        ppath = "/data/packages/prod/frontend"
+        rpath = "/data/k8s/packages/prod/frontend"
     }
     stages {
         stage('BUILD') {
