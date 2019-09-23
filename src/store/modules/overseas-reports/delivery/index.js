@@ -976,11 +976,13 @@ export default {
             if (index>=5 && index<=9) {
               titleArr[key] = {avg:0,count:0,isReversal:false,max:0,min:0,total:0}
             }
+            // 表格title初始数据
             if(!state.filterTitleDataValue.includes(key)){
               state.filterTitleData.push({name:key,isShow:true,index:index})
               state.filterTitleDataValue.push(key)
             }
         })
+            // 表格title初始数据新增全选
         if(!state.filterTitleDataValue.includes("全部")){
           state.filterTitleData.unshift({name:"全部",index:-1,isShow:true})
           state.filterTitleDataValue.unshift("全部")
