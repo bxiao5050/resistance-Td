@@ -849,7 +849,6 @@ export default {
       if (!oldVal.includes('全部') && !val.includes('全部')) {
         if (val.length === allValues.length - 1) this.titleValue = ['全部'].concat(val)
       }
-
       //储存当前最后的结果 作为下次的老数据 
       for (let msg = 0; msg < this._state.filterTitleData.length; msg++) {
        if (this.titleValue.includes(this._state.filterTitleData[msg].name)) {
