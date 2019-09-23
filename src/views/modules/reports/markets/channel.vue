@@ -860,6 +860,7 @@ export default {
            this.show[this._state.filterTitleData[msg].index].label = false;
          }
        }
+       
       }
       this.titleOldOptions[1] = this.titleValue
     },
