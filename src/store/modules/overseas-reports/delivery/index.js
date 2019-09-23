@@ -40,6 +40,8 @@ export default {
       system: null,
     },
     channelSelectData:null,
+    filterTitleData:[],
+    filterTitleDataValue:[],
     date: [
       moment()
         .add(-1, "day")
@@ -186,6 +188,9 @@ export default {
     set_zones(state, data) {
       state.configs.zone.zones = data
     },
+    set_filterTitleDataValue(state,data){
+      state.filterTitleDataValue = data
+    }
   },
   getters: {
     tellTagStatus(state, getters, state_, getters_) {
@@ -971,7 +976,16 @@ export default {
             if (index>=5 && index<=9) {
               titleArr[key] = {avg:0,count:0,isReversal:false,max:0,min:0,total:0}
             }
+            if(!state.filterTitleDataValue.includes(key)){
+              state.filterTitleData.push({name:key,isShow:true,index:index})
+              state.filterTitleDataValue.push(key)
+            }
         })
+        if(!state.filterTitleDataValue.includes("全部")){
+          state.filterTitleData.unshift({name:"全部",index:-1,isShow:true})
+          state.filterTitleDataValue.unshift("全部")
+        }
+        
         Object.assign(mmas,titleArr)
         Object.keys(mmas).forEach((key,index)=>{
           allData.filter(todo => todo[key])

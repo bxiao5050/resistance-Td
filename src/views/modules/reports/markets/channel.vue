@@ -12,7 +12,8 @@
     <div class="centerBox">
       <!-- 筛选行 -->
       <section class="btns">
-        <el-select class="os" v-model="value" size="medium">
+        <!-- 表格/图例 -->
+        <el-select class="view" v-model="value" size="medium">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -20,7 +21,7 @@
             :value="item.value"
           ></el-option>
         </el-select>
-        <el-button size="medium" @click="slide(300)">筛选</el-button>
+        <el-button style="marginRight:15px" size="medium" @click="slide(300)">筛选</el-button>
       </section>
       <!-- 图例 -->
       <div class="legendBox" v-show="!$store.state.o_r_delivery.tableIsVisible">
@@ -123,7 +124,6 @@
             ></el-option>
           </el-select>
         </div>
-        <!-- <p>{{areaOptions}}444</p> -->
         <!-- 地区 -->
          <div class="filter_">
           <span>{{filterTitle[3].name}}</span>
@@ -149,6 +149,24 @@
       </section>
       <!-- 表格 -->
       <div v-show="$store.state.o_r_delivery.tableIsVisible" class="table-item">
+        <!-- 标题 -->
+         <div style="marginBottom:15px">
+          <span>{{filterTitle[4].name}}</span>
+          <el-select
+          filterable 
+          collapse-tags
+          multiple 
+          @change="titleSelectAll"
+          v-model="titleValue" size="medium"
+           :filter-method="titleFilter">
+            <el-option
+              v-for="(item,i) in titleOptions"
+              :key="i"
+              :label="item.name"
+              :value="item.name"
+            ></el-option>
+          </el-select>
+        </div>
         <el-table
           :data="$store.getters['o_r_delivery/getAllChannel']"
           :cell-style="addStyle"
@@ -158,6 +176,7 @@
           <el-table-column
             v-for="(item, i) in (Object.keys($store.getters['o_r_delivery/getAllChannel']?$store.getters['o_r_delivery/getAllChannel'][0]:[]))"
             :key="i"
+            v-if='show[i].label'
             :prop="item"
             :label="item"
             :formatter="formatter"
@@ -196,6 +215,7 @@ export default {
       lineValue: 0,       //
       channelValue: [],   //渠道下标
       areaValue: [],      //地区下标
+      titleValue: [],     //标题下标
       chart: null,
       restaurants: [ ],
       rightListArr: [],
@@ -206,14 +226,22 @@ export default {
       areaOptions:[],
       areaOptionsCopy:[],
       areaOldOptions:[[]],
+      titleOptions:[],
+      titleOptionsCopy:[],
+      titleOldOptions:[[]],
       lineArr: [],
       options: [{ value: "table", label: "表格" }, { value: "legend", label: "图例" },],
-      filterTitle: [{ name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' }] },
+      filterTitle: [
+      { name: '视图', value: '1', options: [{ value: '1', label: '渠道' }, { value: '2', label: '时间' }, { value: '3', label: '地区' }] },
       { name: "系统", value: '2', options: [{ value: '2', label: '全部' }, { value: '0', label: 'IOS' }, { value: '1', label: 'android' },] },
       { name: "渠道", value: 'qb', options: [{ value: 'qb', label: '全部' }] },
-      { name: "地区", value: 'qb', options: [{ value: 'qb', label: '全部' }] }],
+      { name: "地区", value: 'qb', options: [{ value: 'qb', label: '全部' }] },
+      { name: "标题", value: 'qb', options: [{ value: 'qb', label: '全部' }] },
+      
+      ],
       lineData: [],
       areaArr: [{ media_source: 'qb', country_name: '全部' }],
+      show:[],
     };
   },
   computed: {
@@ -253,7 +281,11 @@ export default {
   created(){
     this.dataInit()
     this.$store.state.o_r_delivery.tableIsVisible = true;
-    this.value = 'table'
+    this.value = 'table';
+    for(let i = 0;i<22;i++){
+        var item = { label: true };
+        this.show.push(item);
+      }
   },
   watch:{
     $$tableSort(newValue,oldValue){
@@ -267,6 +299,7 @@ export default {
       // this.channelOptions = newValue.channelName;
       // this.channelOptionsCopy = newValue.channelName;
       this.channel_init()   
+      this.title_init()
     },
     channels(channels) {
       this.$store.commit("o_r_delivery/set_channels", channels);
@@ -299,6 +332,7 @@ export default {
       this.viewValue = '1';
       this.systemValue = '2';
       this.channel_init()   
+      this.title_init()
       // this.areaValue = [];
       this.lineValue = 0;
       var params = {
@@ -648,6 +682,7 @@ export default {
     },
     filterData() {
       if (this.$store.state.o_r_delivery.tableIsVisible) {
+        this.$store.commit("o_r_delivery/set_filterTitleDataValue",this.titleValue);
         this.in_chart_type = 1
         console.log('修改表格数据', )
          // 视图
@@ -678,14 +713,17 @@ export default {
       // 恢复默认筛选条件
       this.viewValue = '1';
       this.systemValue = '2';
-      this.channel_init()
+      this.channel_init();
+      this.title_init()
       this.lineValue = 0;
     },
+    // 筛选条件初始化
     dataInit(){
       localStorage.setItem("lineValue",0)
       if (this._state.viewIndex) {this.viewValue = this._state.viewIndex}else{this.viewValue = '1'}
       if (this._state.systemIndex) {this.systemValue = this._state.systemIndex}else{this.systemValue = '2'}
       this.channel_init()
+      this.title_init()
     },
     getWidth(str) {
       var len = str ? str.length:0;
@@ -705,7 +743,7 @@ export default {
         return 120
       }
     },
-    // 渠道多选
+    // 渠道全选
     channelSelectAll(val) {
       let allValues = []
       //保留所有值
@@ -741,6 +779,7 @@ export default {
       //储存当前最后的结果 作为下次的老数据 
       this.channelOldOptions[1] = this.channelValue
     },
+    // 地区全选
     areaSelectAll(val) {
       let allValues = []
       //保留所有值
@@ -777,6 +816,55 @@ export default {
       //储存当前最后的结果 作为下次的老数据 
       this.areaOldOptions[1] = this.areaValue
     },
+    // 标题全选
+    titleSelectAll(val){
+      let allValues = []
+      //保留所有值
+      for (let item of this.titleOptions) {
+        allValues.push(item.name)
+      }
+      // 用来储存上一次的值，可以进行对比
+      const oldVal = this.titleOldOptions.length === 1 ? [] : this.titleOldOptions[1]
+      
+      // 若是全部选择
+      if ( val.includes('全部')) {
+        if (this.titleOptionsCopy.length != allValues.length) {
+          allValues.shift()
+        }
+        this.titleValue = allValues
+      }
+
+      // 取消全部选中  上次有 当前没有 表示取消全选
+      if (oldVal.includes('全部') && !val.includes('全部')) this.titleValue = []
+
+      // 点击非全部选中  需要排除全部选中 以及 当前点击的选项 
+      // 新老数据都有全部选中 
+      if (oldVal.includes('全部') && val.includes('全部')) {
+        const index = val.indexOf('全部')
+        val.splice(index, 1) // 排除全选选项
+        this.titleValue = val
+      }
+
+      //全选未选 但是其他选项全部选上 则全选选上 上次和当前 都没有全选
+      if (!oldVal.includes('全部') && !val.includes('全部')) {
+        if (val.length === allValues.length - 1) this.titleValue = ['全部'].concat(val)
+      }
+
+      //储存当前最后的结果 作为下次的老数据 
+      for (let msg = 0; msg < this._state.filterTitleData.length; msg++) {
+       if (this.titleValue.includes(this._state.filterTitleData[msg].name)) {
+         if (this._state.filterTitleData[msg].index != -1){
+           this.show[this._state.filterTitleData[msg].index].label = true;
+         }
+       }else{
+         if (this._state.filterTitleData[msg].index != -1){
+           this.show[this._state.filterTitleData[msg].index].label = false;
+         }
+       }
+      }
+      this.titleOldOptions[1] = this.titleValue
+    },
+    // 渠道多选
     channelFilter (val) {
       if (val) { //val存在
           var number = 0;
@@ -805,6 +893,7 @@ export default {
           this.channelOptions = this.channelOptionsCopy;
         }
     },
+    // 地区多选
     areaFilter (val) {
       if (val) { //val存在
           var number = 0;
@@ -834,6 +923,38 @@ export default {
           this.areaOptions = this.areaOptionsCopy;
         }
     },
+    // 标题多选
+    titleFilter(val){
+      if (val) { //val存在
+          console.log('titleFilter', val)
+          var number = 0;
+          this.titleOptions.filter((item) => {
+            if (!!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
+              number++
+            }
+          })
+          if (number==1) {
+            this.titleOptions = this.titleOptions.filter((item) => {
+              if (!!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
+                return true
+              }
+            })
+          }else if(number>1){
+            this.titleOptions = this.titleOptions.filter((item) => {
+              if ((item.value == "all")|| !!~item.label.indexOf(val) || !!~item.label.toUpperCase().indexOf(val.toUpperCase())) {
+                return true
+              }
+            })
+          
+          }else{
+            this.titleOptions = []
+          }
+         
+        } else { //val为空时，还原数组
+          this.titleOptions = this.areaOptionsCopy;
+        }
+      
+    },
     getChannelData(){
       var data = "";
       var all = "";
@@ -846,9 +967,9 @@ export default {
         return data
       }
     },
+    // 渠道初始化
     channel_init(){
       let channelAllValues = []
-      let areaAllValues = []
       if (this._state.channelSelectData.channelName) {
         this.channelOptions = this._state.channelSelectData.channelName;
         this.channelOptionsCopy = this._state.channelSelectData.channelName; 
@@ -863,6 +984,7 @@ export default {
           this.channelValue = channelAllValues
       }
     },
+    // 地区初始化
     area_init(newValue){
       if(newValue.length == 0){
             this.areaValue = [];
@@ -910,6 +1032,12 @@ export default {
           
         }        
       }
+    },
+    // 标题初始化
+    title_init(){
+      this.titleOptions = this._state.filterTitleData;
+      this.titleOptionsCopy = this._state.filterTitleData;
+      this.titleValue = this._state.filterTitleDataValue;
     }
   }
 }; 
@@ -949,11 +1077,9 @@ export default {
   .btns {
     display: flex;
     justify-content: flex-end;
-    .os {
+    .view {
       width: 100px;
-    }
-    button {
-      margin: 0 15px;
+      margin:0 15px;
     }
   }
   .legendBox {
@@ -1040,9 +1166,9 @@ export default {
     background: white;
     button {
       width: 75px;
-      position: absolute;
-      left: 58px;
-      top: 20px;
+      // position: absolute;
+      // left: 58px;
+      // top: 20px;
     }
     button:nth-child(2){
       left: 160px;
