@@ -844,7 +844,6 @@ export default {
         val.splice(index, 1) // 排除全选选项
         this.titleValue = val
       }
-
       //全选未选 但是其他选项全部选上 则全选选上 上次和当前 都没有全选
       if (!oldVal.includes('全部') && !val.includes('全部')) {
         if (val.length === allValues.length - 1) this.titleValue = ['全部'].concat(val)
