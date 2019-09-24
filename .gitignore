@@ -18,5 +18,3 @@ esdoc/
 manual/
 /*.lock
 /package-lock.json
-Jenkinsfile  
-/ansible
