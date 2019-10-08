@@ -111,5 +111,3 @@ export default {
         }
     }
 }
-
-console.log('tag', '')
