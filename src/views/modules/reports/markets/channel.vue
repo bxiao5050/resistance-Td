@@ -382,7 +382,6 @@ export default {
           for (let index = 0; index < values.length; index++) {
             arr.push(values[index]*(activeData[index]))
           }
-          
           values = arr
         }
         if (!values.every(value => isNaN(value))) {
