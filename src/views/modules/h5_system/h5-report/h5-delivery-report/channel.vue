@@ -364,9 +364,6 @@ export default {
           sums[index] = (sums[2] / sums[1] * 100).format(2) + '%';
         }
       });
-     
-      sums[4] = (+sums[6]/sums[1]).format(2); //注册成本
-      sums[5] = (+sums[6]/sums[2]).format(2); //创角成本
       sums[6] = (+sums[6]).format(2); //花费
       sums[4] = (+sums[6]/sums[1]).format(2); //注册成本
       sums[5] = (+sums[6]/sums[2]).format(2); //创角成本
