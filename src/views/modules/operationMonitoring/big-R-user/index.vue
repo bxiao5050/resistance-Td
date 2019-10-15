@@ -31,10 +31,10 @@
               <el-table-column
                 v-for="(item, i) in (Object.keys(tableData[0]?tableData[0]:{}))"
                 :key="i"
-                :sortable="i==4||i==5"
+                :sortable="i==5||i==6"
                 :prop="item"
                 :label="item"
-                :width="i==0 ? 300:(i==9?130:'')"
+                :width="i==0 ? 300:(i==4?320:'')"
               ></el-table-column>
             </el-table>
           </div>
@@ -81,7 +81,9 @@ export default {
           label: this.$t('common.Date'),
           startDate: this.date1[0],
           endDate: this.date1[1],
-          change: (newDate) => { this.date1[0] = newDate.startDate; this.date1[1] = newDate.endDate; this.query() }
+          change: (newDate) => { 
+            this.date1 = [newDate.startDate,newDate.endDate]; 
+            this.query() }
         }]
     },
     dateList2() {
@@ -125,7 +127,7 @@ export default {
         if (data.code == 401) {
           for (let index = 0; index < data.state[0].length; index++) {
            Object.keys(data.state[0][index]).forEach((key, flag) => {
-             if (flag==4 || flag==5) {
+             if (flag==5 || flag==6) {
                 data.state[0][index][key] = +data.state[0][index][key];
              }
            })
