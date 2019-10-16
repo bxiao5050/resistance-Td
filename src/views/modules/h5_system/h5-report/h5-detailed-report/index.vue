@@ -84,6 +84,7 @@
             <el-table-column  
             v-for="(item, i) in (Object.keys((_state.tableData && _state.tableData.length)?_state.tableData[0]:[]))"
             :key="i" 
+            :width="i==0?350:''" 
             :prop="item"
             :label="item"
             :formatter="formatter"
@@ -333,7 +334,7 @@ export default {
       excel() {
         var timestamp = Date.now()
         var thead = document.querySelector('.el-table__header thead').innerHTML
-        var tbody = document.querySelector('.el-table__body tbody').innerHTML
+        var tbody = document.querySelector('.el-table__body tbody').innerHTML+document.querySelector('.el-table__footer tbody').innerHTML
         var table = document.createElement('table')
         table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
         Utils.tableToExcel(

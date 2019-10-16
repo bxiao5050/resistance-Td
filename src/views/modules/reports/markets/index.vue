@@ -534,11 +534,10 @@ export default {
         var data = this.$store.getters["o_r_delivery/getComprehensive"];
         var len = data.category.length
         for (var i = 0; i < len; i++) {
-          var thead = document.querySelectorAll('.el-table__header thead')[i].innerHTML
-          var tbody = document.querySelectorAll('.el-table__header-wrapper+.el-table__body-wrapper>table:first-child')[i].innerHTML
+          var thead = document.querySelectorAll('.el-table__header thead')[i*2].innerHTML
+          var tbody = document.querySelectorAll('.el-table__header-wrapper+.el-table__body-wrapper>table:first-child')[i].innerHTML + document.querySelectorAll('.el-table__append-wrapper tbody')[i].innerHTML
           var table = document.createElement('table')
           table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
-
           Utils.tableToExcel(
             table,
             false,
@@ -546,8 +545,13 @@ export default {
           )
         }
       } else {
+        if (this.main === "daily") {
+          var tbody = document.querySelector('.el-table__body tbody').innerHTML+document.querySelector('.el-table__append-wrapper tbody').innerHTML
+        } else {
+          var tbody = document.querySelector('.el-table__body tbody').innerHTML+document.querySelector('.el-table__footer tbody').innerHTML
+        }
         var thead = document.querySelector('.el-table__header thead').innerHTML
-        var tbody = document.querySelector('.el-table__body tbody').innerHTML
+        
         var table = document.createElement('table')
         table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
         Utils.tableToExcel(

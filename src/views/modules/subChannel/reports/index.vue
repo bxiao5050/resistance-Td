@@ -349,26 +349,26 @@ export default {
         this.subChannelDatas = this.$$subChannelData.slice((data.page-1)*this.listQuery.limit,this.listQuery.limit*data.page)
     },
     excel() {
-      // var thead = document.querySelector('.el-table__header thead').innerHTML
-      // var tbody = document.querySelector('.el-table__body tbody').innerHTML
-      // var table = document.createElement('table')
-      // table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
-      // Utils.tableToExcel(
-      //   table,
-      //   false,
-      //   new Date().getTime() + '.xls'
-      // )
-      var params = {
-        in_install_date1:this._state.date[0],
-        in_install_date2:this._state.date[1],
-        in_pay_date1: this._state.payDate[0],
-        in_pay_date2: this._state.payDate[1],
-        in_os: this._state.os,
-        in_area_app_ids: this._state.gameArr[0],
-        in_media_source: this._state.channel,
-        dataview: 'fn_report_media_source_site',
-      }
-      api.user.exportData(params)
+      var thead = document.querySelector('.el-table__header thead').innerHTML
+      var tbody = document.querySelector('.el-table__body tbody').innerHTML+document.querySelector('.el-table__append-wrapper tbody').innerHTML
+      var table = document.createElement('table')
+      table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
+      Utils.tableToExcel(
+        table,
+        false,
+        new Date().getTime() + '.xls'
+      )
+      // var params = {
+      //   in_install_date1:this._state.date[0],
+      //   in_install_date2:this._state.date[1],
+      //   in_pay_date1: this._state.payDate[0],
+      //   in_pay_date2: this._state.payDate[1],
+      //   in_os: this._state.os,
+      //   in_area_app_ids: this._state.gameArr[0],
+      //   in_media_source: this._state.channel,
+      //   dataview: 'fn_report_media_source_site',
+      // }
+      // api.user.exportData(params)
     },
     cellClassName({ row, column, rowIndex, columnIndex }) {
       if (!columnIndex) {

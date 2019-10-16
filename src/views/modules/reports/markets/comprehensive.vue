@@ -67,8 +67,6 @@ export default {
     },
     renderHeader(region, h, { column, $index }) {
       if (!$index) {
-        
-        console.log('----------->>>>>>111111111',$index, region)
         return h(
           'div',
           {

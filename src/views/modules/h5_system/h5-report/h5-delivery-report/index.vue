@@ -397,7 +397,7 @@ export default {
         // }
       // } else {
         var thead = document.querySelector('.el-table__header thead').innerHTML
-        var tbody = document.querySelector('.el-table__body tbody').innerHTML
+        var tbody = document.querySelector('.el-table__body tbody').innerHTML+document.querySelector('.el-table__footer tbody').innerHTML
         var table = document.createElement('table')
         table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
         Utils.tableToExcel(

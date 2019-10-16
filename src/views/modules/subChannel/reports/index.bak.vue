@@ -348,15 +348,6 @@ export default {
         this.subChannelDatas = this.$$subChannelData.slice((data.page-1)*this.listQuery.limit,this.listQuery.limit*data.page)
     },
     excel() {
-      // var thead = document.querySelector('.el-table__header thead').innerHTML
-      // var tbody = document.querySelector('.el-table__body tbody').innerHTML
-      // var table = document.createElement('table')
-      // table.innerHTML = `<thead>${thead}</thead><tbody>${tbody}</tbody>`
-      // Utils.tableToExcel(
-      //   table,
-      //   false,
-      //   new Date().getTime() + '.xls'
-      // )
       var params = {
         in_install_date1:this._state.date[0],
         in_install_date2:this._state.date[1],

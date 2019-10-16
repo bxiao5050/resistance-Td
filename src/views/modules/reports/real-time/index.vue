@@ -39,7 +39,7 @@
         </section>
         <el-button size="medium" class="search" type="info"  @click="getData()" style="margin-left:20px">查询</el-button>
         <!-- <div class="mail"> -->
-          <el-button type="info" class="exportBtn" @click="exportChart(index)">
+          <el-button type="info" class="exportBtn" @click="exportChart()">
             <i class="el-icon-download"></i>导出xls文件
           </el-button>
         <!-- </div> -->
@@ -188,7 +188,7 @@ export default {
   },
   methods: {
     // 导出表格
-    exportChart(index) {
+    exportChart() {
       var timestamp = Date.now()
       var thead = this.$$getRealData.theadArr
       var tbody = this.$$getRealData.tbodyArr
