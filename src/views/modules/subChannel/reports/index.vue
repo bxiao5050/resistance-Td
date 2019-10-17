@@ -135,7 +135,6 @@ export default {
       channelIndex:-1,
       tableOptions: {
         siteId: null
-
       },
       pickerOptionsDate:null,
       pickerOptions2Date:null,
