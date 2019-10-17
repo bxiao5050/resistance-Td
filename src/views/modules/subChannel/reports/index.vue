@@ -70,7 +70,7 @@
       <div class="channel-sel">
         <el-button-group class="group">
           <el-button size="medium">
-            <span>渠道参数</span>
+            <span>标签</span>
           </el-button>
           <el-select class="channel" filterable v-model="channelOptions.in_site_type" size="medium" @change="changeChannelParams(channelOptions.in_site_type)">
             <el-option v-for="item in _state.subChannelInfoData.params[channelIndex]" :key="item.in_site_type" :label="item.in_site_type" :value="item.in_site_type"></el-option>
@@ -519,7 +519,7 @@ export default {
         in_pay_date2: this._state.payDate[1],
         in_os: this._state.os,
         in_area_app_ids: this._state.gameArr[0],
-        in_media_source: this._state.channel,
+        in_media_source: this.channelOptions.channel,
         in_site_type:this.channelOptions.in_site_type,
         in_query_type:2
       }
