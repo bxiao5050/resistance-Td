@@ -343,6 +343,7 @@ export default {
       }else{
         this.$store.commit(this.SMN + '/setDate', date)
         this.pickerOptions2Date = [date[0],this.pickerOptions2Date[1]]
+        this.channelQuery()
       }
     },
     pickerOptions2Date(newValue,oldValue){
