@@ -100,7 +100,7 @@
         @pagination="cahngePage" 
       />
     <div class="subTable" v-if="__data" style="background: rgba(208,196,214,.5); margin: 12px; padding: 15px;">
-      <el-table :data="subChannelDatas" :cell-class-name="cellClassName"   :width="'2000px'" :cell-style="addStyle">
+      <el-table  :data="subChannelDatas" :cell-class-name="cellClassName"   :width="'2000px'" :cell-style="addStyle">
         <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key"  
          :label="item.key" :formatter="formatter" :width="item.width" :min-width="item['min-width']" :sortable="item.sortable" v-if="!item.hide"
          :fixed="i<=2?true:false"></el-table-column>
@@ -112,7 +112,6 @@
         </div>
       </el-table>
     </div>
-
   </div>
 </template>
 
