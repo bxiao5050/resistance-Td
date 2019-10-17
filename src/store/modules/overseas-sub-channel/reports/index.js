@@ -176,7 +176,7 @@ export default {
           config.tableKey = [{
             key: config.keys[config.index.dateIndex],
             sortable: true,
-            width: 150
+            width: 350
           }, {
             key: config.keys[config.index.systemIndex],
             sortable: true
