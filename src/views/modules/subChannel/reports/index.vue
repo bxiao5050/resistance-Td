@@ -61,11 +61,23 @@
           <el-button size="medium">
             <span>渠道</span>
           </el-button>
-          <el-select class="channel" filterable v-model="channelOptions.channel" size="medium" @change="channelChange">
-            <el-option v-for="item in channelOptions.list" :key="item.media_source" :label="item.media_source" :value="item.media_source"></el-option>
+          <el-select class="channel" filterable v-model="channelOptions.channel" size="medium" @change="channelChange(channelOptions.channel)">
+            <el-option v-for="item in _state.subChannelInfoData.channel" :key="item.media_source" :label="item.media_source" :value="item.media_source"></el-option>
           </el-select>
         </el-button-group>
       </div>
+
+      <div class="channel-sel">
+        <el-button-group class="group">
+          <el-button size="medium">
+            <span>渠道参数</span>
+          </el-button>
+          <el-select class="channel" filterable v-model="channelOptions.in_site_type" size="medium" @change="changeChannelParams(channelOptions.in_site_type)">
+            <el-option v-for="item in _state.subChannelInfoData.params[channelIndex]" :key="item.in_site_type" :label="item.in_site_type" :value="item.in_site_type"></el-option>
+          </el-select>
+        </el-button-group>
+      </div>
+
       <div class="query" style="padding-left:50px">
         <el-button type="info" @click="ckeck() && query()">
           查询
@@ -76,7 +88,6 @@
           导出表格
         </el-button>
       </div>
-       
     </my-row>
     <my-row>
       <tsdp :data="tsdp" v-if="tsdp.isShow" :auto-confirm="true"></tsdp>
@@ -123,7 +134,7 @@ export default {
     return {
       SMN: 'o_s_c_reports',
       updateHook: 0,
-
+      channelIndex:0,
       tableOptions: {
         siteId: null
 
@@ -284,6 +295,7 @@ export default {
       },
 
       channelOptions: {
+        in_site_type:null,
         channel: null,
         list: []
       },
@@ -381,7 +393,6 @@ export default {
       this.tsdp.regionArr = regionArr;
       this.tsdp.game = game;
       this.tsdp.gameArr = gameArr;
-
       this.channelOptions.channel = null
       this.channelQuery();
     },
@@ -403,7 +414,10 @@ export default {
       this.$store.commit(this.SMN + '/setOs', value)
     },
     channelChange(value) {
-      this.$store.commit(this.SMN + '/setChannel', value)
+      this.channelOptions.in_site_type = null;
+      this.channelIndex = this._state.subChannelInfoData.channel.filter((val)=> val.media_source == value)[0].index;
+    },
+    changeChannelParams(value){
     },
     levelChange(value) {
       var number = parseInt(value)
@@ -467,29 +481,18 @@ export default {
       this.$store.commit(this.SMN + "/setRegionArr", this.tsdp.regionArr);
       this.$store.commit(this.SMN + "/setGame", this.tsdp.game);
       this.$store.commit(this.SMN + "/setGameArr", this.tsdp.gameArr);
-
       var param = {
-        in_unite_id: this.tsdp.gameArr[0],
-        in_os: this.osOptions.os,
-        count_date: moment()
-          .add(-1, "day")
-          .format("YYYY-MM-DD")
+        in_install_date1:this._state.date[0],
+        in_install_date2:this._state.date[1],
+        in_pay_date1: this._state.payDate[0],
+        in_pay_date2: this._state.payDate[1],
+        in_os: this._state.os,
+        in_area_app_ids: this._state.gameArr[0],
+        in_media_source: this._state.channel,
+        in_site_type:this.channelOptions.in_site_type,
+        in_query_type:1
       }
-
-      this.$store.dispatch('overseas_common/getChannels1', param).then(data => {
-
-        if (data.code === 401) {
-          this.channelOptions.list = data.state[0]
-          this.$store.commit(this.SMN + '/setChannelList', this.channelOptions.list)
-        }
-
-      }).catch(err => {
-        this.$notify({
-          type: "error",
-          message: err
-        });
-      })
-
+      this.$store.dispatch(this.SMN + '/subChannelInfo', param)
     },
     ckeck() {
       if (!this._state.gameArr.length) {
@@ -499,7 +502,7 @@ export default {
         })
         return false
       }
-      if (!this._state.channel) {
+      if (!this.channelOptions.channel) {
         this.$notify({
           type: "warning",
           message: "请选择渠道"
@@ -517,11 +520,13 @@ export default {
         in_os: this._state.os,
         in_area_app_ids: this._state.gameArr[0],
         in_media_source: this._state.channel,
+        in_site_type:this.channelOptions.in_site_type,
+        in_query_type:2
       }
-      this.$store.dispatch(this.SMN + '/subChannelData', param).then(data => { 
-        console.log(data);
-        
-      })
+      this.$store.commit(this.SMN + '/setChannel', this.channelOptions.channel)
+      this.$store.commit(this.SMN + '/setChannelParams', this.channelOptions.in_site_type)
+      this.$store.dispatch(this.SMN + '/subChannelData', param)
+
     },
     getWidth(str) {
       var len = str ? str.length:0;
@@ -699,8 +704,8 @@ export default {
     if (this._state.game) this.tsdp.game = this._state.game
     if (this._state.gameArr) this.tsdp.gameArr = this._state.gameArr
     if (this._state.channel) this.channelOptions.channel = this._state.channel
-    if (this._state.channelList) this.channelOptions.list = this._state.channelList
-
+    if (this._state.channelList) {this.channelOptions.list = this._state.channelList;}
+    if(!this.channelOptions.in_site_type){this.channelOptions.in_site_type = this._state.setChannelParamsName }
     this.$store.dispatch("overseas_common/getList1").then(item => {
       if (!this._state.region || !this._state.regionArr.length) {
         this.$store.commit(this.SMN + "/setRegion", this.tsdp.allTxt);
