@@ -1,4 +1,5 @@
 import http from 'src/services/http'
+import { log } from 'util';
 function getWidth(str) {
   var len = str ? str.length:0;
   if (len <= 2) {
@@ -45,6 +46,8 @@ export default {
     channelList: null,
     level: 3,
     subChannelData: null,
+    subChannelInfoData:{channel:[],params:[]},
+    setChannelParamsName:null,
     subChannelRegionData: null,
     subChannelConfig: {},
     subChannelRegionConfig: {}
@@ -74,6 +77,9 @@ export default {
     setChannel(state, data) {
       state.channel = data
     },
+    setChannelParams(state,data){
+      state.setChannelParamsName = data
+    },
     setChannelList(state, data) {
       state.channelList = data
     },
@@ -82,6 +88,9 @@ export default {
     },
     set(state, { key, value }) {
       state[key] = value
+    },
+    setSubChannelInfo(state,data){
+      state.subChannelInfoData = data
     }
   },
   getters: {
@@ -766,8 +775,32 @@ export default {
       })
 
     },
-    subChannelRegionData(context, params) {
+    subChannelInfo(context, params) {
+      var {
+        commit,
+        state,
+        dispatch,
+        getters,
+        rootGetters,
+        rootState,
+      } = context
 
+      var url = '/query/' + 'fn_report_media_source_site'
+      return new Promise((resolve) => {
+        http.post(url, params).then(data => {
+          if (data.code === 401) {
+            var channelData = {channel:[],params:[]}
+            for (let index = 0; index < data.state[0].length; index++) {
+              channelData.channel.push({index:index,media_source:data.state[0][index].media_source})
+              channelData.params.push(data.state[0][index].in_site_type.split(',').map((val)=>({in_site_type:val})))
+            }
+            commit('setSubChannelInfo', channelData)
+          }
+        })
+      })
+
+    },
+    subChannelRegionData(context, params) {
       var {
         commit,
         state,
