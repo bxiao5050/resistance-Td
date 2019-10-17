@@ -91,8 +91,7 @@
     </my-row>
     <my-row>
       <tsdp :data="tsdp" v-if="tsdp.isShow" :auto-confirm="true"></tsdp>
-    </my-row>
-    
+    </my-row>    
       <pagination
         v-if="$$subChannelData.length"
         :total="$$subChannelData.length"
@@ -100,7 +99,7 @@
         :limit.sync="listQuery.limit"
         @pagination="cahngePage" 
       />
-    <div class="table" v-if="__data" style="margin: 16px 0 0 0;">
+    <div class="subTable" v-if="__data" style="background: rgba(208,196,214,.5); margin: 12px; padding: 15px;">
       <el-table :data="subChannelDatas" :cell-class-name="cellClassName"   :width="'2000px'" :cell-style="addStyle">
         <el-table-column v-for="(item, i) in _config.tableKey" :key="i" :prop="item.key"  
          :label="item.key" :formatter="formatter" :width="item.width" :min-width="item['min-width']" :sortable="item.sortable" v-if="!item.hide"
