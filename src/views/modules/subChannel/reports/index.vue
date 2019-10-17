@@ -134,7 +134,7 @@ export default {
     return {
       SMN: 'o_s_c_reports',
       updateHook: 0,
-      channelIndex:0,
+      channelIndex:-1,
       tableOptions: {
         siteId: null
 
