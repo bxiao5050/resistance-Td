@@ -355,7 +355,6 @@ export default {
       });
       this.$store.commit(this.SMN + '/setPayDate', date)
     },
-    
   },
   methods: {
     cahngePage(data){
