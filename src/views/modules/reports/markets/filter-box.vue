@@ -163,8 +163,8 @@ export default {
   methods: {
     init_selectData(newValue) {
       if (newValue) {
-        this.viewValue = "1";
-        this.systemValue = ["all", "0", "1"];
+        this.viewValue = newValue.viewValue?newValue.viewValue:"1";
+        this.systemValue = newValue.systemValue?newValue.systemValue:["all", "0", "1"];
         this.packageNameValue = newValue.packageNameValue;
         this.packageNameOptions = newValue.packageNameData;
         this.packageNameOptionsCopy = newValue.packageNameValue;
@@ -298,7 +298,9 @@ export default {
       } else {
         params.in_chart_type = 2
       }
-      var newSelectData = {        
+      var newSelectData = {    
+        'viewValue':this.viewValue,
+        "systemValue":this.systemValue,
         'packageNameData': this.packageNameOptions,
         "packageNameValue": this.packageNameValue,
         'channelData': this.channelOptions,
