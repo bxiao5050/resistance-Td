@@ -101,6 +101,7 @@
 <script>
 import http from 'src/services/http';
 export default {
+  props:["sendParams"],
   data() {
     return {
       viewValue: '1',     //视图下标
@@ -297,7 +298,8 @@ export default {
       } else {
         params.in_chart_type = 2
       }
-      var newSelectData = {        'packageNameData': this.packageNameOptions,
+      var newSelectData = {        
+        'packageNameData': this.packageNameOptions,
         "packageNameValue": this.packageNameValue,
         'channelData': this.channelOptions,
         "channelDataValue": this.channelValue,
@@ -306,7 +308,8 @@ export default {
         "allData": this._state.channelSelectDataBak.allData,
       };
       this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? 'channel' : 'legend' }).then(() => {
-        this.$store.commit("o_r_delivery/set_channelSelectDataInfo", newSelectData)
+        this.$store.commit("o_r_delivery/set_channelSelectDataInfo", newSelectData);
+        this.$emit('sendParams',this.viewValue)
       });
 
 
