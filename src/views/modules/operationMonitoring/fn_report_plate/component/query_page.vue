@@ -32,7 +32,6 @@
         <el-button type="primary" @click="queryPageData" size="small">查询</el-button>
       </my-row>
     </el-card>
-    
     <div class="content-body">
       <card>
         <div slot="header">
@@ -125,7 +124,7 @@ export default {
       }
       api.user.getQuery(params).then((data) => {
         if (data.code == 401) {
-          if (data.state[0][0].template_id) {
+          if (data.state[0].length && data.state[0][0].template_id) {
             // 搜索列表
             data.state[0].forEach(function (element, i) {
               if (element.param_name === "in_app_id") {
@@ -138,7 +137,11 @@ export default {
           } else {
             // 表格数据
             this.allData= data.state[0]
-            this.queryData = this.allData.slice(0, this.listQuery.limit)
+            if (this.allData.length) {
+              this.queryData = this.allData.slice(0, this.listQuery.limit)            
+            }else{
+              this.queryData = []
+            }
           }
         } else {
           Utils.Notification.error({ message: data.message });

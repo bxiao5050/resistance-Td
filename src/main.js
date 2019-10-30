@@ -66,6 +66,8 @@ import clipboard from 'clipboard';
 //注册到vue原型上
 Vue.prototype.clipboard = clipboard;
 
+
+
 Number.prototype.format = String.prototype.format = function (number) {
   var {
     round,

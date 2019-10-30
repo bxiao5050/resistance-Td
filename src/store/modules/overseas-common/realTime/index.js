@@ -107,7 +107,8 @@ export default {
                                                                         // 4 渠道(媒体)报表   5 系统对比
                         in_country: '',                                //国家
                         in_chart_type:0,                               //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
-                        in_view_type:0                                  //视图类型：1 渠道 2 时间 3 地区
+                        in_view_type:0,                                  //视图类型：1 渠道 2 时间 3 地区
+                        in_package_name:""                             //包名
 
 
                     }

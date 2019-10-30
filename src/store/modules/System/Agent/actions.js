@@ -103,7 +103,6 @@ class Data {
     //   .sort((a, b) => {
     //     return a[this.config.grandid] - b[this.config.grandid]
     //   })
-
     let parentDefault = {}
     let comparison = (grandid, parentid) => {
       if (parentDefault[grandid]) {

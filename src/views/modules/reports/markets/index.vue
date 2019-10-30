@@ -452,7 +452,8 @@ export default {
         in_rpt_type: 4,                                //报表类型: 1 查询游戏层级  2 综合报表  3 每日报表   4 渠道(媒体)报表   5 系统对比
         in_country: '',                               //国家
         in_chart_type: 0,                              //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
-        in_view_type: 1                                //视图类型：1 渠道 2 时间 3 地区
+        in_view_type: 1,                               //视图类型：1 渠道 2 时间 3 地区
+        in_package_name:""                             //包名
       };
       this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: 'channelInfo' });
     },
@@ -750,6 +751,7 @@ export default {
         in_country: '',                               //国家
         in_chart_type: this.in_chart_type,             //数据展现图表类型 ：0 查询渠道地区信息 1 表格 2 图例
         in_view_type: this.in_view_type,               //视图类型：1 渠道 2 时间 3 地区
+        in_package_name:""                             //包名
       };
       this._state.lastQueryParam[this.taging] = params;
       this.$store.dispatch("o_r_delivery/getReportInfo", { params, tag: this.$store.state.o_r_delivery.tableIsVisible ? this.taging : 'legend' }).then(

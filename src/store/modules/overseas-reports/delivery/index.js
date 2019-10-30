@@ -1,5 +1,6 @@
 import http from 'src/services/http'
 import { Number } from 'core-js';
+import { log } from 'util';
 
 function getObjectByTimestamp() {
   return {
@@ -40,6 +41,8 @@ export default {
       system: null,
     },
     channelSelectData:null,
+    channelSelectDataBak:null,
+    channelSelectDataInfo:null,
     filterTitleData:[],
     filterTitleDataValue:[],
     date: [
@@ -190,6 +193,9 @@ export default {
     },
     set_filterTitleDataValue(state,data){
       state.filterTitleDataValue = data
+    },
+    set_channelSelectDataInfo(state,data){
+      state.channelSelectDataInfo = data
     }
   },
   getters: {
@@ -935,34 +941,36 @@ export default {
       return arr
     },
     getChannelInfo(state,getters){
-      var channelName = []
-      var channelNameData = []
-      var allData = []
+      var packageNameData = []; 
+      var packageNameValue = [];
+      var channelData = [];
+      var channelDataValue = [];
+      var areaData = [];
+      var areaDataValue = [];
+      var allData = [];
       if (state['channelInfo'][getters.getIdStr] && state['channelInfo'][getters.getIdStr][0].length) {
         allData = state['channelInfo'][getters.getIdStr][0];
-        //获取筛选框联动数据
-        for (let index = 0; index < allData.length; index++) {
-          if (allData[index].media_source && channelName.indexOf(allData[index].media_source)<0) {
-            channelName.push(allData[index].media_source)
-          }
-        }
-        for (let index = 0; index < channelName.length; index++) {          
-          channelName[index] = {lable:channelName[index],value:''+(index+1)}
-          channelNameData.push(allData.filter(todo => todo.media_source == channelName[index]['lable']))
-          for (let msg = 0; msg < channelNameData[index].length; msg++) {
-              channelNameData[index][msg].label = channelNameData[index][msg].country_name;
-              channelNameData[index][msg].value = channelNameData[index][msg]["国家"];
-              channelNameData[index][msg].key = Math.random();
-            }
-          channelNameData[index].unshift({"label": '全部', "value": 'all', "key": Math.random() })
-        }
-        channelName.unshift({lable: "全部", value: 'all'})
-        channelNameData.unshift(allData)
-        channelNameData[0].unshift({"label": '全部', "value": 'all', "key": Math.random()})
+     
+        packageNameValue = ['all'].concat([...new Set(allData.map(item=>item.package_name))])        
+        packageNameData=(packageNameValue.map(item=>{return {lable:item==='all'?'全部':item,value:item}}))
+
+        channelDataValue = ['all'].concat([...new Set(allData.map(item=>item.media_source))])        
+        channelData = (channelDataValue.map(item=>{return {lable:item==='all'?'全部':item,value:item}}))
+
+        areaDataValue = ['all'].concat([...new Set(allData.map(item=>item['国家']))])       
+        areaData=(['all'].concat([...new Set(allData.map(item=>item.country_name))]).map((item,i)=>{return {lable:item==='all'?'全部':item,value:item==='all'?'all':[...new Set(allData.map(item=>item['国家']))][i-1]}}))
+        
       }
-      // console.log('getChannelInfogetChannelInfo',{'channelName':channelName,'channelNameData':channelNameData,})
-      state.channelSelectData =  {'channelName':channelName,'channelNameData':channelNameData,};
-      return {'channelName':channelName,'channelNameData':channelNameData,}
+      state.channelSelectData =  {'packageNameData':packageNameData,
+                                  "packageNameValue":packageNameValue,
+                                  'channelData':channelData,
+                                  "channelDataValue":channelDataValue,
+                                  "areaData":areaData,
+                                  "areaDataValue":areaDataValue,
+                                  "allData":allData,
+                                };
+      state.channelSelectDataBak = state.channelSelectData
+      return state.channelSelectData
     },
     getChannelList(state,getters){
       var mmas = {}
@@ -1119,286 +1127,6 @@ export default {
               'restaurants':restaurants}
 
     },
-    // getChannel(state, getters) {
-    //   var field = state.is2 ? 'channel2' : 'channel'
-    //   var data, total = {}
-    //   function initMma() {
-    //     var mma = {}
-    //     colorKey.forEach(key => {
-    //       mma[key] = {
-    //         min: Infinity,
-    //         max: 0,
-    //         avg: 0,
-    //         isReversal: [keys[index.createCostIndex], keys[index.activeCostIndex], keys[index.registerCostIndex]].includes(key) ? true : false,
-    //         total: 0,
-    //         count: 0
-    //       }
-    //     })
-    //     return mma
-    //   }
-    //   function assignment(item, mma, isLast) {
-    //     colorKey.forEach(key => {
-    //       var val = item[key]
-    //       if (val !== 0) {
-    //         mma[key].count++;
-    //         mma[key].total += val
-    //       }
-    //       if (val > mma[key].max) {
-    //         mma[key].max = val
-    //       }
-    //       if (val < mma[key].min) {
-    //         mma[key].min = val
-    //       }
-    //       if (isLast) {
-    //         mma[key].avg = mma[key].count ? mma[key].total / mma[key].count : 0
-    //       }
-    //     })
-    //   }
-    //   function init(arr, config) {
-    //     if (!config.keys) {
-    //       config.keys = Object.keys(arr[0]).map(item => item);
-    //       // config.keys.push('LTV')
-    //     }
-    //     if (!config.index) {
-    //       config.index = {
-    //         lineIndex:0,
-    //         channelIndex: 1,
-    //         osIndex: 2,
-    //         activeIndex: 3,
-    //         registerIndex: 4,
-    //         createIndex: 5,
-    //         costIndex: 6,
-    //         activeCostIndex: 7,
-    //         registerRateIndex: 8,
-    //         createRateIndex: 9,
-    //         registerCostIndex: 10,
-    //         createCostIndex: 11,
-    //         newCreateIndex: 12,
-    //         newCreateCostIndex: 13,
-    //         rechargeIndex: 17,
-    //         roiIndex: 18,
-    //         ltvIndex: 21,
-    //         keep1Index: 14,
-    //         keep2Index: 15,
-    //         keep3Index: 16,
-    //         mounthChargeIndex: 19,
-    //         mounthActiveIndex: 20
-    //       }
-    //     }
-    //     if (!config.colorKey) {
-    //       config.colorKey = [
-    //         config.keys[config.index.registerRateIndex],
-    //         config.keys[config.index.createRateIndex],
-    //         config.keys[config.index.activeCostIndex],
-    //         config.keys[config.index.registerCostIndex],
-    //         config.keys[config.index.createCostIndex]
-    //       ]
-    //     }
-    //     if (!config.tableKey) {
-    //       config.tableKey = [{
-    //         key: config.keys[config.index.lineIndex],
-    //         sortable: true,
-    //         width: 150
-    //       },{
-    //         key: config.keys[config.index.channelIndex],
-    //         sortable: true,
-    //       }, {
-    //         key: config.keys[config.index.osIndex],
-    //         sortable: true
-    //       }, {
-    //         key: config.keys[config.index.activeIndex],
-    //         sortable: true
-    //       }, {
-    //         key: config.keys[config.index.registerIndex],
-    //         sortable: true
-    //       }, {
-    //         key: config.keys[config.index.createIndex],
-    //         sortable: true
-    //       }, {
-    //         key: config.keys[config.index.registerRateIndex],
-    //         sortable: true
-    //       }, {
-    //         key: config.keys[config.index.createRateIndex],
-    //         sortable: true
-    //       }, {
-    //         key: config.keys[config.index.activeCostIndex],
-    //         sortable: true
-    //       }, {
-    //         key: config.keys[config.index.registerCostIndex],
-    //         sortable: true
-    //       }, {
-    //         key: config.keys[config.index.createCostIndex],
-    //         sortable: true
-    //       }, {
-    //         key: config.keys[config.index.costIndex],
-    //         sortable: true
-    //       }, {
-    //         key: config.keys[config.index.rechargeIndex],
-    //         sortable: true,
-    //         width: 200,
-    //         hide:true
-    //       }, {
-    //         key: config.keys[config.index.roiIndex],
-    //         sortable: true,
-    //         hide:true
-    //       }, {
-    //         key: config.keys[config.index.mounthActiveIndex],
-    //         sortable: true,
-    //         hide: true
-    //       }, {
-    //         key: config.keys[config.index.mounthChargeIndex],
-    //         sortable: true,
-    //         hide: true
-    //       }, {
-    //         key: config.keys[config.index.ltvIndex],
-    //         sortable: true,
-    //         hide:true
-    //       }, {
-    //         key: config.keys[config.index.keep1Index],
-    //         sortable: true
-    //       }, {
-    //         key: config.keys[config.index.keep2Index],
-    //         sortable: true
-    //       }, {
-    //         key: config.keys[config.index.keep3Index],
-    //         sortable: true
-    //       }]
-        
-    //       console.log('config', config.tableKey)
-    //       config.tableKey.map(item => {
-    //         if (!item.width && !item.hide)
-    //           return item.width = getWidth(item.key)
-    //       })
-
-    //     }
-    //     if (!config.chartKey) {
-    //       config.chartKey = [
-    //         config.keys[config.index.activeIndex],
-    //         config.keys[config.index.registerIndex],
-    //         config.keys[config.index.createIndex],
-    //         config.keys[config.index.costIndex],
-    //         config.keys[config.index.createRateIndex],
-    //       ]
-    //     }
-    //   }
-
-    //   if (state[field][getters.getIdStr]) {
-    //     var arr = state[field][getters.getIdStr][0];
-    //     var arr_ = arr
-    //     if (!arr.length) return null
-    //     var config = state.configs['channel'];
-    //     init(arr, config)
-    //     if (state.configs.channel.channels.length) {
-    //       arr_ = []
-    //       arr.forEach(item => {
-    //         var channelName = config.keys[config.index.channelIndex]
-    //         var channel = item[channelName]
-    //         if (state.configs.channel.channels.includes(channel)) arr_.push(item)
-    //       })
-    //     }
-    //     data = {
-    //       list: arr_,
-    //       channel: []
-    //     }
-    //     var {
-    //       keys,
-    //       index,
-    //       colorKey,
-    //       tableKey
-    //     } = config
-    //     data.mmas = initMma()
-    //     var isLast
-    //     // 添加绿色
-    //     arr.forEach((item, i) => {
-    //       keys.forEach(key => {
-    //         var _ = item[key] * 1
-    //         if (!isNaN(_)) {
-    //           item[key] = _
-    //         }
-    //       })
-    //       isLast = i === arr.length - 1
-    //       assignment(item, data.mmas, isLast)
-    //       data.channel.push(item[keys[index.channelIndex]])
-    //       /**
-    //        * ltv handler
-    //        */
-    //       // var mounthChargeKey = keys[index.mounthChargeIndex]
-    //       // var mounthActiveKey = keys[index.mounthActiveIndex]
-    //       // item.LTV = !item[mounthChargeKey] || !item[mounthActiveKey] ? 0 : (item[mounthChargeKey] / item[mounthActiveKey]).format(2);
-    //     })
-    //     // 求和
-    //     arr_.forEach((item, i) => {
-    //       isLast = i + 1 === arr_.length
-    //       tableKey.forEach(({ key }) => {
-    //         switch (key) {
-    //           case keys[index.channelIndex]:
-    //             if (!total.hasOwnProperty(key)) {
-    //               total[key] = "全部"
-    //             }
-    //             break
-    //           case keys[index.lineIndex]:
-    //             if (!total.hasOwnProperty(key)) {
-    //               total[key] = "全部"
-    //             }
-    //             break
-    //           case keys[index.osIndex]:
-    //             if (!total.hasOwnProperty(key)) {
-    //               total[key] = item[key]
-    //             }
-    //             break
-    //           default:
-    //             if (!total.hasOwnProperty(key)) {
-    //               total[key] = item[key]
-    //             } else {
-    //               total[key] = (item[key] + total[key]).format(2)
-    //             }
-    //             break
-    //         }
-    //       })
-    //     })
-
-    //     var active = total[keys[index.activeIndex]]
-    //     var register = total[keys[index.registerIndex]]
-    //     total[keys[index.registerRateIndex]] = ((register / active) * 100).format(2) + '%'
-
-    //     var active = total[keys[index.activeIndex]]
-    //     var create = total[keys[index.createIndex]]
-    //     total[keys[index.createRateIndex]] = ((create / active) * 100).format(2) + '%'
-
-    //     var active = total[keys[index.activeIndex]]
-    //     var cost = total[keys[index.costIndex]]
-    //     total[keys[index.activeCostIndex]] = (cost / active).format(2)
-
-    //     var register = total[keys[index.registerIndex]]
-    //     var cost = total[keys[index.costIndex]]
-    //     total[keys[index.registerCostIndex]] = (cost / register).format(2)
-
-    //     var create = total[keys[index.createIndex]]
-    //     var cost = total[keys[index.costIndex]]
-    //     total[keys[index.createCostIndex]] = (cost / create).format(2)
-
-    //     var cost = total[keys[index.costIndex]]
-    //     var recharge = total[keys[index.rechargeIndex]]
-    //     total[keys[index.roiIndex]] = ((recharge / cost) * 100).format(2) + '%'
-
-    //     var mounthChargeKey = keys[index.mounthChargeIndex]
-    //     var mounthActiveKey = keys[index.mounthActiveIndex]
-    //     total[keys[index.ltvIndex]] = !total[mounthChargeKey] || !total[mounthActiveKey] ? 0 : (total[mounthChargeKey] / total[mounthActiveKey]).format(2);
-
-    //     [keys[index.keep1Index], keys[index.keep2Index], keys[index.keep3Index]].forEach(key => {
-    //       var keyValue = total[key]
-    //       var active = total[keys[index.activeIndex]]
-    //       total[key] = ((keyValue / active) * 100).format(2) + '%'
-    //     })
-
-    //     data.total = total
-    //   } else {
-    //     data = null
-    //   }
-    //   console.log(field + 'Data:->', data)
-    //   return data
-    // },
-
     getZone(state, getters) {
       var field = state.is2 ? 'zone2' : 'zone'
       var data, total = {}
@@ -1684,7 +1412,6 @@ export default {
       console.log(field + 'Data:->', data)
       return data
     },
-
     getSystem(state, getters) {
       var field = 'system'
       class Data {
