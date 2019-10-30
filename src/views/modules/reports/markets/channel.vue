@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import selectBox from './selectBox'
+import selectBox from './selectBox.vue'
 import http from 'src/services/http';
 import { log } from 'util';
 export default {
