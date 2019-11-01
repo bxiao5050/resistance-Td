@@ -33,7 +33,7 @@
         </div>
         <!-- left -->
         <section class="left">
-          <div style="width: 90%;      margin: 10px 10%;">
+          <div style="width: 90%;margin: 10px 10%;">
             <el-autocomplete
               class="inline-input"
               v-model="inputTxt"
@@ -114,7 +114,7 @@
             :formatter="formatter"
             :fixed="i<=2?true:false"
             :width="getWidth(item)"
-            :sortable="(i!=1 && viewValue == 2)?true:false"
+            :sortable="(i>1)?true:(viewValue == 2 && i==0?true:false)"
           ></el-table-column>
         </el-table>
       </div>
