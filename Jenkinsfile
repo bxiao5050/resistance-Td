@@ -2,8 +2,7 @@ pipeline {
     agent { label 'ansible' }
     environment {
         project = "oas"
-        ppath = "/data/packages/prod/frontend"
-        rpath = "/data/k8s/packages/prod/frontend"
+        ppath = "/data/k8s/packages/prod/frontend"
     }
     stages {
         stage('BUILD') {
@@ -21,8 +20,11 @@ pipeline {
                             npm run build
                             dt=$(date '+%Y%m%d')
                             mkdir -p /data/app/${project}/${dt}
-                            rm -rf /data/app/${project}/${dt}/dist
-                            cp -rf dist /data/app/${project}/${dt}/
+                            cd dist
+                            filename="${project}-$(date '+%Y%m%d%H%M%S').zip"
+                            zip -qr ${filename} *
+                            cp -rf ${filename} /data/app/${project}/${dt}/
+                            echo ${filename} > /data/app/${project}/${dt}/file.txt
                         '''
                     } catch(err) {
                         echo 'npm build error'
@@ -38,16 +40,11 @@ pipeline {
                     try {
                         sh '''
                             workspace=$(pwd)
-                            cd ${rpath}/${project}/$(date '+%Y%m%d')
-                            cd dist
-                            filename="${project}-$(date '+%Y%m%d%H%M%S').zip"
-                            zip -qr ${filename} *
-                            mv ${filename} ../
-                            cd ../
-                            rm -rf dist
+                            cd ${ppath}/${project}/$(date '+%Y%m%d')
+                            filename=$(cat file.txt)
 
                             cd ${workspace}/ansible
-                            src_file="${rpath}/${project}/$(date '+%Y%m%d')/${filename}"
+                            src_file="${ppath}/${project}/$(date '+%Y%m%d')/${filename}"
                             dest_file="/data/server_new/${filename}"
                             arch_file="${project}-$(date '+%Y%m%d%H%M%S').zip"
                             ansible-playbook -i hosts deploy.yml --extra-var "src_file=${src_file} dest_file=${dest_file} project=${project} arch_file=${arch_file}"
