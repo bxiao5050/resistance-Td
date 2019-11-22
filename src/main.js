@@ -1,4 +1,6 @@
 import Vue from 'vue'
+
+import 'default-passive-events'
 import 'src/scss/style.scss'
 import {
   Tag,
@@ -65,8 +67,6 @@ var lang = localStorage.lang || 'CHS' // 当前语言
 import clipboard from 'clipboard';
 //注册到vue原型上
 Vue.prototype.clipboard = clipboard;
-
-
 
 Number.prototype.format = String.prototype.format = function (number) {
   var {
