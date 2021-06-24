@@ -3,6 +3,10 @@ import tkinter.ttk as ttk
 import pandas as pd
 
 
+
+
+
+
 class WaferArrange(ttk.Frame):
     """
 complete wafer with 342 buttons
@@ -103,6 +107,19 @@ class MyButton(Button):
 
         self.set_buttonPress(self.on_buttonPress)
 
+
+
+        #bind mouse moving over
+    def mouse_enter(self, fn):
+        self.bind("<Enter>", fn)
+    def mouse_leave(self, fn):
+        self.bind("<Leave>", fn)
+
+    def set_buttonPress(self, fn):
+        self.config(command = fn)
+
+
+
     def on_buttonPress(self):
         self.oneOrTwoclick()
 
@@ -113,14 +130,6 @@ class MyButton(Button):
     def on_leave(self, e):
         self.config(bg =  self.bgColor)
 
-        #bind mouse moving over
-    def mouse_enter(self, fn):
-        self.bind("<Enter>", fn)
-    def mouse_leave(self, fn):
-        self.bind("<Leave>", fn)
-
-    def set_buttonPress(self, fn):
-        self.config(command = fn)
 
 
     #one click or two clicks

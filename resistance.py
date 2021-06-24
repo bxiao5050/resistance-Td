@@ -41,7 +41,6 @@ class InputData(LabelFrame):
 
         # self.myPlot()
 
-
     def myPlot(self):
 
         for i in range(len(self.line)):
@@ -73,6 +72,29 @@ class InputData(LabelFrame):
             self.ax_down.plot(self.line[i][0], self.line[i][1], label = f'section: {i+1}')
         self.ax_down.legend()
         self.canvas2.draw()
+
+    def on_selection(self):
+        selection = self.var.get()
+        # print(selection)
+
+    def getSection(self):
+
+        x = savgol_filter(self.x0, 99, 3)
+        # x_max = find_peaks(x, distance = 30)[0]
+        x_max = argrelextrema(x, np.greater)
+        x_min = argrelextrema(x, np.less)
+
+        self.section = np.sort(np.concatenate((np.array([0]), x_min[0], x_max[0], np.array([len(self.x0) - 1]))))
+        self.line = []
+        # print(self.section)
+        for i in range(len(self.section)-1):
+            xx = self.x0[range(self.section[i], self.section[i+1])]
+            yy = self.y0[range(self.section[i], self.section[i+1])]
+            # print(self.section[i])
+            self.line.append([xx, yy])
+
+        return {'line': self.line, 'section': self.section}
+
 
 def main():
     root = Tk()
